@@ -6,13 +6,13 @@ import traceback
 
 class BrainFuck:
     def __init__(self, src):
-        self.src = src
-        self.src_len = len(src)
-        self.src_i = 0
-        self.memory_p = 0
-        self.memory = [0] * 30000
+        self._src = src
+        self._src_len = len(src)
+        self._src_i = 0
+        self._memory_p = 0
+        self._memory = [0] * 30000
 
-        self.processes = {
+        self._processes = {
                 '>':self.pointer_inc,  '<':self.pointer_dec, 
                 '+':self.memory_inc,   '-':self.memory_dec,
                 '.':self.putchar,      ',':self.getchar,
@@ -20,27 +20,27 @@ class BrainFuck:
                 }
         
     def eval(self):
-        while self.src_len > self.src_i:
-            s = self.src[self.src_i]
-            if self.processes.has_key(s):
-                self.processes[s]()
+        while self._src_len > self._src_i:
+            s = self._src[self._src_i]
+            if s in self._processes:
+                self._processes[s]()
             else:
                 print >>sys.stderr, 'unknown instruction "%s"' % s
                 sys.exit(1);
-            self.src_i += 1
+            self._src_i += 1
 
     def putchar(self):
-        sys.stdout.write(chr(self.memory[self.memory_p]))
+        sys.stdout.write(chr(self._memory[self._memory_p]))
 
     def getchar(self):
-        self.memory[self.memory_p] = ord(sys.stdin.read(1))
+        self._memory[self._memory_p] = ord(sys.stdin.read(1))
 
     def jump_forward(self):
-        if self.memory[self.memory_p] == 0:
-            self.src_i += 1
+        if self._memory[self._memory_p] == 0:
+            self._src_i += 1
             counter = 0
-            while self.src_len > self.src_i:
-                s = self.src[self.src_i]
+            while self._src_len > self.src_i:
+                s = self._src[self.src_i]
                 if s == '[':
                     counter += 1
                 elif s == ']':
@@ -48,16 +48,16 @@ class BrainFuck:
                         return
                     else:
                         counter -= 1
-                self.src_i += 1
+                self._src_i += 1
             print >>sys.stderr, traceback.print_stack()
             sys.exit(1);
 
     def jump_backward(self):
-        if self.memory[self.memory_p] != 0:
-            self.src_i -= 1
+        if self._memory[self._memory_p] != 0:
+            self._src_i -= 1
             counter = 0
-            while self.src_i >= 0:
-                s = self.src[self.src_i]
+            while self._src_i >= 0:
+                s = self._src[self._src_i]
                 if s == ']':
                     counter += 1
                 elif s == '[':
@@ -65,21 +65,21 @@ class BrainFuck:
                         return
                     else:
                         counter -= 1
-                self.src_i -= 1
+                self._src_i -= 1
             print >>sys.stderr, traceback.print_stack()
             sys.exit(1);
 
     def pointer_inc(self):
-        self.memory_p += 1
+        self._memory_p += 1
 
     def pointer_dec(self):
-        self.memory_p -= 1
+        self._memory_p -= 1
 
     def memory_inc(self):
-        self.memory[self.memory_p] += 1
+        self._memory[self._memory_p] += 1
 
     def memory_dec(self):
-        self.memory[self.memory_p] -= 1
+        self._memory[self._memory_p] -= 1
 
 if __name__ == '__main__':
 
