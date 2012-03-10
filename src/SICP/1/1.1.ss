@@ -10,18 +10,35 @@
 ;	  y))
 ;(test 0 (p))
 
+
 (define (abs x)
   (cond ((> x 0) x)
-		((= x 0) 0)
-		((< x 0) (- x))))
+    ((= x 0) 0)
+    ((< x 0) (- x))))
  
+(abs -1)
 
+(use slib)
+(require 'trace)
 (define (square x) (* x x))
+(trace square)
 
 (define (sum-of-squares x y)
   (+ (square x) (square y)))
 
 (sum-of-squares 3 4)
+
+
+(define (two-square x y z)
+	(cond ((and (<= x y) (<= x z)) (sum-of-squares y z))
+				((and (<= y x) (<= y z)) (sum-of-squares x z))
+				(else (sum-of-squares x y))))
+(two-square 3 2 1)
+(two-square 2 2 1)
+(two-square 2 2 2)
+(two-square 2 2 3)
+(two-square 1 2 3)
+(two-square 1 2 2)
 
 (define (f a)
   (sum-of-squares (+ a 1) (* a 2)))
@@ -54,7 +71,7 @@
 
 (define (average x y)
   (/ (+ x y) 2))
-
+2
 (define (good-enough? guess x)
   (< (abs (- (square guess) x)) 0.001))
 
@@ -64,7 +81,7 @@
 (my-sqrt 9)
 
 (my-sqrt (+ 100 37))
-
+(square (my-sqrt 1000))
 ;ex1.6
 
 (define (new-if predicate then-clause else-clause)
@@ -88,16 +105,31 @@
 ;ex1.7
 (sqrt 0.000001)
 (my-sqrt 0.000001)
+(my-sqrt 1e48)
+(my-sqrt (expt 2 300))
+(exact 1e48)
+(exact 1e24)
+
+(use slib)
+(require 'trace)
+(trace good-enough?)
 
 
-(define x 10000000000000)
+(define x 10000000000001)
 (sqrt x)
 ;(my-sqrt x)
+(sqrt 1e14)
+(my-sqrt 1e48)
+
+(my-sqrt 1e50)
+
+
+
 
 ;(trace sqrt-iter)
 
 
-(define (sqrt-iter3 pre-guess guess x)b
+(define (sqrt-iter3 pre-guess guess x)
   (if (good-enough3? pre-guess guess x)
 	  guess
 	  (sqrt-iter3 guess (improve guess x)

@@ -674,7 +674,11 @@ end
 ;ex4.28
 
 (driver-loop)
-((if true + -) 1 2)
+(define (foo x)
+	(+ 1 x))
+(define (hoge f)
+	(f 1))
+(hoge foo)
 end
 ;ex4.29
 (define (force-it obj)
@@ -838,6 +842,14 @@ end
 ;ex4.33
 
 (driver-loop)
+(define (cons x y)
+  (lambda(m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
+
+
 (car '(a b c))
 
 
@@ -887,11 +899,27 @@ end
 				 (make-quotation-list rest-list)))))
 
 (driver-loop)
+(define (cons x y)
+  (lambda(m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
+
+
 (car '(a b c))
 (cdr '(a b c))
 end
 
 (driver-loop)
+(define (cons x y)
+  (lambda(m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
+
+
 (car '((b c)))
 (car (car '((b c))))
 (car (car (cdr '(a 
@@ -900,3 +928,4 @@ end
 			   )))
 
 
+end

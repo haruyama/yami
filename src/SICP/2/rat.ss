@@ -53,14 +53,14 @@
 ;ex 2.1
 (define (make-rat n d)
   (let ((g (gcd n d)))
-	(let ((tn (/ n g))
-		  (td (/ d g)))
-	  (cond ((= td 0)
-			 (error "divided by zero"))
-			((> td 0)
-			 (cons tn td))
-			(else
-			 (cons (- tn) (- td)))))))
+    (let ((tn (/ n g))
+          (td (/ d g)))
+      (cond ((= td 0)
+             (error "divided by zero"))
+        ((> td 0)
+         (cons tn td))
+        (else
+          (cons (- tn) (- td)))))))
 			 
 (print-rat (add-rat one-third one-third))
 

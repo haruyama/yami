@@ -8,9 +8,9 @@
 
 (define (analyze exp)
   (cond ((self-evaluating? exp)
-		 (analyze-self-evaluating exp))
-		((quoted? exp) (analyze-quoted exp))
-		((variable? exp) (analyze-variable exp))
+         (analyze-self-evaluating exp))
+        ((quoted? exp) (analyze-quoted exp))
+        ((variable? exp) (analyze-variable exp))
 		((assignment? exp) (analyze-assignment exp))
 		((definition? exp) (analyze-definition exp))
 		((if? exp) (analyze-if exp))
@@ -396,7 +396,7 @@
 		((assignment? exp) (analyze-assignment exp))
 		((definition? exp) (analyze-definition exp))
 		((if? exp) (analyze-if exp))
-		((unless? exp) (analyze (unless->if exp)))
+;		((unless? exp) (analyze (unless->if exp)))
 		((lambda? exp) (analyze-lambda exp))
 		((let? exp)
 		 (analyze (let->combination exp)))
@@ -438,7 +438,7 @@
 
 
 
-(define (unless? exp) (tagged-list? exp 'unless)))
+(define (unless? exp) (tagged-list? exp 'unless))
 
 (define (unless-predicate exp) (cadr exp))
 

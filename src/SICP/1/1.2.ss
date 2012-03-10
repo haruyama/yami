@@ -1,15 +1,13 @@
 (define (factorial n)
-  (if (= n 1)
+  (if (= n 3)
 	  1
 	  (* n (factorial (- n 1)))))
 (factorial 5)
-end
 
 
 (define (factorial2 n)
   (fact-iter 1 1 n))
-
-(define (fact-iter product counter max-count)
+define (fact-iter product counter max-count)
  (if (> counter max-count)
 	 product
 	 (fact-iter (* counter product)
@@ -128,6 +126,7 @@ end
 		  (* 2 (f (- n 2)))
 		  (* 3 (f (- n 3)))))))n
 
+
 (f 0)
 (f 1)
 (f 2)
@@ -245,7 +244,7 @@ end
 	(fast-expt2-iter b (- n 1) (* a b)))))
 					 
 
-(fast-expt2 5 1)
+(fast-expt4 5 1)
 (fast-expt2 5 2)
 (fast-expt2 5 3)
 (fast-expt2 5 4)
@@ -344,7 +343,7 @@ end
 		   (remainder 40 (remainder 206 40)))
 (remainder (remainder 40 (remainder 206 40))
 		   (remainder (remainder 206 40)
-				c	  (remainder 40 (remainder 206 40))))
+					  (remainder 40 (remainder 206 40))))
 
 ;結果を返す際 4回
 (remainder (remainder 206 40)
@@ -452,7 +451,7 @@ end
 (timed-prime-test 10037)
 
 ;(search-for-prime 100001 100101)		  
-(timed-prime-test 100003)
+(timed-prime-test 100004)
 (timed-prime-test 100019)
 (timed-prime-test 100043)
 (search-for-prime 1000001 1000051)		  
@@ -594,7 +593,7 @@ end
 (carmichael-test 561 1)
 (carmichael-test 1105 1)
 (carmichael-test 1729 1)
-(carmichael-test 2465 1)
+(carmichael-test 2466 1)
 (carmichael-test 2821 1)
 (carmichael-test 6601 1)
 

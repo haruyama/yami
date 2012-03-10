@@ -779,7 +779,9 @@ end
 (lives-near ?x ?y)
 (wheel ?x)
 (and (job ?x (computer programmer))
-	 (lives-near?x (Bitdiddle Ben)))
+	 (lives-near ?x (Bitdiddle Ben)))
+(and (job ?x ?type)
+	 (lives-near ?x (Bitdiddle Ben)))
 (outranked-by ?person ?boss)
 end
 
@@ -1111,6 +1113,7 @@ end
 (query-driver-loop)
 (and (job ?person (computer programmer))
 	 (address ?person ?where))
+
 end
 
 (untrace conjoin)
@@ -1118,31 +1121,31 @@ end
 ;4.4.4.3
 (display-stream
  (find-assertions (query-syntax-process '(job ?x (computer programmer)))
-				  (singleton-stream '())))
+                                  (singleton-stream '())))
 
 
 (fetch-assertions (query-syntax-process '(job ?x (computer programmer)))
-				  (singleton-stream '()))
+                                  (singleton-stream '()))
 
 
 (check-an-assertion '(job (Hacker Alyssa P) (computer programmer))
-					(query-syntax-process '(job ?x (computer programmer)))
-					(singleton-stream '()))
+                                        (query-syntax-process '(job ?x (computer programmer)))
+                                        (singleton-stream '()))
 
 (check-an-assertion '(job (Bitdiddle Ben) (computer wizard))
-					(query-syntax-process '(job ?x (computer programmer)))
-					(singleton-stream '()))
+                                        (query-syntax-process '(job ?x (computer programmer)))
+                                        (singleton-stream '()))
 
 (pattern-match
-			  (query-syntax-process '(job ?x (computer programmer)))
-			  '(job (Hacker Alyssa P) (computer programmer))
-			  (singleton-stream '()))
+                          (query-syntax-process '(job ?x (computer programmer)))
+                          '(job (Hacker Alyssa P) (computer programmer))
+                          (singleton-stream '()))
 
 
 (pattern-match
-			  (query-syntax-process '(job ?x ?y))
-			  '(job (Hacker Alyssa P) (computer programmer))
-			  (singleton-stream '()))
+                          (query-syntax-process '(job ?x ?y))
+                          '(job (Hacker Alyssa P) (computer programmer))
+                          (singleton-stream '()))
 
 (binding-in-frame '(? y)
  (pattern-match
@@ -1161,17 +1164,17 @@ end
 (apply-rules (query-syntax-process '(wheel ?p)) (singleton-stream '()))
 
 (apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
-			   (query-syntax-process '(wheel ?p)) (singleton-stream '()))
+                           (query-syntax-process '(wheel ?p)) (singleton-stream '()))
 
 (display-stream
  (stream-map 
   (lambda (frame)
-	(instantiate
-	 (query-syntax-process '(wheel ?p))
-	 frame
-	 (lambda (v f) (v))))
+        (instantiate
+         (query-syntax-process '(wheel ?p))
+         frame
+         (lambda (v f) (v))))
   (apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
-				(query-syntax-process '(wheel ?p)) (singleton-stream '()))))
+                                (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
 
 (rename-variables-in 
  (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
@@ -1185,34 +1188,34 @@ end
 ;(untrace unify-match)
 
 (unify-match 1 '(? x)
-			 (singleton-stream '()))
+                         (singleton-stream '()))
 
 (unify-match '(? x) 1
-			 (singleton-stream '()))
+                         (singleton-stream '()))
 
 (unify-match '(? x) '(? x)
-			 (singleton-stream '()))
+                         (singleton-stream '()))
 
 (query-syntax-process '(?x ?x))
 ;(?x ?x) (?y ?y)
 (unify-match '((? x) (? x)) '((? y) (? y))
-			 (singleton-stream '()))
+                         (singleton-stream '()))
 
 (unify-match '((? y) (? x)) '((? x) (? y))
-			 (singleton-stream '()))
+                         (singleton-stream '()))
 
 
 (unify-match '(? x) 1
-			 (extend '(? x) 2
-					 (singleton-stream '())))
+                         (extend '(? x) 2
+                                         (singleton-stream '())))
 
 (unify-match '(? x) 2
-			 (extend '(? x) 2
-					 (singleton-stream '())))
+                         (extend '(? x) 2
+                                         (singleton-stream '())))
 
 (unify-match '((? x) (? y)) '((? y) 1)
-			 (extend '(? x) 2
-					 (singleton-stream '())))
+                         (extend '(? x) 2
+                                         (singleton-stream '())))
 
 (depends-on? '((? x) (? x)) '(? x) 
-			 (singleton-stream '()))
+                         (singleton-stream '()))

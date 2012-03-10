@@ -439,7 +439,7 @@ end
 		((let? exp)
 		 (analyze (let->combination exp)))
 		((begin? exp) 
-		 (display 		 (analyze-sequence (begin-actions exp)))
+		 (analyze-sequence (begin-actions exp))
 		 (analyze-sequence (begin-actions exp)))
 		((cond? exp) (analyze (cond->if exp)))
 		((application? exp) (analyze-application exp))

@@ -11,7 +11,7 @@
   (if (> a b)
 	  0
 	  (+ (cube a) (sum-cubes (+ a 1) b))))
-  
+
 (sum-cubes 1 10)
 
 (define (pi-sum a b)
@@ -41,7 +41,7 @@
 (define (sum-integers a b)
   (sum identity a inc b))
 
-(define inc 10)
+;(define inc 10)
 (sum-integers 1 10)
 
 (define (pi-sum a b)
@@ -85,10 +85,10 @@
 
 (sum2 identity 1 inc 10)
 
-;ex1.31		
+;ex1.31
 (define (product term a next b)
   (if (> a b)
-	  1
+	  1.0
 	  (* (term a)
 		 (product term (next a) next b))))
 
@@ -105,8 +105,16 @@
 (define (wallis-term n)
   (/ (/ (* (- n 1) (+ n 1)) n) n))
 
-(* 4.0 (product wallis-term 3 plus2 100))
 
+(define (product2 term a next b)
+	(define (iter x result)
+		(if (> x b) result
+			(iter (next x) (* (term x) result))))
+	(iter a 1.0))
+
+
+(* 4.0 (product wallis-term 3 plus2 1000))
+(* 4.0 (product2 wallis-term 3 plus2 1000))
 (* 4.0 (product wallis-term 3 plus2 500))
 
 ;ex1.32
@@ -160,7 +168,9 @@
   (= (remainder b a) 0))
 
 (define (prime? n)
-  (= n (smallest-divisor n)))
+  (if (> 2 n)
+    
+    (= n (smallest-divisor n))))
 
 (define (filtered-accumulate p combiner null-value term a next b)
   (if (> a b)
@@ -177,6 +187,10 @@
 (ex1-33-a 2 5)
 (ex1-33-a 2 6)
 (ex1-33-a 2 7)
+(ex1-33-a 1 50)
+(prime? 1)
+(prime? 2)
+
 
 (define (ex1-33-b n)
   (define (p-1-33-b a)
@@ -193,7 +207,7 @@
 (* 8 (pi-sum2 1 100))
 
 (define (integral2 f a b dx)
-  (* (sum f 
+  (* (sum f
 		  (+ a (/ dx 2.0))
 		  (lambda x (+ x dx))
 		  b)
@@ -230,11 +244,8 @@
 
 (f square)
 (f (lambda (z) (* z (+ z 1))))
-(f f)
-		
-	  
-   
-	 
+;(f f)
+
 (define (search f neg-point pos-point)
   (let ((midpoint (average neg-point pos-point)))
 	(if (close-enough? neg-point pos-point)
@@ -245,9 +256,9 @@
 				((negative? test-value)
 				 (search f midpoint pos-point))
 				(else midpoint))))))
-				
-			  
-(define (average x y) 
+
+
+(define (average x y)
   (/ (+ x y) 2))
 
 (define (close-enough? x y)
@@ -268,6 +279,10 @@
 (half-interval-method (lambda (x) (- (* x x x) (* 2 x) 3))
 					  1.0
 					  2.0)
+(search  (lambda (x) (- (* x x x) (* 2 x) 3))
+					  1.0
+					  2.0)
+
 
 (define tolerance 0.00001)
 (define (fixed-point f first-guess)
@@ -298,13 +313,14 @@
 
 (fixed-point (lambda (y) (+ 1  (/ 1 y))) 1.0)
 
+
 (define (fixed-point2 f first-guess)
   (define (close-enough? v1 v2)
 	(< (abs (- v1 v2)) tolerance))
   (define (try guess)
 	(let ((next (f guess)))
-	  (display next)
-	  (newline)
+      (display next)
+      (newline)
 	  (if (close-enough? guess next)
 		  next
 		  (try next))))
@@ -319,7 +335,7 @@
   (define (iter i)
 	(if (> i k)
 		0
-		(/ (n k) (+ (d k) (iter (+ i 1))))))
+		(/ (n i) (+ (d i) (iter (+ i 1))))))
   (iter 1))
 
 (fixed-point (lambda (y) (+ 1  (/ 1 y))) 1.0))
@@ -342,26 +358,27 @@
 (/ 1 (cont-frac2 (lambda (i) 1.0) (lambda (i) 1.0) 100))
 
 
-(exp 1)
-(+ 2 (cont-frac2 (lambda (i) 1.0) (lambda (i) 
+(exp 3)
+(+ 2 (cont-frac2 (lambda (i) 1.0) (lambda (i)
 									(if (= (remainder (+ i 1) 3) 0)
 										(* (/ (+ i 1) 3) 2.0)
 										1.0))
 									10))
 
-(+ 2 (cont-frac2 (lambda (i) 1.0) (lambda (i) 
+(+ 2 (cont-frac2 (lambda (i) 1.0) (lambda (i)
 									(if (= (remainder (+ i 1) 3) 0)
 										(* (/ (+ i 1) 3) 2.0)
 										1.0))
 									20))
 
-(+ 2 (cont-frac2 (lambda (i) 1.0) (lambda (i) 
+(+ 2 (cont-frac2 (lambda (i) 1.0) (lambda (i)
 									(if (= (remainder (+ i 1) 3) 0)
 										(* (/ (+ i 1) 3) 2.0)
 										1.0))
 									100))
 
 (tan 1)
+(tan 10)
 
 (define (tan-cf x k)
   (define (iter i)
@@ -371,16 +388,24 @@
 		   (/ (* x x) (- (- (* i 2) 1)  (iter (+ i 1)))))))
   (iter 1))
 
+(define (tan2 x k)
+	(cont-frac (lambda (i) (if (= i 1) x (- (square x))))
+				(lambda (i) (- (* i 2) 1)) k))
+
+(tan2 1.0 10)
+(tan2 10.0 100)
+
 (* 1.0 (tan-cf 1 1))
 (* 1.0 (tan-cf 1 10))
+(* 1.0 (tan-cf 10 100))
 
-		
+
 ;1.3.4
 (define (average-damp f)
   (lambda (x) (average x (f x))))
 
 (define (square n) (* n n))
-(define (average x y) 
+(define (average x y)
   (/ (+ x y) 2))
 
 ((average-damp square) 10)
@@ -434,10 +459,11 @@
 ;ex1.40
 
 (define (cubic a b c)
-  (lambda (y) 
+  (lambda (y)
 	(+ (cube y) (* a (square y)) (* b y) c)))
 
-(newtons-method (cubic 0 0 1) 1)
+(newtons-method (cubic 1 0 1) 1)
+(newtons-method (cubic 1 1 1) 5)
 
 (newtons-method (cubic 0 0 -1) 1)
 (newtons-method (cubic 0 0 8) 1)
@@ -463,6 +489,10 @@
 ((compose square inc) 6)
 
 ;ex1.43
+(define (repeated f n)
+  (if (= n 0) (lambda (x)  x)
+	  (compose f (repeated f (- n 1)))))
+
 (define (repeated f n)
   (lambda (x)
 	(if (<= n 1) (f x)
@@ -491,17 +521,18 @@
 	(if (= i 1) result
 		(iter (compose result f) (- i 1))))
   (iter f c))
-	
+
 
 ((repeated square 1) 5)
 ((repeated square 2) 5)
 ((repeated square 3) 5)
 
-
-;exp1.44	  
+;exp1.44
 (define (smooth f)
   (lambda (x)
 	(/ (+ (f (- x dx)) (f x) (f (+ x dx))) 3)))
+
+((smooth square) 1)
 
 (define (n-fold-smooth f n)
   ((repeated smooth n) f))
@@ -545,7 +576,12 @@
 
 (define (n-exp n x)
   (if (= n 1) x
-	  (* x (n-exp (- n 1) x))))
+	  (* x (n-exp (- n 2) x))))
+
+(define (g-root n x)
+  (fixed-point ((repeated average-damp (floor (/ (log n) (log 2))))
+				(lambda (y) (/ x (expt y (- n 1)))))
+			   1.0))
 
 (define (t n)
  (+ 1 (/ (log n) (log 2))))
@@ -554,10 +590,10 @@
 (g-root 5 5)
 
 ;ex1.46
-(define (iterative-improve guess improve)
+(define (iterative-improve good-enough? improve)
   (lambda (y)
-	(if (guess y) y
-		((iterative-improve guess improve) (improve y)))))
+	(if (good-enough? y) y
+		((iterative-improve good-enough? improve) (improve y)))))
 
 (define (mysqrt x)
   ((iterative-improve (lambda (y) (< (abs (- (square y) x)) 0.001))
@@ -576,5 +612,5 @@
 
 (fixed-point cos 1.0)
 (fixed-point (lambda (y) (+ (sin y) (cos y))) 1.0)
-					
-  
+
+

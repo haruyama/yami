@@ -24,12 +24,12 @@
 (define (upper-bound x)  (cdr x))
 
 (define (sub-interval x y)
-  (make-interval (- (lower-bound y) (upper-bound x))
-                 (- (upper-bound y) (lower-bound x))))
+  (make-interval (- (lower-bound x) (upper-bound y))
+                 (- (upper-bound x) (lower-bound y))))
 
 
-(sub-interval (make-interval -1 2) (make-interval -1 2))
-  
+(sub-interval (make-interval -1 2) (make-interval -1 5))
+
 (define (make-center-width c w)
   (make-interval (- c w) (+ c w)))
 

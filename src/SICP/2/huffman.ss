@@ -52,7 +52,7 @@
 		((< (weight x) (weight (car set))) (cons x set))
 		(else (cons (car set)
 					(adjoin-set x (cdr set))))))
-			  
+
 (define (make-leaf-set pairs)
   (if (null? pairs)
 	  '()
@@ -93,7 +93,7 @@
       '()
       (let ((left (left-branch tree))
             (right (right-branch tree)))
-        (cond ((symbol-existcs? symbol left)
+        (cond ((symbol-exists? symbol left)
                (cons 0 (encode-symbol symbol left)))
               ((symbol-exists? symbol right)
                (cons 1 (encode-symbol symbol right)))
@@ -116,10 +116,9 @@
   (successive-merge (make-leaf-set pairs)))
 
 (define (successive-merge set)
-;  (if (= 1 (length set))
   (if (null? (cdr set))
       (car set)
-      (successive-merge 
+      (successive-merge
        (adjoin-set (make-code-tree (car set) (cadr set)) (cddr set)))))
 
 (define test (make-leaf-set weights))

@@ -26,6 +26,16 @@
   (length-iter items 0))
 (length2 odds)
 
+
+(define (myappend list1 list2)
+	(if (null? list1)
+			list2
+			(cons (car list1) (myappend (cdr list1) list2))))
+(use slib)
+(require 'trace)
+(trace myappend)
+(myappend (list 1 2 3 4) (list 5 6))
+
 (append squares odds)
 (append odds squares)
 (define (last-pair l)
@@ -39,7 +49,6 @@
     (if (null? a) b
 		(reverse-iter (cdr a) (cons (car a) b))))
   (reverse-iter l '()))
-
 (reverse squares)
 
 (define us-coins (list 50 25 10 5 1))
@@ -75,6 +84,16 @@
             (else 
              (same-parity-iter parity (cdr l) r))))
     (same-parity-iter (remainder x 2) y (list x)))
+
+(define (same-parity x . y)
+    (define (same-parity-iter parity l r)
+      (cond ((null? l) (reverse r))
+            ((= parity (remainder (car l) 2))
+             (same-parity-iter parity (cdr l) (cons (car l) r)))
+            (else 
+             (same-parity-iter parity (cdr l) r))))
+    (same-parity-iter (remainder x 2) y (list x)))
+
 
 (define (same-parity . w)
   (let ((first-even? (even? (car w))))

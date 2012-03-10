@@ -317,12 +317,17 @@
 (stream-head (expand 1 7 10) 10)
 (/ 30.0 8)
 (stream-head (expand 3 8 10) 10)
+
+(stream-head (expand 4 6 16) 10)
 ;ex3.59
 (define (integrate-series ss)
   (define (iter s n)
 	(cons-stream (/ (stream-car s) n)
 				 (iter (stream-cdr s) (+ n 1))))
   (iter ss 1))
+
+(define (integrate-series s)
+	(stream-map / s integers))
 
 (define exp-series
   (cons-stream 1 (integrate-series exp-series)))
@@ -356,7 +361,15 @@
 		  (cons-stream 1 (stream-map - (mul-series (stream-cdr s) x))))
 	x))
 
+(define (invert-unit-series s)
+	(cons-stream 1 (stream-map - (mul-series (stream-cdr s) (invert-unit-series s)))))
+
+
 (stream-head (invert-unit-series exp-series) 10)
+
+(stream-head integers 10)
+(stream-head (invert-unit-series integers) 100)
+(stream-head (mul-series integers (invert-unit-series integers)) 10)
 
 (stream-head (mul-series exp-series (invert-unit-series exp-series)) 10)
 
@@ -467,7 +480,7 @@
 	(stream-map (lambda (x) (list (stream-car s) x))
 				(stream-cdr t))
 	(pairs (stream-cdr s) (stream-cdr t)))))
-n
+
 (stream-head (pairs integers integers) 100)
 
 
@@ -514,6 +527,9 @@ n
 (stream-find int-pairs '(9 9)) ; 510
 (stream-find int-pairs '(8 10)) ; 638
 ;(stream-find int-pairs '(99 100))
+; i = j:      2^i - 1
+; i = j = 1:  3 * 2^(i-1) = 1
+; other:      (2 * j - 2 * i + 1) * 2^(i - 1) -1
 
 ;ex3.67
 (define (pairs2 s t)
@@ -561,15 +577,15 @@ n
 ;(stream-find (triples integers integers integers) '(5 12 13))
 (stream-find (triples integers integers integers) '(6 8 10))
 
-;; (stream-head
-;;  (stream-filter
-;;   (lambda (triple)
-;;  	(let ((i (car triple))
-;;  		  (j (cadr triple))
-;;   		  (k (caddr triple)))
-;;   	  (= (square k) (+ (square i) (square j)))))
-;;     (triples integers integers integers)) 
-;;   3)
+(stream-head
+ (stream-filter
+  (lambda (triple)
+ 	(let ((i (car triple))
+ 		  (j (cadr triple))
+  		  (k (caddr triple)))
+  	  (= (square k) (+ (square i) (square j)))))
+    (triples integers integers integers)) 
+  5)
 
 
 (define (merge-weighted s1 s2 weight)
@@ -794,8 +810,8 @@ n
 
 ;; gauche で動作するように修正した solve 手続き
 (define (solve f y0 dt)
-  (define dy (stream-map f y))
   (define y (integral (delay dy) y0 dt))
+  (define dy (stream-map f y))
   y)
 
 
@@ -825,33 +841,38 @@ n
 
 
 (define (solve-2nd a b dt y0 dy0)
+  (define y (integral (delay dy) y0 dt))
+  (define dy (integral (delay ddy) dy0 dt))
   (define ddy (add-streams (scale-stream dy a)
 						   (scale-stream y b)))
-  (define dy (integral (delay ddy) dy0 dt))
-  (define y (integral (delay dy) y0 dt))
   y)
 
-(stream-head (solve-2nd 1 2 0.001 1 0) 10)
+
+(stream-ref (solve-2nd 4 -4 0.001 1 2) 1000)
+(stream-ref (solve-2nd 3 -2 0.001 2 3) 1000)
 (stream-ref (solve-2nd 3 -2 0.001 2 3) 1000)
 (stream-ref (solve-2nd 1 6 0.001 3 -1) 1000)
 (stream-ref (solve-2nd 0 1 0.001 1 1) 1000)
 
 (define (solve-2nd-2 f dt y0 dy0)
-  (define ddy (stream-map f dy y))
-  (define dy (integral (delay ddy) dy0 dt))
   (define y (integral (delay dy) y0 dt))
+  (define dy (integral (delay ddy) dy0 dt))
+  (define ddy (stream-map f dy y))
   y)
 
 (stream-head (solve-2nd-2 (lambda (dy y) (+ (* 1 dy) (* 2 y) )) 0.001 1 0) 10)
+(stream-ref (solve-2nd-2 (lambda (dy y) (+ (* 4 dy) (* -4 y))) 0.001 1 2) 1000)
 
 (define (RLC R L C dt)
   (lambda (vC0 iL0)
+
+	(define iL (integral (delay diL) iL0 dt))
+	(define vC (integral (delay dvC) vC0 dt))
+
 	(define dvC (scale-stream iL (/ -1 C)))
 	(define diL (add-streams
 				 (scale-stream vC (/ 1 L))
 				 (scale-stream iL (- (/ R L)))))
-	(define iL (integral (delay diL) iL0 dt))
-	(define vC (integral (delay dvC) vC0 dt))
 	(cons vC iL)
 	;(stream-map cons vC iL)
 	))
@@ -944,8 +965,7 @@ n
 		  (cons-stream 'generate
 		  the-empty-system))))))))
 
-(define rs2 (list->stream '(generate generate 1 generate generate 100 generate)))
-
+(define rs2 (list->stream '(generate generate 1 generate generate 100 generate)))n
 (display-stream (rand-3-81 rs 1))
 (display-stream (rand-3-81 rs2 1))
 				
@@ -998,6 +1018,7 @@ n
 
 (stream-head (estimate-integral circle-P-stream 2 8 4 10) 100)
 (stream-head (estimate-integral circle-P-stream -1 1 -1 1) 100)
+;(stream-head (estimate-integral circle-P-stream -1 1 -1 1) 1000)
 
 
 (define nyo 

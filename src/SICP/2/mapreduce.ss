@@ -20,6 +20,9 @@
 
 (fib 10)
 
+(use slib)
+(require 'trace)
+
 (define (even-fibs n)
   (define (next k)
 	(if (> k n)
@@ -28,6 +31,9 @@
 		  (if (even? f)  (cons f (next (+ k 1)))
 			  (next (+ k 1))))))
   (next 0))
+
+
+
 
 (even-fibs 10)
 
@@ -148,7 +154,9 @@
 
 
 (define x (cons (list 1 2) (list 3 4)))
+(define y '(()))
 (count-leaves x)
+(count-leaves y)
 
 (define (count-leaves t)
   (accumulate + 0
@@ -158,11 +166,20 @@
 					   ((not (pair? x)) 1)
 					   (else 
 						(count-leaves x)))) t)))
-
-
 (count-leaves x)
-   
+(count-leaves y)
 
+   
+(define (count-leaves t)
+  (accumulate + 0
+			  (map
+			   (lambda (x)
+				 (cond ;((null? x) 0)
+					   ((not (pair? x)) 1)
+					   (else 
+						(count-leaves x)))) t)))
+
+(count-leaves y) ; 間違い
 
 (define (accumulate-n op init seqs)
   (if (null? (car seqs)) nil

@@ -37,6 +37,7 @@
 			  (equal? (cdr a) (cdr b)))
 		(else #f)))
 
+(eq? '(is a) '(is a))
 
 (equal? '(this a) '(this b))
 (equal? '(this is a list) '(this (is a) list))
@@ -44,8 +45,10 @@
 (equal? '(this is a list) '(this is a))
 (equal? '(3 is a list) '(3 is a list))
 (equal? 3 'a)
+(equal? '(a) 'a)
 
 (car ''abracadabra)
+(car (quote (quote abracadabra)))
 (cdr ''abracadabra)
 (display ''abracadabra)
 (display '('a))
@@ -147,16 +150,18 @@
 (deriv '(+ x (** x 3)) 'x)
 
 
-
+;null?でチェックしたほうが効率的
 (define (augend s) 
-  (if (= (length (cddr s)) 1) (caddr s)
+;  (if (= (length (cddr s)) 1) (caddr s)
+  (if (null? (cdddr s)) (caddr s)
 	  (cons '+ (cddr s))))
 
 (augend '(+ 1 2))
 (augend '(+ 1 2 3))
 
 (define (multiplicand s) 
-  (if (= (length (cddr s)) 1) (caddr s)
+  (if (null? (cdddr s)) (caddr s)
+  ;(if (= (length (cddr s)) 1) (caddr s)
 	  (cons '* (cddr s))))
 
 (deriv '(* x y (+ x 3)) 'x)

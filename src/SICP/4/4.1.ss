@@ -69,7 +69,7 @@
 ;;4.1.2
 (define true #t)
 (define false #f)
-
+ 
 (define (self-evaluating? exp)
   (cond ((number? exp) true)
 		((string? exp) true)
@@ -337,27 +337,50 @@
 	  (display object)))
 
 (define the-global-environment (setup-environment))
+
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+		((variable? exp) (lookup-variable-value exp env))
+		((quoted? exp) (text-of-quotation exp))
+		((assignment? exp) (eval-assignment exp env))
+		((definition? exp) (eval-definition exp env))
+		((if? exp) (eval-if exp env))
+		((lambda? exp)
+		 (make-procedure (lambda-parameters exp)
+						 (lambda-body exp)
+						 env))
+		((begin? exp)
+		 (eval-sequence (begin-actions exp) env))
+		((cond? exp) (eval (cond->if exp) env))
+		((application? exp)
+		 (apply (eval (operator exp) env)
+				(list-of-values (operands exp) env)))
+		(else
+		 (error "Unknown expression type -- EVAL" exp))))
+
 ;(driver-loop)
 
 ;ex4.1
-(define (no-operands? ops) (null? ops))
-(define (first-operand ops) (car ops))
-(define (rest-operands ops) (cdr ops))
+;(define (no-operands? ops) (null? ops))
+;(define (first-operand ops) (car ops))
+;(define (rest-operands ops) (cdr ops))
 
-(define (list-of-values exps env)
-  (if (no-operands? exps)
-	  '()
-	  (cons (eval (first-operand exps) env)
-			(list-of-values (rest-operands exps) env))))
+;(define (list-of-values exps env)
+;  (if (no-operands? exps)
+;	  '()
+;	  (cons (eval (first-operand exps) env)
+;			(list-of-values (rest-operands exps) env))))
 
 ;(define x 1)
 ;(list-of-values '((set! x (+ x 3)) (set! x (* x 2))) (interaction-environment))
+
+
 
 (define the-global-environment (setup-environment))
 (eval '(define x 1) the-global-environment)
 (list-of-values '((begin (set! x (+ x 3)) (newline) (display x)) 
 				  (begin (set! x (* x 2)) (newline) (display x))) 
-				the-global-environment)
+								the-global-environment)
 
 (define (list-of-values-l2r exps env)
   (if (no-operands? exps)
@@ -373,6 +396,7 @@
 					  (begin (set! x (* x 2)) (newline) (display x))) 
 					the-global-environment)
 
+
 (define (list-of-values-r2l exps env)
   (if (no-operands? exps)
 	  '()
@@ -387,36 +411,36 @@
 					the-global-environment)
 
 ;ex4.2
-(define (eval exp env)
-  (cond ((self-evaluating? exp) exp)
-		((variable? exp) (lookup-variable-value exp env))
-		((quoted? exp) (text-of-quotation exp))
-		((application? exp)
-		 (apply (eval (operator exp) env)
-				(list-of-values (operands exp) env)))
-		((assignment? exp) (eval-assignment exp env))
-		((definition? exp) (eval-definition exp env))
-		((if? exp) (eval-if exp env))
-		((lambda? exp)
-		 (make-procedure (lambda-parameters exp)
-						 (lambda-body exp)
-						 env))
-		((begin? exp)
-		 (eval-sequence (begin-actions exp) env))
-		((cond? exp) (eval (cond->if exp) env))
-		(else
-		 (error "Unknown expression type -- EVAL" exp))))
+;; (define (eval exp env)
+;;   (cond ((self-evaluating? exp) exp)
+;; 		((variable? exp) (lookup-variable-value exp env))
+;; 		((quoted? exp) (text-of-quotation exp))
+;; 		((application? exp)
+;; 		 (apply (eval (operator exp) env)
+;; 				(list-of-values (operands exp) env)))
+;; 		((assignment? exp) (eval-assignment exp env))
+;; 		((definition? exp) (eval-definition exp env))
+;; 		((if? exp) (eval-if exp env))
+;; 		((lambda? exp)
+;; 		 (make-procedure (lambda-parameters exp)
+;; 						 (lambda-body exp)
+;; 						 env))
+;; 		((begin? exp)
+;; 		 (eval-sequence (begin-actions exp) env))
+;; 		((cond? exp) (eval (cond->if exp) env))
+;; 		(else
+;; 		 (error "Unknown expression type -- EVAL" exp))))
 
-(define the-global-environment (setup-environment))
-(eval '(define x 3) the-global-environment)
+;; (define the-global-environment (setup-environment))
+;; (eval '(define x 3) the-global-environment)
 
-(define (application? exp) (tagged-list? exp 'call))
+;; (define (application? exp) (tagged-list? exp 'call))
 
-(define (operator exp) (cadr exp))
+;; (define (operator exp) (cadr exp))
 
-(define (operands exp) (cddr exp))
+;; (define (operands exp) (cddr exp))
 
-(eval '(call + 2 3) the-global-environment)
+;; (eval '(call + 2 3) the-global-environment)
 ;(eval '(+ 2 3) the-global-environment)
 
 ;ex4.3
@@ -536,11 +560,13 @@
 
 (define (eval-and-conds conds env)
   (if (null? conds)
-	  true
-	  (if (eval (car conds) env)
-		  (eval-and-conds (cdr conds) env)
-		  false)))
-
+			true
+			(let ((value (eval (car conds) env)))
+				(if value
+						(if (null? (cdr conds))
+								value
+								(eval-and-conds (cdr conds) env))
+						false))))
 
 (define the-global-environment (setup-environment))
 (eval '(and true true) the-global-environment)
@@ -549,6 +575,7 @@
 (eval '(and true true false) the-global-environment)
 (eval '(and true false true) the-global-environment)
 (eval '(and true) the-global-environment)
+(eval '(and 1) the-global-environment)
 (eval '(and false) the-global-environment)
 (eval '(and) the-global-environment)
 
@@ -562,12 +589,15 @@
 (define (eval-or-conds conds env)
   (if (null? conds)
 	  false
-	  (if (eval (car conds) env)
-		  true
-		  (eval-or-conds (cdr conds) env))))
+		(let ((value (eval (car conds) env)))
+			(if value
+					value
+					(eval-or-conds (cdr conds) env)))))
+
 
 (define the-global-environment (setup-environment))
 (eval '(or true true) the-global-environment)
+(eval '(or 1 true) the-global-environment)
 (eval '(or false true) the-global-environment)
 (eval '(or true false) the-global-environment)
 (eval '(or true true false) the-global-environment)

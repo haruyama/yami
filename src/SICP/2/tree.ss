@@ -51,22 +51,24 @@
 (list x y)
 
 ; 2.27
-;; (define x (list (list 1 2) (list 3 4)))
+(define x (list (list 1 2) (list 3 4)))
 ;(display x)
 ;(newline)
 ;(reverse x)
 ;
-;(define (deep-reverse x)
-;  (define (iter l a)
-;    (cond ((null? l) a)
-;          ((not (pair? (car l))) 
-;           (iter (cdr l) (cons (car l) a)))
-;          (else
-;           (iter (cdr l)   
-;            (if (null? a) 
-;                (list (deep-reverse (car l)))
-;                (cons (deep-reverse (car l)) a))))))
-;  (iter x nil)) 
+(define (deep-reverse x)
+ (define (iter l a)
+   (cond ((null? l) a)
+         ((not (pair? (car l))) 
+          (iter (cdr l) (cons (car l) a)))
+         (else
+          (iter (cdr l)   
+           (if (null? a) 
+               (list (deep-reverse (car l)))
+               (cons (deep-reverse (car l)) a))))))
+ (iter x nil)) 
+
+(deep-reverse x)
 
 (define (deep-reverse x)
   (if (pair? x) (reverse (map deep-reverse x))
@@ -88,7 +90,23 @@
 		(else (append (fringe (car x)) (fringe (cdr x))))))
 
 
+(define (fringe x)
+	(let rec ((x x) (acc '()))
+		(cond ((null? x) acc)
+					((not (pair? x)) (cons x acc))
+					(else (rec (car x) (rec (cdr x) acc)))))) 	
+
+
+(define (fringe x)
+	(define (loop x acc)
+		(cond ((null? x) acc)
+					((not (pair? x)) (cons x acc))
+					(else (loop (car x) (loop (cdr x) acc)))))
+	(loop x '()))
+
+
 (fringe x)
+
 (display (list x x))
 (newline)
 (fringe (list x x))
@@ -202,6 +220,12 @@
             (square sub-tree)))
       tree))
 
+(define (square-tree tree)
+  (cond ((null? tree) nil)
+		((not (pair? tree)) (square tree))
+		(else (cons (square-tree (car tree))
+					(square-tree (cdr tree))))))
+
 ; 2.31
 (define (tree-map proc tree)
   (map (lambda (sub-tree)
@@ -211,9 +235,7 @@
 ;
 (define (square-tree tree)
   (tree-map square tree))
-;             
-;
-;
+
 (square-tree
  (list 1
 	   (list 2 (list 3 4) 5)

@@ -1221,5 +1221,4 @@
  (make-polynomial 'x 
 				  '((1 2)))
  (make-polynomial 'x 
-				  '((1 1)))
- )
+				  '((1 1))))

@@ -3,6 +3,20 @@
 (define eval-in-underlying-scheme eval)
 ;;2度評価しないこと
 
+(define (apply procedure arguments)
+  (cond ((primitive-procedure? procedure)
+		 (apply-primitive-procedure procedure arguments))
+		((compound-procedure? procedure)
+		 (eval-sequence
+		  (procedure-body procedure)
+		  (extend-environment
+		   (procedure-parameters procedure)
+		   arguments
+		   (procedure-environment procedure))))
+		(else
+		 (error
+		  "Unknown procedure type -- APPLY" procedure))))
+
 (define (eval exp env)
   (cond ((self-evaluating? exp) exp)
 		((variable? exp) (lookup-variable-value exp env))
@@ -23,19 +37,7 @@
 		(else
 		 (error "Unknown expression type -- EVAL" exp))))
 
-(define (apply procedure arguments)
-  (cond ((primitive-procedure? procedure)
-		 (apply-primitive-procedure procedure arguments))
-		((compound-procedure? procedure)
-		 (eval-sequence
-		  (procedure-body procedure)
-		  (extend-environment
-		   (procedure-parameters procedure)
-		   arguments
-		   (procedure-environment procedure))))
-		(else
-		 (error
-		  "Unknown procedure type -- APPLY" procedure))))
+
 
 (define (list-of-values exps env)
   (if (no-operands? exps)
@@ -401,6 +403,11 @@
 (cond ((assoc 'b '((a 1) (b 2))) => cadr)
 	  (else false))
 
+(define x 1)
+(cond ((set! x (+ x 1)) => display)
+	  (else false))
+
+;これだと 副作用のある式が<test>にあると2回評価してしまう
 (define (expand-clauses clauses)
   (if (null? clauses)
 	  'false
@@ -421,6 +428,11 @@
 						(expand-clauses rest)))))))
 
 (driver-loop)
+(define x 1)
+(define (id x) x)
+(cond ((set! x (+ x 1)) => id)
+	  (else false))
+ 
 (+ 1 2)
 (cond ((assoc 'b '((a 1) (b 2))) true)
 	  (else false))
@@ -708,12 +720,12 @@ end
 		'()
 		(cons (cons (car variables) (car values))
 			  (iter (cdr variables) (cdr values)))))
-  (list (iter variables values)))
+	(list (iter variables values)))
 
 (define (frame-variables frame)
   (map car (car frame)))
 
-(define (frame-values frame)
+ (define (frame-values frame)
   (map cdr (car frame)))
 
 (define (add-binding-to-frame! var val frame)
@@ -1143,9 +1155,14 @@ end
           (cons (car ls) (filter p (cdr ls)))
           (filter p (cdr ls)))))
 
+;ほんとはtakeWhileにしたほうがよい
+(use srfi-1)
 (define (scan-out-defines body)
-  (let ((defs (filter definition? body))
-        (rest (filter (lambda (x) (not (definition? x))) body)))
+;  (let ((defs (filter definition? body))
+;        (rest (filter (lambda (x) (not (definition? x))) body)))
+  (let ((defs (take-while definition? body))
+        (rest (drop-while definition? body)))
+
     (if (null? defs)
         body
         (let ((vars (map definition-variable defs))
@@ -1162,7 +1179,7 @@ end
 
 (eval 
  (scan-out-defines
-  '((define u (display v)) (define v (+ 1 2)) (display "aaa")))
+  '((define v 1) (define u (display v)) (display "aaa")))
  the-global-environment)
 
 (scan-out-defines
@@ -1174,9 +1191,12 @@ end
 	(if (= n 0)
 		false
 		(even? (- n 1))))
-  (even? x)))
- 
+	(even? x)
+	)
+	
+	)
 
+ 
 
 ;c
 (define (make-procedure parameters body env)
@@ -1248,6 +1268,15 @@ end
 	(define a 5)
 	(+ a b))
   (f 10))
+
+(driver-loop)
+(let ((a 1))
+  (define (f x)
+	(define b (+ a x))
+	(define a 5)
+	(+ a b))
+  (f 10))
+end
 
 ;ex4.20
 
@@ -1386,4 +1415,5 @@ end
 
 (f 2)
 (f 3)
+
 

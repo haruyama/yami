@@ -430,7 +430,7 @@
 
 (install-ecnavi-package)
 
-;こうではなく事業所ファイルにタグを付ける?
+;こうではなく事業所ファイルにタグを付ける(構造化する)のが題意に当っている
 (define (get-record name office)
   (let ((get-employee-office (get 'get-employee office)))
 	(let ((employee (get-employee-office name)))
@@ -486,7 +486,6 @@
 ((make-from-real-imag 1 0) 'real-part)
 ((make-from-real-imag 1 0) 'imag-part)
 ((make-from-real-imag 1 1) 'magnitude)
-cbcc
 
 
 (define (make-from-mag-ang r a)
