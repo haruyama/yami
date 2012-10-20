@@ -31,7 +31,7 @@
 			(let ((record (assoc key-2 (cdr subtable))))
 			  (if record
 				  (set-cdr! record value)
-				  (set-cdr! subtable 
+				  (set-cdr! subtable
 							(cons (cons key-2 value)
 								  (cdr subtable)))))
 			(set-cdr! local-table
@@ -78,7 +78,7 @@
   (put 'make 'scheme-number
 	   (lambda (x) (tag x)))
   'done)
- 
+
 (define (make-scheme-number n)
   ((get' make 'scheme-number) n))
 
@@ -122,16 +122,16 @@
 
   (define (tag x)
 	(attach-tag 'rational x))
-  
+
   (put 'add '(rational rational)
 	   (lambda (x y) (tag (add-rat x y))))
-  
+
   (put 'sub '(rational rational)
 	   (lambda (x y) (tag (sub-rat x y))))
-  
+
   (put 'mul '(rational rational)
 	   (lambda (x y) (tag (mul-rat x y))))
-  
+
   (put 'div '(rational rational)
 	   (lambda (x y) (tag (div-rat x y))))
 
@@ -163,7 +163,7 @@
 	(atan (imag-part z) (real-part z)))
   (define (make-from-mag-ang r a)
 	(cons (* r (cos a)) (* r (sin a))))
-  
+
   (define (tag x) (attach-tag 'rectangular x))
   (put 'real-part '(rectangular) real-part)
   (put 'imag-part '(rectangular) imag-part)
@@ -176,7 +176,7 @@
   'done )
 
 (install-rectangular-package)
-	
+
 (define (install-polar-package)
   (define (magnitude z) (car z))
   (define (angle z) (cdr z))
@@ -214,14 +214,14 @@
   (define (make-from-mag-ang r a)
 	((get 'make-from-mag-ang 'polar) r a))
 
-  (define (add-complex z1 z2)
+  (define (add-complex z2 z2)
 	(make-from-real-imag (+ (real-part z1) (real-part z2))
 						 (+ (imag-part z1) (imag-part z2))))
-					   
+
   (define (sub-complex z1 z2)
 	(make-from-real-imag (- (real-part z1) (real-part z2))
 						 (- (imag-part z1) (imag-part z2))))
-					   
+
   (define (mul-complex z1 z2)
 	(make-from-mag-ang (* (magnitude z1) (magnitude z2))
 					   (+ (angle z1) (angle z2))))
@@ -317,7 +317,7 @@
 		 (and
 		  (= (real-part x) (real-part y))
 		  (= (imag-part x) (imag-part y)))))
-	   
+
   (put 'equ? '(scheme-number rational)
 	   (lambda (x y)
 		 (and
@@ -343,7 +343,7 @@
 		 (and
 		  (= x (real-part y))
 		  (= 0 (imag-part y)))))
-  
+
   (put 'equ? '(rational complex)
 	   (lambda (x y)
 		 (and
@@ -415,11 +415,11 @@
   (define (add-complex z1 z2)
 	(make-from-real-imag (+ (real-part z1) (real-part z2))
 						 (+ (imag-part z1) (imag-part z2))))
-					   
+
   (define (sub-complex z1 z2)
 	(make-from-real-imag (- (real-part z1) (real-part z2))
 						 (- (imag-part z1) (imag-part z2))))
-					   
+
   (define (mul-complex z1 z2)
 	(make-from-mag-ang (* (magnitude z1) (magnitude z2))
 					   (+ (angle z1) (angle z2))))
@@ -481,7 +481,7 @@
 			(let ((record (assoc key-2 (cdr subtable))))
 			  (if record
 				  (set-cdr! record value)
-				  (set-cdr! subtable 
+				  (set-cdr! subtable
 							(cons (cons key-2 value)
 								  (cdr subtable)))))
 			(set-cdr! local-table
@@ -536,11 +536,11 @@
   (define (add-complex z1 z2)
 	(make-from-real-imag (+ (real-part z1) (real-part z2))
 						 (+ (imag-part z1) (imag-part z2))))
-					   
+
   (define (sub-complex z1 z2)
 	(make-from-real-imag (- (real-part z1) (real-part z2))
 						 (- (imag-part z1) (imag-part z2))))
-					   
+
   (define (mul-complex z1 z2)
 	(make-from-mag-ang (* (magnitude z1) (magnitude z2))
 					   (+ (angle z1) (angle z2))))
@@ -667,7 +667,7 @@
 (define (do-coercion coercion-list args)
   (if (null? coercion-list)
 	  '()
-	  (cons 
+	  (cons
 	   ((car coercion-list) (car args))
 	   (do-coercion (cdr coercion-list) (cdr args)
 						))))
@@ -681,7 +681,7 @@
 		  (map (lambda (x)
 				 (get-coercion x type)) tags)))
 
-(get-coercion-list 'scheme-number '(scheme-number complex)) 
+(get-coercion-list 'scheme-number '(scheme-number complex))
 
 
 (define (apply-generic op . args)
@@ -725,7 +725,7 @@
 
   (put 'make 'scheme-number
 	   (lambda (x) (tag x)))
-  
+
   (put 'raise-number 'scheme-number
 	   (lambda (x) (raise-number x)))
 
@@ -768,16 +768,16 @@
 
   (define (tag x)
 	(attach-tag 'rational x))
-  
+
   (put 'add '(rational rational)
 	   (lambda (x y) (tag (add-rat x y))))
-  
+
   (put 'sub '(rational rational)
 	   (lambda (x y) (tag (sub-rat x y))))
-  
+
   (put 'mul '(rational rational)
 	   (lambda (x y) (tag (mul-rat x y))))
-  
+
   (put 'div '(rational rational)
 	   (lambda (x y) (tag (div-rat x y))))
 
@@ -804,11 +804,11 @@
   (define (add-complex z1 z2)
 	(make-from-real-imag (+ (real-part z1) (real-part z2))
 						 (+ (imag-part z1) (imag-part z2))))
-					   
+
   (define (sub-complex z1 z2)
 	(make-from-real-imag (- (real-part z1) (real-part z2))
 						 (- (imag-part z1) (imag-part z2))))
-					   
+
   (define (mul-complex z1 z2)
 	(make-from-mag-ang (* (magnitude z1) (magnitude z2))
 					   (+ (angle z1) (angle z2))))
@@ -851,7 +851,7 @@
 			   'equal)
 			  ((eq? x type) 'lesser)
 			  ((eq? y type) 'greater)
-			  (else 
+			  (else
 			   (compare-type x y (cdr types)))))))
 
 (compare-type 'scheme-number 'scheme-number package-types)
@@ -888,7 +888,7 @@
 
 (define (equal-level? types)
   (apply = (map type-level types)))
-  
+
 (equal-level? '(scheme-number complex))
 (equal-level? '(rational scheme-number))
 (equal-level? '(rational rational rational))
@@ -902,7 +902,7 @@
 
 (raise-level 2 1)
 
-			  
+
 
 
 (define (apply-generic op . args)
@@ -921,13 +921,13 @@
 						 (list op type-tags))))
 			(let ((max-level (max-type-level type-tags)))
 			  (apply apply-generic (cons op
-					 (map 
+					 (map
 					  (lambda (x) (raise-level max-level x))
 					  args))))))))
 
 (add 1 (make-rational 1 2))
 
-  
+
 
 
 (define (install-scheme-number-package)
@@ -948,7 +948,7 @@
 
   (put 'make 'scheme-number
 	   (lambda (x) (tag x)))
-  
+
   (put 'raise-number 'scheme-number
 	   (lambda (x) (raise-number x)))
 
@@ -992,16 +992,16 @@
 
   (define (tag x)
 	(attach-tag 'rational x))
-  
+
   (put 'add '(rational rational)
 	   (lambda (x y) (tag (add-rat x y))))
-  
+
   (put 'sub '(rational rational)
 	   (lambda (x y) (tag (sub-rat x y))))
-  
+
   (put 'mul '(rational rational)
 	   (lambda (x y) (tag (mul-rat x y))))
-  
+
   (put 'div '(rational rational)
 	   (lambda (x y) (tag (div-rat x y))))
 
@@ -1028,11 +1028,11 @@
   (define (add-complex z1 z2)
 	(make-from-real-imag (+ (real-part z1) (real-part z2))
 						 (+ (imag-part z1) (imag-part z2))))
-					   
+
   (define (sub-complex z1 z2)
 	(make-from-real-imag (- (real-part z1) (real-part z2))
 						 (- (imag-part z1) (imag-part z2))))
-					   
+
   (define (mul-complex z1 z2)
 	(make-from-mag-ang (* (magnitude z1) (magnitude z2))
 					   (+ (angle z1) (angle z2))))
@@ -1078,7 +1078,7 @@
 (raise-number
  (project-number (make-rational 1 2)))
 
-(equ? 
+(equ?
  (raise-number
   (project-number (make-complex-from-real-imag 1.5 0)))
  (make-complex-from-real-imag 1.5 0))
@@ -1103,6 +1103,6 @@
 (drop (make-complex-from-real-imag 1.5 0))
 (drop (make-rational 1 1))
 (drop (make-rational 1 2))
-					  
+
 ;ex2.86
 ;(ά)

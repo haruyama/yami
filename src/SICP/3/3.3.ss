@@ -36,7 +36,8 @@
 
 (define v (list 'a 'b 'c 'd))
 (define w (mystery v))
-
+v
+w
 
 (define x (list 'a 'b))
 
@@ -81,7 +82,7 @@
 (define x7 (cons ab2 ab2))
 (count-pairs x7)
 
-(define c (list c ))
+(define c (list 'c ))
 (define cc (cons 'foo (cons 'foo c)))
 (set-car! c cc)
 (define x-inf c)
@@ -143,7 +144,7 @@
   (define tracelist '())
   (define (rotate-list-aux? x)
     (cond ((null? x) #f)
-          ((null? (cdr x)) #f)
+;          ((null? (cdr x)) #f)
           ((memq x tracelist) #t)
           (else
            (set! tracelist (cons x tracelist))
@@ -153,7 +154,7 @@
 (rotate-list? (list 'a 'b 'c))
 (rotate-list? z)
 (define y (list a b))
-(define z (cons c y))
+(define z (cons 'c y))
 (set-cdr! y z)
 (rotate-list? y)
 
@@ -287,7 +288,7 @@
 	  (set! front-ptr item)
 	  )
 	(define (set-rear-ptr! item) (set! rear-ptr item))
-	(define (empty-queue?) 
+	(define (empty-queue?)
 		(null? front-ptr))
 	(define (front-queue)
 		(if (empty-queue?)
@@ -309,11 +310,15 @@
 			  (else
 			   (set-front-ptr! (cdr front-ptr))
 			   dispatch)))
+    (define (print-queue)
+      (display front-ptr)
+      )
 	(define (dispatch m)
 	  (cond ((eq? m 'empty-queue?) (empty-queue?))
 			  ((eq? m 'front-queue) (front-queue))
 			  ((eq? m 'insert-queue!) insert-queue!)
 			  ((eq? m 'delete-queue!) (delete-queue!))
+			  ((eq? m 'print-queue) (print-queue))
 			  (else (error "Undefined operation -- QUEUE" m))))
 	dispatch)
   )
@@ -321,6 +326,7 @@
 (define q2 (make-queue))
 (q2 'empty-queue?)
 ((q2 'insert-queue!) 'a)
+(q2 'print-queue)
 (q2 'front-queue)
 (q2 'empty-queue?)
 ((q2 'insert-queue!) 'b)
@@ -542,7 +548,7 @@
 			(let ((record (assoc key-2 (cdr subtable))))
 			  (if record
 				  (set-cdr! record value)
-				  (set-cdr! subtable 
+				  (set-cdr! subtable
 							(cons (cons key-2 value)
 								  (cdr subtable)))))
 			(set-cdr! local-table
@@ -597,8 +603,8 @@
 
 (define t324 (make-table2 ambiguous-equal?))
 
-((t324 'insert-proc!) 1 10) 
-((t324 'insert-proc!) 5 100) 
+((t324 'insert-proc!) 1 10)
+((t324 'insert-proc!) 5 100)
 ((t324 'lookup-proc) 1)
 ((t324 'lookup-proc) 2)
 
@@ -623,7 +629,7 @@
 			 (if subtable
 				 (lookup-m cdrkeys subtable)
 				 #f))))))
-					
+
 
 (define (insert-m! keys value table)
   (cond ((null? keys) (error "INSERT - null keys"))
@@ -640,7 +646,7 @@
 		   (let ((subtable (assoc key (cdr table))))
 			 (cond (subtable
 					(insert-m! cdrkeys value subtable))
-				   (else 
+				   (else
 					(let ((newsubtable (cons key '())))
 					  (set-cdr! table
 								(cons newsubtable
@@ -686,8 +692,8 @@
 				(else
 				 (lookup-t-sub (left-branch subtree)))))))
   (lookup-t-sub (cdr tree)))
-	  
-  
+
+
 
 (define (insert-t! given-key given-value tree)
   (define (insert-t-sub! subtree)
@@ -706,7 +712,7 @@
 									  (make-subtree given-key given-value '() '()))
 				   (insert-t-sub! (left-branch subtree))))))))
   (if (null? (cdr tree))
-	  (set-cdr! tree 
+	  (set-cdr! tree
 				(make-subtree given-key given-value '() '()))
 	  (insert-t-sub! (cdr tree))))
 

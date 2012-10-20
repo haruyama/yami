@@ -3,7 +3,7 @@
 (define (add-complex z1 z2)
   (make-from-real-imag (+ (real-part z1) (real-part z2))
 					   (+ (imag-part z1) (imag-part z2))))
-					   
+
 (define (sub-complex z1 z2)
   (make-from-real-imag (- (real-part z1) (real-part z2))
 					   (- (imag-part z1) (imag-part z2))))
@@ -48,7 +48,7 @@
 ;; 		(atan y x)))
 
 ;; (define (make-from-mag-ang r a) (cons r a))
-			  
+
 (define (attach-tag type-tag contents)
   (cons type-tag contents))
 
@@ -172,7 +172,7 @@
 			(let ((record (assoc key-2 (cdr subtable))))
 			  (if record
 				  (set-cdr! record value)
-				  (set-cdr! subtable 
+				  (set-cdr! subtable
 							(cons (cons key-2 value)
 								  (cdr subtable)))))
 			(set-cdr! local-table
@@ -202,7 +202,7 @@
 	(atan (imag-part z) (real-part z)))
   (define (make-from-mag-ang r a)
 	(cons (* r (cos a)) (* r (sin a))))
-  
+
   (define (tag x) (attach-tag 'rectangular x))
   (put 'real-part '(rectangular) real-part)
   (put 'imag-part '(rectangular) imag-part)
@@ -215,7 +215,7 @@
   'done )
 
 (install-rectangular-package)
-	
+
 (define (install-polar-package)
   (define (magnitude z) (car z))
   (define (angle z) (cdr z))
@@ -264,6 +264,7 @@
 (real-part r)
 (real-part p)
 
+(add-complex r p)
 ;2.73
 (define (variable? x) (symbol? x))
 
@@ -305,8 +306,10 @@
 (deriv '(+ x (+ x y)) 'x)
 (deriv '(+ x x y) 'x)
 
+(deriv '(* x x) 'x)
+
 (define (deriv-mul operands var)
-  (make-sum 
+  (make-sum
    (make-product (car operands)
 				 (deriv
 				  (cadr operands) var))
@@ -314,14 +317,14 @@
 				 (cadr operands))))
 
 
-   
+
 (put 'deriv '* deriv-mul)
 
 (deriv '(* x y) 'x)
 (deriv '(* x x) 'x)
 
 (deriv '(+ x (* y x)) 'x)
-                 
+
 (define (=number? exp num)
   (and (number? exp) (= exp num)))
 
@@ -342,8 +345,8 @@
 				 (deriv (car operands) var))))
 
 (put 'deriv '** deriv-exp)
-(deriv '(** x y) 'x) 
-(deriv '(** x 2) 'x) 
+(deriv '(** x y) 'x)
+(deriv '(** x 2) 'x)
 
 (define (deriv2 exp var)
   (cond ((number? exp) 0)
@@ -388,12 +391,12 @@
   (put 'get-salary '(pex) get-salary)
 
   (put 'get-employee 'pex get-employee)
-  (put 'make-record-pex 'pex 
+  (put 'make-record-pex 'pex
 	   (lambda (name address salary)
 		 (tag (make-record name address salary))
 		 ;実際にはテーブルに追加する必要がある
 	))
-)	
+)
 
 (install-pex-package)
 
@@ -421,7 +424,7 @@
   (put 'get-salary '(ecnavi) get-salary)
 
   (put 'get-employee 'ecnavi get-employee)
-  (put 'make-record-ecnavi 'ecnavi 
+  (put 'make-record-ecnavi 'ecnavi
 	   (lambda (name address salary)
 		 (tag (make-record name address salary))
 		 ;実際にはテーブルに追加する必要がある
@@ -477,7 +480,7 @@
 		  ((eq? op 'magnitude)
 		   (sqrt (+ (square x) (square y))))
 		  ((eq? op 'angle) (atan y x))
-		  (else 
+		  (else
 		   (error "Unknown op -- MAKE-FROM-REAL-IMAG" op))))
   dispatch)
 
@@ -490,14 +493,14 @@
 
 (define (make-from-mag-ang r a)
   (define (dispatch op)
-	(cond ((eq? op 'real-part) 
+	(cond ((eq? op 'real-part)
 		   (* r (cos a)))
-		  ((eq? op 'imag-part) 
+		  ((eq? op 'imag-part)
 		   (* r (sin a)))
 		  ((eq? op 'magnitude) r)
 		  ((eq? op 'angle) a)
-		  (else 
-		   (error "Unknown op -- MAKE-FROM-REAL-IMAG" op))))
+		  (else
+		   (error "Unknown op -- MAKE-FROM-MAG-ANG" op))))
   dispatch)
 
 

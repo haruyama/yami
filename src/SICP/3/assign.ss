@@ -224,6 +224,8 @@
 (define (estimate-pi2 trails inital-x)
   (sqrt (/ 6 (random-gcd-test trails inital-x))))
 
+(estimate-pi 100)
+
 ;ex3.5
 ;(use math.mt-random)
 ;(define m (make <mersenne-twister> :seed (sys-time)))
@@ -282,17 +284,17 @@
 	(define (generate)
 	  (set! x (rand-update x))
 	  x)
-	(define (reset)
+	(define (reset new-value)
 	  (set! x random-init))
 	(define (dispatch m)
 	  (cond ((eq? m 'generate) (generate))
-			((eq? m 'reset) (reset))
+			((eq? m 'reset)  reset )
 			(else (error "Error method: " m))))
 	dispatch))
 
 (rand 'generate)
-(rand 'reset)
-	  
+((rand 'reset) 1)
+(rand 'generate)
   
 ;3.1.3
 (define (make-simplified-withdraw balance)

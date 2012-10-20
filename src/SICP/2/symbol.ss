@@ -49,6 +49,7 @@
 
 (car ''abracadabra)
 (car (quote (quote abracadabra)))
+(car (list 'quote 'a))
 (cdr ''abracadabra)
 (display ''abracadabra)
 (display '('a))
@@ -149,7 +150,7 @@
 
 (deriv '(+ x (** x 3)) 'x)
 
-
+;ex2.57
 ;null?でチェックしたほうが効率的
 (define (augend s) 
 ;  (if (= (length (cddr s)) 1) (caddr s)
@@ -158,6 +159,7 @@
 
 (augend '(+ 1 2))
 (augend '(+ 1 2 3))
+(augend '(+ 1 2 3 4))
 
 (define (multiplicand s) 
   (if (null? (cdddr s)) (caddr s)

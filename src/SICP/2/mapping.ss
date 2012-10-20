@@ -27,13 +27,13 @@
 
 (accumulate append
 			nil
-			(map 
+			(map
 			 (lambda (i)
 			   (map (lambda (j) (list i j))
 					(enumerate-interval 1 (- i 1))))
 			 (enumerate-interval 1 10)))
 
-(map 
+(map
  (lambda (i)
    (map (lambda (j) (list i j))
 		(enumerate-interval 1 (- i 1))))
@@ -106,11 +106,12 @@
 ;p2.40
 
 (define (unique-pairs n)
-  (flatmap 
+  (flatmap
    (lambda (i)
 	 (map (lambda (j) (list i j))
 				  (enumerate-interval 1 (- i 1))))
 					 (enumerate-interval 1 n)))
+
 (unique-pairs 6)
 
 (define (prime-sum-pairs2 n)
@@ -122,10 +123,10 @@
 
 ;p2.41
 (define (unique-3-tuples n)
-  (flatmap 
+  (flatmap
    (lambda (i)
-	 (flatmap (lambda (j) 
-			(map (lambda (k) 
+	 (flatmap (lambda (j)
+			(map (lambda (k)
 				   (list i j k))
 				  (enumerate-interval 1 (- j 1))))
 			(enumerate-interval 1 (- i 1))))
@@ -136,7 +137,7 @@
 
 
 (define (filter-sum-3-tuples n s)
-  (filter (lambda (l) (= s 
+  (filter (lambda (l) (= s
 						 (accumulate + 0 l)))
 		  (unique-3-tuples n)))
 
@@ -162,7 +163,7 @@
 (unique-tuples 5 3)
 
 (define (filter-sum-3-tuples2 n s)
-  (filter (lambda (l) (= s 
+  (filter (lambda (l) (= s
 						 (accumulate + 0 l)))
 		  (unique-tuples n 3)))
 
@@ -206,12 +207,12 @@
 								(cons (- x (- y m)) m)))
 			  (enumerate-interval 1 (- k 1)))
 			 ))))
-				
+
 ;(enumerate-queen-move 5 (cons 2 5))
 
 ;(member (cons 1 2) (list (cons 1 2) (cons 2 3)))
 (define contains? member)
-  
+
 (define (eq-position? x y)
   (and (= (car x) (car y)) (= (cdr x) (cdr y))))
 
@@ -237,7 +238,7 @@
   (define (queens-cols k)
 	(if (= k 0)
 		(list empty-board)
-		(filter 
+		(filter
 		 (lambda (positions) (safe? k positions))
 		 (flatmap
 		  (lambda (rest-of-queens)
@@ -261,7 +262,7 @@
 (define (queens-cols2 k board-size)
   (if (= k 0)
 	  (list empty-board)
-	  (filter 
+	  (filter
 	   (lambda (positions) (safe? k positions))
 	   (flatmap
 		(lambda (rest-of-queens)
@@ -283,7 +284,7 @@
 (define (queens-bad-col k board-size)
   (if (= k 0)
 	  (list empty-board)
-	  (filter 
+	  (filter
 	   (lambda (positions) (safe? k positions))
 	   (flatmap
 		(lambda (new-row)
@@ -296,7 +297,7 @@
 ;(trace queens-bad-col)
 
 (queens-bad 3)
- 
+
 ;r+r^2+r^3....+r^n
 ;=r(1-r^n)/(1-r)
 ;n+n^2+n^3....+n^n
@@ -304,7 +305,7 @@
 ;(n^n+1-n)/(n-1)
 
 ; (n^n-1)/(n-1)=1+n+..+n^(n-1)
-; n=3のとき 
+; n=3のとき
 ; n=8のとき (16777216-1)/7=2396745
 
 

@@ -7,7 +7,7 @@
 (define (fib-iter a b count)
   (if (= count 0) b
 	  (fib-iter (+ a b) a (- count 1))))
-	  
+
 
 (define (sum-odd-squares tree)
   (cond ((null? tree) 0)
@@ -77,7 +77,7 @@
 
 
 (define (sum-odd-squares tree)
-  (accumulate + 
+  (accumulate +
 			  0
 			  (map square
 				   (filter odd?
@@ -94,6 +94,7 @@
 						   (enumerate-interval 0 n)))))
 
 (even-fibs 10)
+(even-fibs 20)
 (filter even?
 		(map fib
 			 (enumerate-interval 0 10)))
@@ -122,9 +123,9 @@
 
 (map square (list 1 2 3 4 5))
 
-(define (append seq1 seq2)
-  (accumulate cons seq2
-			  seq1))
+;(define (append seq1 seq2)
+;  (accumulate cons seq2
+;              seq1))
 
 (append (list 1 2 3) (list 4 5 6))
 
@@ -135,7 +136,7 @@
 
 (length (list 1 2 3))
 (length (list 2 3 4 5))
-   
+
 
 (define (horner-eval x coefficient-sequence)
   (accumulate (lambda (this-coeff higher-terms)
@@ -164,22 +165,22 @@
 			   (lambda (x)
 				 (cond ((null? x) 0)
 					   ((not (pair? x)) 1)
-					   (else 
+					   (else
 						(count-leaves x)))) t)))
 (count-leaves x)
 (count-leaves y)
 
-   
-(define (count-leaves t)
-  (accumulate + 0
-			  (map
-			   (lambda (x)
-				 (cond ;((null? x) 0)
-					   ((not (pair? x)) 1)
-					   (else 
-						(count-leaves x)))) t)))
 
-(count-leaves y) ; 間違い
+;(define (count-leaves t)
+;  (accumulate + 0
+;              (map
+;               (lambda (x)
+;                 (cond ;((null? x) 0)
+;                       ((not (pair? x)) 1)
+;                       (else
+;                        (count-leaves x)))) t)))
+
+;(count-leaves y) ; 間違い
 
 (define (accumulate-n op init seqs)
   (if (null? (car seqs)) nil
@@ -219,7 +220,7 @@
   (accumulate-n  cons nil  mat))
 
 (transpose m3)
-  
+
 
 
 
@@ -250,7 +251,7 @@
 
 
 (define (reverse sequence)
-  (fold-right (lambda (x y) 
+  (fold-right (lambda (x y)
 				(append y (list x))
 					  )
 			  nil sequence))

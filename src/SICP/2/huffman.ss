@@ -67,10 +67,10 @@
 
 (define sample-tree
   (make-code-tree (make-leaf 'A 4)
-				  (make-code-tree
-				   (make-leaf 'B 2)
-				   (make-code-tree (make-leaf 'D 1)
-								   (make-leaf 'C 1)))))
+                  (make-code-tree
+                    (make-leaf 'B 2)
+                    (make-code-tree (make-leaf 'D 1)
+                                    (make-leaf 'C 1)))))
 
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
@@ -82,22 +82,22 @@
 
 (define (encode message tree)
   (if (null? message)
-	  '()
-	  (append (encode-symbol (car message) tree)
-			  (encode (cdr message) tree))))
+    '()
+    (append (encode-symbol (car message) tree)
+            (encode (cdr message) tree))))
 
 (cadr sample-tree)
 
 (define (encode-symbol symbol tree)
   (if (leaf? tree)
-      '()
-      (let ((left (left-branch tree))
-            (right (right-branch tree)))
-        (cond ((symbol-exists? symbol left)
-               (cons 0 (encode-symbol symbol left)))
-              ((symbol-exists? symbol right)
-               (cons 1 (encode-symbol symbol right)))
-              (else (error "Invalid symbol -- ENCODE-SYMBOL" symbol))))))
+    '()
+    (let ((left (left-branch tree))
+          (right (right-branch tree)))
+      (cond ((symbol-exists? symbol left)
+             (cons 0 (encode-symbol symbol left)))
+        ((symbol-exists? symbol right)
+         (cons 1 (encode-symbol symbol right)))
+        (else (error "Invalid symbol -- ENCODE-SYMBOL" symbol))))))
 
 ;; (define (symbol-exists? symbol tree)
 ;;   (if (leaf? tree)
@@ -119,7 +119,8 @@
   (if (null? (cdr set))
       (car set)
       (successive-merge
-       (adjoin-set (make-code-tree (car set) (cadr set)) (cddr set)))))
+       (adjoin-set (make-code-tree (car set) (cadr set))
+                    (cddr set)))))
 
 (define test (make-leaf-set weights))
 (successive-merge test)
@@ -178,3 +179,4 @@
 (encode message-a tree-2-71-1)
 
 (encode message-j tree-2-71-2)
+(encode message-a tree-2-71-2)

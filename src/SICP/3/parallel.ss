@@ -14,7 +14,7 @@
 ;45
 
 (define balance 100)
-(peter) (mary) (paul) 
+(peter) (mary) (paul)
 (newline)
 ;35
 
@@ -24,37 +24,37 @@
 ;45
 
 (define balance 100)
-(paul) (mary) (peter) 
+(paul) (mary) (peter)
 (newline)
 ;50
 
 (define balance 100)
-(mary) (peter) (paul) 
+(mary) (peter) (paul)
 (newline)
 ;40
 
 (define balance 100)
-(mary) (paul) (peter) 
+(mary) (paul) (peter)
 (newline)
 ;40
 
-;35 40 45 50 
+;35 40 45 50
 
 ;b
 ;30 55 60 70 80 90 110
 
-;; (use gauche.threads)
-;; (define (parallel-execute . procs)
-;;   (let ((threads (map make-thread procs)))
-;;     (map thread-start! threads)
-;;     (map thread-join! threads)))
-
-(define (parallel-execute . args)
-  "each arg is a thunk, to be run in a separate thread"
-  (let ((threads ()))
-    (dolist (thunk args)
-      (push! threads (thread-start! (make-thread thunk))))
+(use gauche.threads)
+(define (parallel-execute . procs)
+  (let ((threads (map make-thread procs)))
+    (map thread-start! threads)
     (map thread-join! threads)))
+
+;(define (parallel-execute . args)
+;  "each arg is a thunk, to be run in a separate thread"
+;  (let ((threads ()))
+;    (dolist (thunk args)
+;      (push! threads (thread-start! (make-thread thunk))))
+;    (map thread-join! threads)))
 
 (define (make-serializer/no-dw)
   (let ((mutex (make-mutex)))
@@ -223,9 +223,9 @@
   (let ((mutex (make-mutex))
 		(semaphore 0))
 	(define (dispatch m)
-	  (cond ((eq? m 'acquire)  
+	  (cond ((eq? m 'acquire)
 			 (mutex 'acquire)
-			 (if (< semaphore n) 
+			 (if (< semaphore n)
 				 (begin
 				   (set! semaphore (+ 1 semaphore))
 				   (mutex 'release)
@@ -235,7 +235,7 @@
 				   false)
 				 ))
 			((eq? m 'release)
-			 (if (= semaphore 0) 
+			 (if (= semaphore 0)
 				 (begin
 				   (mutex 'release)
 				   false)
@@ -255,19 +255,19 @@
 (semaphore 'release)
 (semaphore 'release)
 (semaphore 'release)
-			 
-			 
-	
+
+
+
 
 
 (define (make-semaphore2 n)
   (let ((semaphore 0)
 		(cell (list false)))
 	(define (dispatch m)
-	  (cond ((eq? m 'acquire)  
+	  (cond ((eq? m 'acquire)
 			 (if (test-and-set! cell)
 				 (dispatch 'acquire)
-				 (if (< semaphore n) 
+				 (if (< semaphore n)
 					 (begin
 					   (set! semaphore (+ 1 semaphore))
 					   (clear! cell)
@@ -279,7 +279,7 @@
 			((eq? m 'release)
 			 (if (test-and-set! cell)
 				 (dispatch 'release)
-				 (if (= semaphore 0) 
+				 (if (= semaphore 0)
 					 (begin
 					   (clear! cell)
 					   false)

@@ -2,7 +2,7 @@
 (cons  1 (cons 2 nil))
 
 (define (list-ref items n)
-  (if (= n 0)
+  (if (= n 1)
       (car items)
       (list-ref (cdr items) (- n 1))))
 
@@ -38,12 +38,15 @@
 
 (append squares odds)
 (append odds squares)
+
+;ex 2.17
 (define (last-pair l)
   (if (null? (cdr l)) l
       (last-pair (cdr l))))
 (last-pair odds)
 (last-pair (list 23 72 149 34))
 
+;ex 2.18
 (define (reverse l)
   (define (reverse-iter a b)
     (if (null? a) b
@@ -51,6 +54,7 @@
   (reverse-iter l '()))
 (reverse squares)
 
+;ex 2.19
 (define us-coins (list 50 25 10 5 1))
 (define us-coins2 (list 1 50 25 10 5))
 (define uk-coins (list 100 50 20 10 5 2 1 0.5))
@@ -76,12 +80,13 @@
 (cc 10 uk-coins)
 ;(cc 100 uk-coins)
 
+;ex 2.20
 (define (same-parity x . y)
     (define (same-parity-iter parity l r)
       (cond ((null? l) (reverse r))
             ((= parity (remainder (car l) 2))
              (same-parity-iter parity (cdr l) (cons (car l) r)))
-            (else 
+            (else
              (same-parity-iter parity (cdr l) r))))
     (same-parity-iter (remainder x 2) y (list x)))
 
@@ -90,7 +95,7 @@
       (cond ((null? l) (reverse r))
             ((= parity (remainder (car l) 2))
              (same-parity-iter parity (cdr l) (cons (car l) r)))
-            (else 
+            (else
              (same-parity-iter parity (cdr l) r))))
     (same-parity-iter (remainder x 2) y (list x)))
 
@@ -117,11 +122,17 @@
 	  (cond ((null? items) '())
 			((same-parity? (car items))
 			 (cons (car items) (iter (cdr items))))
-			(else 
+			(else
 			 (iter (cdr items)))))
 	(cons x (iter y))))
 
-	  
+(define (same-parity x . y)
+  (define (iter items)
+    (cond  ((null? items) nil)
+           ((even? (+ x (car items))) (cons (car items) (iter (cdr items))))
+           (else (iter (cdr items)))))
+  (cons x (iter y)))
+
 
 (same-parity 1 2 3 4 5 6 7)
 (same-parity 2 3 4 5 6 7)
@@ -155,6 +166,8 @@
          items))
 
 (scale-list2 (list 1 2 3 4 5) 10)
+
+;ex 2.21
 (define (square-list items)
   (if (null? items)
       '()
@@ -162,10 +175,11 @@
 
 (square-list (list 1 2 3 4))
 
-(define (square-list2 items) 
+(define (square-list2 items)
   (map (lambda (x) (* x x)) items))
 (square-list2 (list 1 2 3 4))
 
+;ex 2.22
 (define (square x) (* x x))
 
 (define (square-list-r items)
@@ -210,6 +224,7 @@
 
 (square-list-ba (list 1 2 3 4))
 
+;ex 2.23
 (for-each (lambda (x) (newline) (display x)) (list 57 321 88))
 
 (define (my-for-each proc l)

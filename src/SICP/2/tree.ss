@@ -163,17 +163,25 @@
 	  (+ (total-weight (branch-structure (left-branch m)))
 		 (total-weight (branch-structure (right-branch m))))))
 
+(define (total-weight m)
+  (if (mobile? m)
+	  (+ (total-weight (branch-structure (left-branch m)))
+		 (total-weight (branch-structure (right-branch m))))
+		m
+		))
+
+
 (total-weight m1)
 
 (define (balanced? m)
   (cond ((not (mobile? m)) #t)
-		((= (* (branch-length (left-branch m))
-			   (total-weight (branch-structure (left-branch m))))
-			(* (branch-length (right-branch m))
-			   (total-weight (branch-structure (right-branch m)))))
-		 (and (balanced? (branch-structure (left-branch m)))
-			  (balanced? (branch-structure (right-branch m)))))
-		(else #f)))
+				((= (* (branch-length (left-branch m))
+							 (total-weight (branch-structure (left-branch m))))
+						(* (branch-length (right-branch m))
+							 (total-weight (branch-structure (right-branch m)))))
+				 (and (balanced? (branch-structure (left-branch m)))
+							(balanced? (branch-structure (right-branch m)))))
+				(else #f)))
 
 (left-branch m1)
 

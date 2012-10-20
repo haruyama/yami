@@ -81,14 +81,11 @@
   (connect product me)
   me)
 
-
 (define (inform-about-value constraint)
-  (constraint 'I-have-a-value)) 
+  (constraint 'I-have-a-value))
 
 (define (inform-about-no-value constraint)
   (constraint 'I-lost-my-value))
-		   
-
 
 (define (constant value connector)
   (define (me request)
@@ -161,10 +158,6 @@
 		  (else (procedure (car items))
 				(loop (cdr items)))))
   (loop list))
-		   
-
-		  
-
 
 (define (celsius-fahrenheit-converter c f)
   (let ((u (make-connector))
@@ -282,7 +275,7 @@
 			(set-value! b
 						(* (get-value a) (get-value a))
 						me))))
-  (define (process-forget-value) 
+  (define (process-forget-value)
 	(forget-value! a me)
 	(forget-value! b me)
 	(process-new-value))
@@ -329,10 +322,6 @@
   (let ((z (make-connector)))
     (multiplier z y x)
     z))
-
-
-
-
 
 (define (cv v)
   (let ((z (make-connector)))

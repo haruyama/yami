@@ -37,6 +37,10 @@
 		 (cons (car set1)
 			   (union-set (cdr set1) set2)))))
 
+(define (union-set set1 set2)
+  (if (null? set1) set2
+      (adjoin-set (car set1) (union-set (cdr set1) set2))))
+
 
 (union-set '(1) '(1 2 3))
 (union-set '(1 3) '(1 2 3))
@@ -126,7 +130,7 @@
 (entry test-tree)
 (left-branch test-tree)
 
-(entry 
+(entry
  (left-branch
   (left-branch test-tree)))
 
@@ -144,7 +148,7 @@
 		 (make-tree (entry set)
 					(left-branch set)
 					(adjoin-set x (right-branch set))))))
-		 
+
 
 
 (adjoin-set 1 test-tree)
@@ -156,7 +160,7 @@
 	  (append (tree->list-1 (left-branch tree))
 			  (cons (entry tree)
 					(tree->list-1 (right-branch tree))))))
-	  
+
 (tree->list-1 (adjoin-set 4 test-tree))
 (tree->list-1 test-tree2)
 (tree->list-1 test-tree3)
@@ -201,14 +205,14 @@
 (list->tree '(1 3 5 7 9 11))
 
 (define tree->list tree->list-2)
-			
+
 (define (union-set set1 set2)
   (list->tree (union-list (tree->list set1) (tree->list set2))))
 
 (define (intersection-set set1 set2)
   (list->tree (intersection-list (tree->list set1) (tree->list set2))))
 
-          
+
 (define (union-list l1 l2)
   (cond ((null? l1) l2)
         ((null? l2) l1)
@@ -221,16 +225,16 @@
 
 (define (intersection-list l1 l2)
   (cond ((or (null? l1) (null? l2)) '())
-        (else 
+        (else
          (let ((h1 (car l1))
                (h2 (car l2)))
            (cond ((= h1 h2) (cons h1 (intersection-list (cdr l1) (cdr l2))))
                  ((< h1 h2) (intersection-list (cdr l1) l2))
                  ((< h2 h1) (intersection-list l1 (cdr l2))))))))
 
-							  
-					
-				 
+
+
+
 (define test-tree4 (list->tree '(1 2 3 4 5 6)))
 (define test-tree5 (list->tree '(1 3 5 7 9 11)))
 
@@ -238,7 +242,7 @@
 (intersection-set test-tree4 test-tree5)
 
 (define (key x) x)
-		   
+
 (define (lookup given-key set-of-records)
   (cond ((null? set-of-records) false)
 		((equal? given-key (key (car set-of-records)))
@@ -248,7 +252,7 @@
 
 
 
-(lookup 1 '(4 3 2 1))		
+(lookup 1 '(4 3 2 1))
 
 (define (lookup2 given-key set-of-records)
     (if (null? set-of-records) false
