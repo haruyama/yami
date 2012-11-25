@@ -396,7 +396,7 @@
 		((assignment? exp) (analyze-assignment exp))
 		((definition? exp) (analyze-definition exp))
 		((if? exp) (analyze-if exp))
-;		((unless? exp) (analyze (unless->if exp)))
+		((unless? exp) (analyze (unless->if exp)))
 		((lambda? exp) (analyze-lambda exp))
 		((let? exp)
 		 (analyze (let->combination exp)))
@@ -454,6 +454,11 @@
 		   (unless-alternative exp)
 		   (unless-consequent exp)))
 
+(unless->if 
+  '(unless (= n 1)
+		  (* n (factorial (- n 1)))
+		  1) 
+  )
 
 (driver-loop)
 (define (factorial n)
