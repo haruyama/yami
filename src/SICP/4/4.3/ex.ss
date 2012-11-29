@@ -459,6 +459,7 @@ end
 (n-queens 4)
 try-again
 try-again
+;(n-queens 6)
 end
 
 ;; (driver-loop)
@@ -646,7 +647,7 @@ try-again
 try-again
 end
 
-
+(parse '(the professor lectures to the student in the class with the cat))
 ;ex4.50
 (define (analyze exp)
   (cond ((self-evaluating? exp)
@@ -906,7 +907,7 @@ end
     (lambda (env succeed fail)
       (pproc env
              (lambda (pred-value fail2)
-               (if (not pred-value)
+               (if (false? pred-value)
                    (fail2)
                    (succeed 'ok fail2)))
              fail))))
