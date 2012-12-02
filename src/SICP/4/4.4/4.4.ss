@@ -200,7 +200,8 @@
 
 (put 'lisp-value 'qeval lisp-value)
 
-(define user-initial-environment (interaction-environment))
+;(define user-initial-environment (interaction-environment))
+(define user-initial-environment (make-module #f))
 
 (define (execute exp)
   (apply (eval (predicate exp) user-initial-environment)

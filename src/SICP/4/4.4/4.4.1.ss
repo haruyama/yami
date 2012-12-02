@@ -1,4 +1,5 @@
 (load "./4.4.ss")
+(define user-initial-environment (make-module #f))
 
 (query-driver-loop)
 (assert! (address (Bitdiddle Ben) (Slumerville (Ridge Road) 10)))
@@ -101,7 +102,7 @@ end
 (and (supervisor ?person ?supervisor)
 	 (not (job ?supervisor (computer . ?x)))
 	 (job ?supervisor ?y))
-
+end
 
 (query-driver-loop)
 
@@ -135,24 +136,24 @@ end
 
 ;ex4.57
 (query-driver-loop)
-(assert! (rule (replace-job ?job-1 ?job-2)
+(assert! (rule (can-replace-job ?job-1 ?job-2)
 			   (or
                  (can-do-job ?job-1 ?job-2)
 				   (and (can-do-job ?job-1 ?job-m)
-						(replace-job ?job-m ?job-2))
+						(can-replace-job ?job-m ?job-2))
 				   )))
 (assert! (rule (replace ?person-1 ?person-2)
 			   (and (job ?person-1 ?job-1)
 					(job ?person-2 ?job-2)
-					(or (replace-job ?job-1 ?job-2)
+					(or (can-replace-job ?job-1 ?job-2)
 						(same ?job-1 ?job-2))
 					(not (same ?person-1 ?person-2)))))
 end
 
 (query-driver-loop)
 
-(replace-job ?j (computer programmer trainee))
-(replace-job (computer wizard) ?j)
+(can-replace-job ?j (computer programmer trainee))
+(can-replace-job (computer wizard) ?j)
 
 (replace ?p (Fect Cy D))
 
@@ -170,8 +171,7 @@ end
 				(supervisor ?person ?supervisor)
 				(job ?supervisor (?div-s . ?rest-s))
 				(not (same ?div-p ?div-s))
-				)
-			   ))
+				)))
 (big-shot ?p)
 end
 
@@ -206,22 +206,23 @@ end
 
 ;名前に順序を付ける
 ;http://www.serendip.ws/archives/2660
-(assert! (id (Warbucks Oliver) 0))
-(assert! (id (Bitdiddle Ben) 1))
-(assert! (id (Hacker Alyssa P) 2))
-(assert! (id (Fect Cy D) 3))
-(assert! (id (Tweakit Lem E) 4))
-(assert! (id (Reasoner Louis) 5))
-(assert! (id (Scrooge Eben) 6))
-(assert! (id (Cratchet Robert) 7))
-(assert! (id (Aull DeWitt) 7))
+(assert! (id 0 (Warbucks Oliver)))
+(assert! (id 1 (Bitdiddle Ben)))
+(assert! (id 2 (Hacker Alyssa P)))
+(assert! (id 3 (Fect Cy D)))
+(assert! (id 4 (Tweakit Lem E)))
+(assert! (id 5 (Reasoner Louis)))
+(assert! (id 6 (Scrooge Eben)))
+(assert! (id 7 (Cratchet Robert)))
+(assert! (id 8 (Aull DeWitt)))
 (assert! (rule (lives-near2 ?person-1 ?person-2)
                (and (address ?person-1 (?town . ?rest-1))
                     (address ?person-2 (?town . ?rest-2))
-                    (id ?person-1 ?id-1)
-                    (id ?person-2 ?id-2)
+                    (id ?id-1 ?person-1)
+                    (id ?id-2 ?person-2)
                     (lisp-value > ?id-1 ?id-2)
-                    (not (same ?person-1 ?person-2)))))
+                    ;(not (same ?person-1 ?person-2)
+                    )))
 
 (lives-near2 ?p1 ?p2)
 end
