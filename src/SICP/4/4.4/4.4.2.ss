@@ -1,76 +1,3 @@
-;ex4.68
-(assert! (rule (reverse () ())))
-(assert! (rule (reverse (?u . ?v) ?y)
-			   (and (reverse ?v ?w)
-					(append-to-form ?w (?u) ?y))))
-
-;ex4.69
-
-(assert! (rule ((great . ?rel) ?x ?y)
-               (and (son-of ?x ?w)
-                    (?rel ?w ?y))))
-
-
-;; (assert! (rule ((son) ?x ?y)
-;;                (son-of ?x ?y)))
-
-
-(assert! (rule ((grandson) ?x ?y)
-               (grandson-of ?x ?y)))
-
-;; (rule (ends-with ?lis ?x)
-;; 	  (last-pair ?lis (?x . ?unused)))
-
-;; (rule ((great  . ?rel) ?a ?d)
-;; 	  (and
-;; 	   (and
-;; 		(son ?a ?m)
-;; 		(?rel  ?m ?d))
-;; 	   (ends-with ?rel grandson)))
-
-end
-
-
-(query-driver-loop)
-(not (baseball-fan (Bitdiddle Ben)))
-end
-
-
-;ex4.65
-(query-driver-loop)
-(wheel ?who)
-(supervisor ?middle-manager ?person)
-;; (supervisor (Aull DeWitt) (Warbucks Oliver)) ; 0
-;; (supervisor (Cratchet Robert) (Scrooge Eben)) ; 0
-;; (supervisor (Scrooge Eben) (Warbucks Oliver)) ; 1
-;; (supervisor (Bitdiddle Ben) (Warbucks Oliver)) ; 3
-;; (supervisor (Reasoner Louis) (Hacker Alyssa P)) ; 0
-;; (supervisor (Tweakit Lem E) (Bitdiddle Ben)) ;0
-;; (supervisor (Fect Cy D) (Bitdiddle Ben)) ; 0
-;; (supervisor (Hacker Alyssa P) (Bitdiddle Ben)) ; 1
-(supervisor ?x (Warbucks Oliver))
-(supervisor ?x (Bitdiddle Ben))
-end
-
-;ex4.68
-(query-driver-loop)
-(reverse (1) ?y)
-(reverse (1 2) ?y)
-(reverse (1 2 3) ?x)
-;(reverse ?x (1 2 3))
-;loop
-end
-
-;ex4.69
-
-(query-driver-loop)
-((great grandson) ?g ?ggs)
-;((?rel grandson) Adam Irad)
-;(?relationship Adam Cain)
-;(?relationship Adam Irad)
-end
-
-
 ;ex4.70
 ;問題文中の定義では無限ストリームになる
 
@@ -80,25 +7,25 @@ end
 
 (define (interleave s1 s2)
   (if (stream-null? s1)
-	  s2
-	  (cons-stream (stream-car s1)
-				   (interleave s2 (stream-cdr s1)))))
+      s2
+      (cons-stream (stream-car s1)
+                   (interleave s2 (stream-cdr s1)))))
 
 (define (simple-query query-pattern frame-stream)
   (stream-flatmap
-   (lambda (frame)
-	 (stream-append
-	  (find-assertions query-pattern frame)
-	  (apply-rules query-pattern frame)))
-   frame-stream))
+    (lambda (frame)
+      (stream-append
+        (find-assertions query-pattern frame)
+        (apply-rules query-pattern frame)))
+    frame-stream))
 
 (define (disjoin disjuncts frame-stream)
   (if (empty-disjunction? disjuncts)
-	  the-empty-stream
-	  (interleave
-	   (qeval (first-disjunct disjuncts) frame-stream)
-	   (disjoin (rest-disjuncts disjuncts)
-				frame-stream))))
+      the-empty-stream
+      (interleave
+        (qeval (first-disjunct disjuncts) frame-stream)
+        (disjoin (rest-disjuncts disjuncts)
+                 frame-stream))))
 
 (query-driver-loop)
 (assert! (married Minnie Mickery))
@@ -111,19 +38,19 @@ end
 
 (define (simple-query query-pattern frame-stream)
   (stream-flatmap
-   (lambda (frame)
-	 (stream-append-delayed
-	  (find-assertions query-pattern frame)
-	  (delay (apply-rules query-pattern frame))))
-   frame-stream))
+    (lambda (frame)
+      (stream-append-delayed
+        (find-assertions query-pattern frame)
+        (delay (apply-rules query-pattern frame))))
+    frame-stream))
 
 (define (disjoin disjuncts frame-stream)
   (if (empty-disjunction? disjuncts)
-	  the-empty-stream
-	  (interleave-delayed
-	   (qeval (first-disjunct disjuncts) frame-stream)
-	   (delay (disjoin (rest-disjuncts disjuncts)
-					   frame-stream)))))
+      the-empty-stream
+      (interleave-delayed
+        (qeval (first-disjunct disjuncts) frame-stream)
+        (delay (disjoin (rest-disjuncts disjuncts)
+                        frame-stream)))))
 ;; (query-driver-loop)
 ;; (married Mickery ?x)
 ;; end
@@ -147,10 +74,10 @@ end
 
 (define (flatten-stream stream)
   (if (stream-null? stream)
-	  the-empty-stream
-	  (interleave-delayed
-	   (stream-car stream)
-	   (delay (flatten-stream (stream-cdr stream))))))
+      the-empty-stream
+      (interleave-delayed
+        (stream-car stream)
+        (delay (flatten-stream (stream-cdr stream))))))
 
 
 
@@ -161,10 +88,10 @@ end
 
 (define (simple-flatten stream)
   (stream-map
-   stream-car
-   (stream-filter
-	(lambda (f) (not (stream-null? f)))
-	stream)))
+    stream-car
+    (stream-filter
+      (lambda (f) (not (stream-null? f)))
+      stream)))
 
 ;; (define (stream-flatmap proc s)
 ;;   (flatten-stream (stream-map proc s)))
@@ -186,18 +113,16 @@ end
 (and (job ?x ?j) (job ?anyone ?j))
 end
 
-
-
 (define (uniquely-asserted operands frame-stream)
   (stream-flatmap
-   (lambda (frame)
-	 (let ((result (qeval (uniqued-query operands)
-						  (singleton-stream frame))))
-	   (if (and (not (stream-null? result))
-				(stream-null? (stream-cdr result)))
-		   result
-		   the-empty-stream)))
-   frame-stream))
+    (lambda (frame)
+      (let ((result (qeval (uniqued-query operands)
+                           (singleton-stream frame))))
+        (if (and (not (stream-null? result))
+                 (stream-null? (stream-cdr result)))
+            result
+            the-empty-stream)))
+    frame-stream))
 
 (define (uniqued-query exps) (car exps))
 
@@ -215,13 +140,13 @@ end
 (query-driver-loop)
 
 (and (supervisor ?x ?y)
-	 (unique (supervisor ?anyone ?y)))
+     (unique (supervisor ?anyone ?y)))
 
 (and (supervisor ?middle-manager ?person)
-	 (supervisor ?x ?middle-manager))
+     (supervisor ?x ?middle-manager))
 
 (and (supervisor ?middle-manager ?person)
-	 (unique (supervisor ?x ?middle-manager)))
+     (unique (supervisor ?x ?middle-manager)))
 end
 
 ;;;;
@@ -232,8 +157,8 @@ end
 (query-syntax-process '(job ?x (computer programmer)))
 
 (display-stream
- (qeval (query-syntax-process '(job ?x (computer programmer)))
-		(singleton-stream '())))
+  (qeval (query-syntax-process '(job ?x (computer programmer)))
+         (singleton-stream '())))
 
 ;; (display-stream
 ;;  (simple-query (query-syntax-process '(job ?x (computer programmer)))
@@ -287,46 +212,46 @@ end
 
 (query-driver-loop)
 (and (job ?person (computer programmer))
-	 (address ?person ?where))
+     (address ?person ?where))
 
 end
 
 (untrace conjoin)
 
 ;4.4.4.3
+;
 (display-stream
- (find-assertions (query-syntax-process '(job ?x (computer programmer)))
-                                  (singleton-stream '())))
+  (find-assertions (query-syntax-process '(job ?x (computer programmer)))
+                   (singleton-stream '())))
 
 
 (fetch-assertions (query-syntax-process '(job ?x (computer programmer)))
-                                  (singleton-stream '()))
+                  (singleton-stream '()))
 
 
 (check-an-assertion '(job (Hacker Alyssa P) (computer programmer))
-                                        (query-syntax-process '(job ?x (computer programmer)))
-                                        (singleton-stream '()))
+                    (query-syntax-process '(job ?x (computer programmer)))
+                    (singleton-stream '()))
 
 (check-an-assertion '(job (Bitdiddle Ben) (computer wizard))
-                                        (query-syntax-process '(job ?x (computer programmer)))
-                                        (singleton-stream '()))
+                    (query-syntax-process '(job ?x (computer programmer)))
+                    (singleton-stream '()))
 
 (pattern-match
-                          (query-syntax-process '(job ?x (computer programmer)))
-                          '(job (Hacker Alyssa P) (computer programmer))
-                          (singleton-stream '()))
-
+  (query-syntax-process '(job ?x (computer programmer)))
+  '(job (Hacker Alyssa P) (computer programmer))
+  (singleton-stream '()))
 
 (pattern-match
-                          (query-syntax-process '(job ?x ?y))
-                          '(job (Hacker Alyssa P) (computer programmer))
-                          (singleton-stream '()))
-
-(binding-in-frame '(? y)
- (pattern-match
   (query-syntax-process '(job ?x ?y))
   '(job (Hacker Alyssa P) (computer programmer))
-  (singleton-stream '())))
+  (singleton-stream '()))
+
+(binding-in-frame '(? y)
+                  (pattern-match
+                    (query-syntax-process '(job ?x ?y))
+                    '(job (Hacker Alyssa P) (computer programmer))
+                    (singleton-stream '())))
 
 ;4.4.4.4
 
@@ -339,20 +264,20 @@ end
 (apply-rules (query-syntax-process '(wheel ?p)) (singleton-stream '()))
 
 (apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
-                           (query-syntax-process '(wheel ?p)) (singleton-stream '()))
+              (query-syntax-process '(wheel ?p)) (singleton-stream '()))
 
 (display-stream
- (stream-map
-  (lambda (frame)
-        (instantiate
-         (query-syntax-process '(wheel ?p))
-         frame
-         (lambda (v f) (v))))
-  (apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
-                                (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
+  (stream-map
+    (lambda (frame)
+      (instantiate
+        (query-syntax-process '(wheel ?p))
+        frame
+        (lambda (v f) (v))))
+    (apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
+                  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
 
 (rename-variables-in
- (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
+  (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
 
 
 
@@ -363,34 +288,34 @@ end
 ;(untrace unify-match)
 
 (unify-match 1 '(? x)
-                         (singleton-stream '()))
+             (singleton-stream '()))
 
 (unify-match '(? x) 1
-                         (singleton-stream '()))
+             (singleton-stream '()))
 
 (unify-match '(? x) '(? x)
-                         (singleton-stream '()))
+             (singleton-stream '()))
 
 (query-syntax-process '(?x ?x))
 ;(?x ?x) (?y ?y)
 (unify-match '((? x) (? x)) '((? y) (? y))
-                         (singleton-stream '()))
+             (singleton-stream '()))
 
 (unify-match '((? y) (? x)) '((? x) (? y))
-                         (singleton-stream '()))
+             (singleton-stream '()))
 
 
 (unify-match '(? x) 1
-                         (extend '(? x) 2
-                                         (singleton-stream '())))
+             (extend '(? x) 2
+                     (singleton-stream '())))
 
 (unify-match '(? x) 2
-                         (extend '(? x) 2
-                                         (singleton-stream '())))
+             (extend '(? x) 2
+                     (singleton-stream '())))
 
 (unify-match '((? x) (? y)) '((? y) 1)
-                         (extend '(? x) 2
-                                         (singleton-stream '())))
+             (extend '(? x) 2
+                     (singleton-stream '())))
 
 (depends-on? '((? x) (? x)) '(? x)
-                         (singleton-stream '()))
+             (singleton-stream '()))

@@ -288,3 +288,67 @@ end
 (son-of ?m ?s)
 end
 
+(display-stream
+  (qeval '(job (? x) (? y)) (singleton-stream '())))
+
+(display-stream
+  (find-assertions '(job (? x) (? y)) (singleton-stream '())))
+
+(display-stream
+  (apply-rules '(job (? x) (? y)) (singleton-stream '())))
+
+(display-stream
+  (qeval '(lives-near (? x) (? y)) (singleton-stream '())))
+
+(display-stream
+  (find-assertions '(lives-near (? x) (? y)) (singleton-stream '())))
+
+(display-stream
+  (apply-rules '(lives-near (? x) (? y)) (singleton-stream '())))
+
+;ex 4.65
+(query-driver-loop)
+(wheel ?who)
+
+end
+
+;ex 4.66
+; SICP 4.4.3 Ex. 4.66 - nakayama-blog - http://sioramen.sub.jp/blog/2009/12/sicp-443-ex-466.html
+
+;ex4.68
+(query-driver-loop)
+(assert! (rule (reverse () ())))
+(assert! (rule (reverse (?u . ?v) ?y)
+               (and (reverse ?v ?w)
+                    (append-to-form ?w (?u) ?y))))
+
+(reverse (1 2 3) ?x)
+
+;(reverse ?x (1 2 3))
+
+;ex4.69
+
+(assert! (rule ((great . ?rel) ?x ?y)
+               (and (son-of ?x ?w)
+                    (?rel ?w ?y))))
+
+
+(assert! (rule ((son) ?x ?y)
+               (son-of ?x ?y)))
+
+
+(assert! (rule ((grandson) ?x ?y)
+               (grandson-of ?x ?y)))
+
+(assert! (rule (is-last-grandson? ?rel)
+               (last-pair ?rel (grandson))
+               ))
+
+
+((great grandson) ?g ?ggs)
+(?rel Adam Irad)
+(and
+  (?rel Adam Irad)
+  (is-last-grandson? ?rel)
+  )
+end
