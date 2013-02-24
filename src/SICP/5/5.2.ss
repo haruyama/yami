@@ -14,7 +14,7 @@
 	  (cond ((eq? message 'get) contents)
 			((eq? message 'set)
 			 (lambda (value) (set! contents value)))
-			(else 
+			(else
 			 (error "Unknown request --- REGISTER" message))))
 	dispatch))
 
@@ -50,7 +50,7 @@
 
 (define (push stack value)
   ((stack 'push) value))
-			  
+
 (define (start machine)
   (machine 'start))
 
@@ -179,7 +179,7 @@
 ;; 					there))
 
 ;; (make-machine '(a) '() ex5.8-text)
- 
+
 
 (define (extract-labels text receive)
   (if (null? text)
@@ -202,7 +202,7 @@
 
 
 (define (make-assign inst machine labels ops pc)
-  (let ((target 
+  (let ((target
 		 (get-register machine (assign-reg-name inst)))
 		(value-exp (assign-value-exp inst)))
 	(let ((value-proc
@@ -214,7 +214,7 @@
 	  (lambda ()
 		(set-contents! target (value-proc))
 		(advance-pc pc)))))
-	
+
 
 
 (define (assign-reg-name assign-instruction)
@@ -263,7 +263,7 @@
 			 (lambda () (set-contents! pc insts))))
 		  ((register-exp? dest)
 		   (let ((reg
-				  (get-register machine 
+				  (get-register machine
 								(register-exp-reg dest))))
 			 (lambda ()
 			   (set-contents! pc (get-contents reg)))))
@@ -281,7 +281,7 @@
 	  (advance-pc pc))))
 
 (define (make-restore inst machine stack pc)
-  (let ((reg (get-register machine 
+  (let ((reg (get-register machine
 						   (stack-inst-reg-name inst))))
 	(lambda ()
 	  (set-contents! reg (pop stack))
@@ -289,9 +289,9 @@
 
 (define (stack-inst-reg-name stack-instruction)
   (cadr stack-instruction))
-			  
-		  
-		  
+
+
+
 (define (make-perform inst machine labels ops pc)
   (let ((action (perform-action inst)))
 	(if (operation-exp? action)
@@ -310,7 +310,7 @@
 		 (let ((c (constant-exp-value exp)))
 		   (lambda () c)))
 		((label-exp? exp)
-		 (let ((insts 
+		 (let ((insts
 				(lookup-label labels
 							  (label-exp-label exp))))
 		   (lambda () insts)))
@@ -396,7 +396,7 @@
 	 (assign b (reg t))
 	 (goto (label test-b))
 	 gcd-done)))
-			 
+
 (set-register-contents! gcd-machine 'a 206)
 (set-register-contents! gcd-machine 'b 40)
 (get-register-contents gcd-machine 'a)
@@ -478,7 +478,7 @@
 	 (goto (reg continue))
 	 fib-done)
 ))
-			 
+
 (set-register-contents! fib-machine 'n 7)
 (set-register-contents! fib-machine 'continue 0)
 (set-register-contents! fib-machine 'val 0)
@@ -506,7 +506,7 @@
 		   (list (list 'initialize-stack
 					   (lambda () (stack 'initialize)))
 				 ;追加
-				 (list 'print-stack-statistics 
+				 (list 'print-stack-statistics
 					   (lambda () (stack 'print-statistics)))))
 		  (register-table
 		   (list (list 'pc pc) (list 'flag flag))))
@@ -555,7 +555,7 @@
 	  (set! number-pushes (+ 1 number-pushes))
 	  (set! current-depth (+ 1 current-depth))
 	  (set! max-depth (max current-depth max-depth)))
-	
+
 	(define (pop)
 	  (if (null? s)
 		  (error "Empty stack -- POP")
@@ -688,7 +688,7 @@
 	(let ((the-ops
 		   (list (list 'initialize-stack
 					   (lambda () (stack 'initialize)))
-				 (list 'print-stack-statistics 
+				 (list 'print-stack-statistics
 					   (lambda () (stack 'print-statistics)))))
 		  (register-table
 		   (list (list 'pc pc) (list 'flag flag)))
@@ -787,7 +787,7 @@
 ;; 	(let ((the-ops
 ;; 		   (list (list 'initialize-stack
 ;; 					   (lambda () (stack 'initialize)))
-;; 				 (list 'print-stack-statistics 
+;; 				 (list 'print-stack-statistics
 ;; 					   (lambda () (stack 'print-statistics)))))
 ;; 		  (register-table
 ;; 		   (list (list 'pc pc) (list 'flag flag)))
@@ -933,7 +933,7 @@
 ;; 	(let ((the-ops
 ;; 		   (list (list 'initialize-stack
 ;; 					   (lambda () (stack 'initialize)))
-;; 				 (list 'print-stack-statistics 
+;; 				 (list 'print-stack-statistics
 ;; 					   (lambda () (stack 'print-statistics)))))
 ;; 		  (register-table
 ;; 		   (list (list 'pc pc) (list 'flag flag)))

@@ -1,4 +1,4 @@
-(load "./5.2.ss")
+(load "./5.2/5.2.ss")
 
 ;ex5.21
 
@@ -14,7 +14,7 @@
 	   loop
 	   (test (op null?) (reg tree))
 	   (branch (label null))
-	   
+
 	   (assign tmp (op pair?) (reg tree))
 	   (test (op not) (reg tmp))
 	   (branch (label pair))
@@ -56,7 +56,7 @@
 
 (count-leaves-a '(1 2))
 (count-leaves-a '(1 (2 3)))
-	  
+
 (define x '((1 2) 3 4))
 (count-leaves-a (list x x))
 
@@ -73,10 +73,10 @@
 	   iter
 	   (test (op null?) (reg tree))
 	   (branch (label null))
-	   
+
 	   (assign tmp (op pair?) (reg tree))
 	   (test (op not) (reg tmp))
-	   (branch (label pair))
+	   (branch (label not-pair))
 
 	   (save tree)
 	   (save continue)
@@ -90,7 +90,7 @@
 	   (assign tree (op cdr) (reg tree))
 	   (goto (label iter))
 
-	   pair
+	   not-pair
 	   (assign n (op +) (reg n) (const 1))
 	   (goto (reg continue))
 
@@ -112,8 +112,7 @@
 (define x '((1 2) 3 4))
 (count-leaves-b (list x x))
 
-
-										;ex5.22
+;ex5.22
 
 (define (append-m x y)
   (define append-machine
@@ -184,7 +183,7 @@
   (start append!-machine)
   (display (get-register-contents append!-machine 'val))
   (newline))
-	   
+
 
 (define x '(a b))
 (define y '(c d))
@@ -196,12 +195,6 @@
 (define y '(c d))
 (append! x y)
 
-
-
-	
-
-
-
 (vector-ref '#(0 1 2 3 4 5) 3)
 (vector-ref '#(0 1 2 3 4 5) 0)
 (vector-ref '#(0 1 2 3 4 5) 6)
@@ -212,10 +205,6 @@
 
 (define the-cars (make-vector 128))
 (define the-cdrs (make-vector 128))
-
-
-
-
 
 ;;gc
 
@@ -255,7 +244,7 @@
   (branch (label pair))
   (assign new (reg old))
   (goto (reg relocate-continue))
-  
+
   pair
   (assign oldcr (op vector-ref) (reg the-cars) (reg old))
   (test (op broken-heart?) (reg oldcr))
@@ -263,7 +252,7 @@
   (assign new (reg free))
 
   (assign free (op +) (reg free) (const 1))
-  
+
   (perform (op vector-set!)
 		   (reg new-cars) (reg new) (reg oldcr))
   (assign oldcr (op vector-ref) (reg the-cdrs) (reg old))
