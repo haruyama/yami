@@ -6,8 +6,8 @@
 
 (define (my-last-pair x)
   (if (null? (cdr x))
-	  x
-	  (my-last-pair (cdr x))))
+      x
+      (my-last-pair (cdr x))))
 
 
 (define x (list 'a 'b))
@@ -27,11 +27,11 @@
 
 (define (mystery x)
   (define (loop x y)
-	(if (null? x)
-		y
-		(let ((temp (cdr x)))
-		  (set-cdr! x y)
-		  (loop temp x))))
+    (if (null? x)
+        y
+        (let ((temp (cdr x)))
+          (set-cdr! x y)
+          (loop temp x))))
   (loop x '()))
 
 (define v (list 'a 'b 'c 'd))
@@ -54,10 +54,10 @@ w
 ;ex3.16
 (define (count-pairs x)
   (if (not (pair? x))
-	  0
-	  (+ (count-pairs (car x))
-		 (count-pairs (cdr x))
-		 1)))
+      0
+      (+ (count-pairs (car x))
+         (count-pairs (cdr x))
+         1)))
 
 (define x (list 'a 'b))
 (define z1 (cons x x))
@@ -73,6 +73,11 @@ w
 
 (define ab (cons 'a 'b))
 
+(define z (cons 'b 'c))
+(define y (cons z z))
+(define x (cons 'a y))
+x
+(count-pairs x)
 
 (define x4 (cons ab (cons 'c ab)))
 (count-pairs x4)
@@ -102,32 +107,32 @@ w
 
 (define (count-pairs2 x)
   (let ((memo '()))
-	(define (iter x)
-;	  (display x)
-;	  (newline)
-	  (cond ((or (not (pair? x)) (memq x memo))
-			 0)
-			(else
-			 (if (null? memo)
-				 (set! memo (list x))
-;				 (append! memo (list x)))
-				 (set! memo (cons x memo)))
-			 (+ (iter (car x))
-				(iter (cdr x))
-				1))))
-	(iter x)))
+    (define (iter x)
+      ;      (display x)
+      ;      (newline)
+      (cond ((or (not (pair? x)) (memq x memo))
+             0)
+            (else
+              (if (null? memo)
+                  (set! memo (list x))
+                  ; (append! memo (list x)))
+                  (set! memo (cons x memo)))
+              (+ (iter (car x))
+                 (iter (cdr x))
+                 1))))
+    (iter x)))
 
 (define (count-pairs2 x)
   (let ((memo '()))
-	(define (iter x)
-	  (cond ((or (not (pair? x)) (memq x memo))
-			 0)
-			(else
-			 (set! memo (cons x memo))
-			 (+ (iter (car x))
-				(iter (cdr x))
-				1))))
-	(iter x)))
+    (define (iter x)
+      (cond ((or (not (pair? x)) (memq x memo))
+             0)
+            (else
+              (set! memo (cons x memo))
+              (+ (iter (car x))
+                 (iter (cdr x))
+                 1))))
+    (iter x)))
 
 
 (count-pairs2 z1)
@@ -144,11 +149,11 @@ w
   (define tracelist '())
   (define (rotate-list-aux? x)
     (cond ((null? x) #f)
-;          ((null? (cdr x)) #f)
+          ;          ((null? (cdr x)) #f)
           ((memq x tracelist) #t)
           (else
-           (set! tracelist (cons x tracelist))
-           (rotate-list-aux? (cdr x)))))
+            (set! tracelist (cons x tracelist))
+            (rotate-list-aux? (cdr x)))))
   (rotate-list-aux? x))
 
 (rotate-list? (list 'a 'b 'c))
@@ -175,9 +180,9 @@ w
 
 (define (mycons1 x y)
   (define (dispatch m)
-	(cond ((eq? m 'car) x)
-		  ((eq? m 'cdr) y)
-		  (else (error "Undefined operation -- CONS" m))))
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          (else (error "Undefined operation -- CONS" m))))
   dispatch)
 
 (define (mycar z) (z 'car))
@@ -190,11 +195,11 @@ w
   (define (set-x! v) (set! x v))
   (define (set-y! v) (set! y v))
   (define (dispatch m)
-	(cond ((eq? m 'car) x)
-		  ((eq? m 'cdr) y)
-		  ((eq? m 'set-car!) set-x!)
-		  ((eq? m 'set-cdr!) set-y!)
-		  (else (error "Undefined operation -- CONS" m))))
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          ((eq? m 'set-car!) set-x!)
+          ((eq? m 'set-cdr!) set-y!)
+          (else (error "Undefined operation -- CONS" m))))
   dispatch)
 
 (define (myset-car! z new-value)
@@ -233,26 +238,26 @@ w
 
 (define (front-queue queue)
   (if (empty-queue? queue)
-	  (error "FRONT called with an empty queue" queue)
-	  (car (front-ptr queue))))
+      (error "FRONT called with an empty queue" queue)
+      (car (front-ptr queue))))
 
 (define (insert-queue! queue item)
   (let ((new-pair (cons item '())))
-	(cond ((empty-queue? queue)
-		   (set-front-ptr! queue new-pair)
-		   (set-rear-ptr! queue new-pair)
-		   queue)
-		  (else
-		   (set-cdr! (rear-ptr queue) new-pair)
-		   (set-rear-ptr! queue new-pair)
-		   queue))))
+    (cond ((empty-queue? queue)
+           (set-front-ptr! queue new-pair)
+           (set-rear-ptr! queue new-pair)
+           queue)
+          (else
+            (set-cdr! (rear-ptr queue) new-pair)
+            (set-rear-ptr! queue new-pair)
+            queue))))
 
 (define (delete-queue! queue)
   (cond ((empty-queue? queue)
-		 (error "DELETE! called with an empty queue" queue))
-		(else
-		 (set-front-ptr! queue (cdr (front-ptr queue)))
-		 queue)))
+         (error "DELETE! called with an empty queue" queue))
+        (else
+          (set-front-ptr! queue (cdr (front-ptr queue)))
+          queue)))
 
 (define q1 (make-queue))
 (display q1)
@@ -283,44 +288,44 @@ w
 ;ex 3.22
 (define (make-queue)
   (let ((front-ptr '())
-		(rear-ptr '()))
-	(define (set-front-ptr! item)
-	  (set! front-ptr item)
-	  )
-	(define (set-rear-ptr! item) (set! rear-ptr item))
-	(define (empty-queue?)
-		(null? front-ptr))
-	(define (front-queue)
-		(if (empty-queue?)
-			(error "FRONT called with an empty queue")
-			(car front-ptr)))
-	(define (insert-queue! item)
-		(let ((new-pair (cons item '())))
-		  (cond ((empty-queue?)
-				 (set-front-ptr! new-pair)
-				 (set-rear-ptr! new-pair)
-				 dispatch)
-				(else
-				 (set-cdr! rear-ptr new-pair)
-				 (set-rear-ptr! new-pair)
-				 dispatch))))
-	(define (delete-queue!)
-		(cond ((empty-queue?)
-			   (error "DELETE! called with an empty queue"))
-			  (else
-			   (set-front-ptr! (cdr front-ptr))
-			   dispatch)))
+        (rear-ptr '()))
+    (define (set-front-ptr! item)
+      (set! front-ptr item)
+      )
+    (define (set-rear-ptr! item) (set! rear-ptr item))
+    (define (empty-queue?)
+      (null? front-ptr))
+    (define (front-queue)
+      (if (empty-queue?)
+          (error "FRONT called with an empty queue")
+          (car front-ptr)))
+    (define (insert-queue! item)
+      (let ((new-pair (cons item '())))
+        (cond ((empty-queue?)
+               (set-front-ptr! new-pair)
+               (set-rear-ptr! new-pair)
+               dispatch)
+              (else
+                (set-cdr! rear-ptr new-pair)
+                (set-rear-ptr! new-pair)
+                dispatch))))
+    (define (delete-queue!)
+      (cond ((empty-queue?)
+             (error "DELETE! called with an empty queue"))
+            (else
+              (set-front-ptr! (cdr front-ptr))
+              dispatch)))
     (define (print-queue)
       (display front-ptr)
       )
-	(define (dispatch m)
-	  (cond ((eq? m 'empty-queue?) (empty-queue?))
-			  ((eq? m 'front-queue) (front-queue))
-			  ((eq? m 'insert-queue!) insert-queue!)
-			  ((eq? m 'delete-queue!) (delete-queue!))
-			  ((eq? m 'print-queue) (print-queue))
-			  (else (error "Undefined operation -- QUEUE" m))))
-	dispatch)
+    (define (dispatch m)
+      (cond ((eq? m 'empty-queue?) (empty-queue?))
+            ((eq? m 'front-queue) (front-queue))
+            ((eq? m 'insert-queue!) insert-queue!)
+            ((eq? m 'delete-queue!) (delete-queue!))
+            ((eq? m 'print-queue) (print-queue))
+            (else (error "Undefined operation -- QUEUE" m))))
+    dispatch)
   )
 
 (define q2 (make-queue))
@@ -382,10 +387,10 @@ w
            (set-rear-ptr! queue new-item)
            queue)
           (else
-           (set-prev-item! new-item (rear-ptr queue))
-           (set-next-item! (rear-ptr queue) new-item)
-           (set-rear-ptr! queue new-item)
-           queue))))
+            (set-prev-item! new-item (rear-ptr queue))
+            (set-next-item! (rear-ptr queue) new-item)
+            (set-rear-ptr! queue new-item)
+            queue))))
 
 (define (front-insert-queue! queue value)
   (let ((new-item (make-item value)))
@@ -394,23 +399,24 @@ w
            (set-rear-ptr! queue new-item)
            queue)
           (else
-           (set-next-item! new-item (front-ptr queue))
-           (set-front-ptr! queue new-item)
-           queue))))
+            (set-next-item! new-item (front-ptr queue))
+            (set-prev-item! (front-ptr queue) new-item)
+            (set-front-ptr! queue new-item)
+            queue))))
 
 (define (front-delete-queue! queue)
   (cond ((empty-queue? queue)
          (error "empty queue"))
         (else
-         (set-front-ptr! queue (next-item (front-ptr queue)))
-         queue)))
+          (set-front-ptr! queue (next-item (front-ptr queue)))
+          queue)))
 
 (define (rear-delete-queue! queue)
   (cond ((empty-queue? queue)
          (error "empty queue"))
         (else
-         (set-rear-ptr! queue (prev-item (rear-ptr queue)))
-         queue)))
+          (set-rear-ptr! queue (prev-item (rear-ptr queue)))
+          queue)))
 
 (define (display-queue queue)
   (define (display-queue-internal q)
@@ -418,9 +424,9 @@ w
            (display " ")
            (display (value-of-item q)))
           (else
-           (begin (display " ")
-                  (display (value-of-item q))
-                  (display-queue-internal (next-item q))))))
+            (begin (display " ")
+                   (display (value-of-item q))
+                   (display-queue-internal (next-item q))))))
   (if (empty-queue? queue)
       (display "empty queue\n")
       (begin
@@ -453,21 +459,21 @@ w
 ;1-d
 (define (lookup key table)
   (let ((record (myassoc key (cdr table))))
-	(if record
-		(cdr record)
-		#f)))
+    (if record
+        (cdr record)
+        #f)))
 
 (define (myassoc key records)
   (cond ((null? records) #f)
-		((equal? key (caar records)) (car records))
-		(else (myassoc key (cdr records)))))
+        ((equal? key (caar records)) (car records))
+        (else (myassoc key (cdr records)))))
 
 (define (insert! key value table)
   (let ((record (myassoc key (cdr table))))
-	(if record
-		(set-cdr! record value)
-		(set-cdr! table
-				  (cons (cons key value) (cdr table)))))
+    (if record
+        (set-cdr! record value)
+        (set-cdr! table
+                  (cons (cons key value) (cdr table)))))
   'ok)
 
 (define (make-table)
@@ -491,27 +497,27 @@ w
 
 (define (lookup2 key-1 key-2 table)
   (let ((subtable (myassoc key-1 (cdr table))))
-	(if subtable
-		(let ((record (myassoc key-2 (cdr subtable))))
-		  (if record
-			  (cdr record)
-			  #f))
-		#f)))
+    (if subtable
+        (let ((record (myassoc key-2 (cdr subtable))))
+          (if record
+              (cdr record)
+              #f))
+        #f)))
 
 
 (define (insert2! key-1 key-2 value table)
   (let ((subtable (myassoc key-1 (cdr table))))
-	(if subtable
-		(let ((record (myassoc key-2 (cdr subtable))))
-		  (if record
-			  (set-cdr! record value)
-			  (set-cdr! subtable
-						(cons (cons key-2 value)
-							  (cdr subtable)))))
-		(set-cdr! table
-				  (cons (list key-1
-							  (cons key-2 value))
-						(cdr table)))))
+    (if subtable
+        (let ((record (myassoc key-2 (cdr subtable))))
+          (if record
+              (set-cdr! record value)
+              (set-cdr! subtable
+                        (cons (cons key-2 value)
+                              (cdr subtable)))))
+        (set-cdr! table
+                  (cons (list key-1
+                              (cons key-2 value))
+                        (cdr table)))))
   'ok)
 
 
@@ -534,33 +540,33 @@ w
 (define false #f)
 (define (make-table)
   (let ((local-table (list '*table*)))
-	(define (lookup key-1 key-2)
-	  (let ((subtable (assoc key-1 (cdr local-table))))
-		(if subtable
-			(let ((record (assoc key-2 (cdr subtable))))
-			  (if record
-				  (cdr record)
-				  false ))
-			false)))
-	(define (insert! key-1 key-2 value)
-	  (let ((subtable (assoc key-1 (cdr local-table))))
-		(if subtable
-			(let ((record (assoc key-2 (cdr subtable))))
-			  (if record
-				  (set-cdr! record value)
-				  (set-cdr! subtable
-							(cons (cons key-2 value)
-								  (cdr subtable)))))
-			(set-cdr! local-table
-					  (cons (list key-1
-								  (cons key-2 value))
-							(cdr local-table)))))
-	  'ok)
-	(define (dispatch m)
-	  (cond ((eq? m 'lookup-proc) lookup)
-			((eq? m 'insert-proc!) insert!)
-			(else (error "Unknown operation -- TABLE" m))))
-	dispatch))
+    (define (lookup key-1 key-2)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (cdr record)
+                  false ))
+            false)))
+    (define (insert! key-1 key-2 value)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (set-cdr! record value)
+                  (set-cdr! subtable
+                            (cons (cons key-2 value)
+                                  (cdr subtable)))))
+            (set-cdr! local-table
+                      (cons (list key-1
+                                  (cons key-2 value))
+                            (cdr local-table)))))
+      'ok)
+    (define (dispatch m)
+      (cond ((eq? m 'lookup-proc) lookup)
+            ((eq? m 'insert-proc!) insert!)
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
 
 ;(define operation-table (make-table))
 ;(define get (operation-table 'lookup-proc))
@@ -570,36 +576,36 @@ w
 
 (define (make-table2 same-key?)
   (define (myassoc2 key records)
-	(cond ((null? records) #f)
-		  ((same-key? key (caar records)) (car records))
-		  (else (myassoc2 key (cdr records)))))
+    (cond ((null? records) #f)
+          ((same-key? key (caar records)) (car records))
+          (else (myassoc2 key (cdr records)))))
 
 
   (let ((local-table (list '*table*)))
-	(define (lookup key-1)
-	  (let ((record (myassoc2 key-1 (cdr local-table))))
-		(if record
-			(cdr record)
-			false )))
-	(define (insert! key-1 value)
-	  (let ((record (myassoc2 key-1 (cdr local-table))))
-		(if record
-			(set-cdr! record value)
-			(set-cdr! local-table
-					  (cons (cons key-1 value)
-							(cdr local-table)))))
-	  'ok)
-	(define (dispatch m)
-	  (cond ((eq? m 'lookup-proc) lookup)
-			((eq? m 'insert-proc!) insert!)
-			(else (error "Unknown operation -- TABLE" m))))
-	dispatch))
+    (define (lookup key-1)
+      (let ((record (myassoc2 key-1 (cdr local-table))))
+        (if record
+            (cdr record)
+            false )))
+    (define (insert! key-1 value)
+      (let ((record (myassoc2 key-1 (cdr local-table))))
+        (if record
+            (set-cdr! record value)
+            (set-cdr! local-table
+                      (cons (cons key-1 value)
+                            (cdr local-table)))))
+      'ok)
+    (define (dispatch m)
+      (cond ((eq? m 'lookup-proc) lookup)
+            ((eq? m 'insert-proc!) insert!)
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
 
 (define (ambiguous-equal? k t)
   (cond ((= k t) #t)
-		((= (+ k 1) t) #t)
-		((= (- k 1) t) #t)
-		(else #f)))
+        ((= (+ k 1) t) #t)
+        ((= (- k 1) t) #t)
+        (else #f)))
 
 (define t324 (make-table2 ambiguous-equal?))
 
@@ -616,42 +622,42 @@ w
 ;ex3.25
 (define (lookup-m keys table)
   (cond ((null? keys) (error "LOOKUP - null keys"))
-		((null? (cdr keys))
-		 (let ((key (car keys)))
-		   (let ((record (assoc key (cdr table))))
-			 (if record
-				 (cdr record)
-				 #f))))
-		(else
-		 (let ((key (car keys))
-			   (cdrkeys (cdr keys)))
-		   (let ((subtable (assoc key (cdr table))))
-			 (if subtable
-				 (lookup-m cdrkeys subtable)
-				 #f))))))
+        ((null? (cdr keys))
+         (let ((key (car keys)))
+           (let ((record (assoc key (cdr table))))
+             (if record
+                 (cdr record)
+                 #f))))
+        (else
+          (let ((key (car keys))
+                (cdrkeys (cdr keys)))
+            (let ((subtable (assoc key (cdr table))))
+              (if subtable
+                  (lookup-m cdrkeys subtable)
+                  #f))))))
 
 
 (define (insert-m! keys value table)
   (cond ((null? keys) (error "INSERT - null keys"))
-		((null? (cdr keys))
-		 (let ((key (car keys)))
-		   (let ((record (assoc key (cdr table))))
-			 (if record
-				 (set-cdr! record value)
-				 (set-cdr! table
-						   (cons (cons key value) (cdr table)))))))
-		(else
-		 (let ((key (car keys))
-			   (cdrkeys (cdr keys)))
-		   (let ((subtable (assoc key (cdr table))))
-			 (cond (subtable
-					(insert-m! cdrkeys value subtable))
-				   (else
-					(let ((newsubtable (cons key '())))
-					  (set-cdr! table
-								(cons newsubtable
-									  (cdr table)))
-					  (insert-m! cdrkeys value newsubtable)))))))))
+        ((null? (cdr keys))
+         (let ((key (car keys)))
+           (let ((record (assoc key (cdr table))))
+             (if record
+                 (set-cdr! record value)
+                 (set-cdr! table
+                           (cons (cons key value) (cdr table)))))))
+        (else
+          (let ((key (car keys))
+                (cdrkeys (cdr keys)))
+            (let ((subtable (assoc key (cdr table))))
+              (cond (subtable
+                      (insert-m! cdrkeys value subtable))
+                    (else
+                      (let ((newsubtable (cons key '())))
+                        (set-cdr! table
+                                  (cons newsubtable
+                                        (cdr table)))
+                        (insert-m! cdrkeys value newsubtable)))))))))
 
 
 (define (make-table)
@@ -684,37 +690,37 @@ w
 
 (define (lookup-t given-key tree)
   (define (lookup-t-sub subtree)
-	(if (null? subtree) #f
-		(let ((k (key subtree)))
-		  (cond ((= k given-key) (value subtree))
-				((< k given-key)
-				 (lookup-t-sub (right-branch subtree)))
-				(else
-				 (lookup-t-sub (left-branch subtree)))))))
+    (if (null? subtree) #f
+        (let ((k (key subtree)))
+          (cond ((= k given-key) (value subtree))
+                ((< k given-key)
+                 (lookup-t-sub (right-branch subtree)))
+                (else
+                  (lookup-t-sub (left-branch subtree)))))))
   (lookup-t-sub (cdr tree)))
 
 
 
 (define (insert-t! given-key given-value tree)
   (define (insert-t-sub! subtree)
-	(if (null? subtree)
-		(make-subtree given-key given-value '() '())
-		(let ((k (key subtree)))
-		  (cond ((= k given-key) (set-value! subtree given-value))
-			  ((< k given-key)
-			   (if (null? (right-branch subtree))
-				   (set-right-branch! subtree
-									  (make-subtree given-key given-value '() '()))
-				   (insert-t-sub! (right-branch subtree))))
-			  (else
-			   (if (null? (left-branch subtree))
-				   (set-left-branch! subtree
-									  (make-subtree given-key given-value '() '()))
-				   (insert-t-sub! (left-branch subtree))))))))
+    (if (null? subtree)
+        (make-subtree given-key given-value '() '())
+        (let ((k (key subtree)))
+          (cond ((= k given-key) (set-value! subtree given-value))
+                ((< k given-key)
+                 (if (null? (right-branch subtree))
+                     (set-right-branch! subtree
+                                        (make-subtree given-key given-value '() '()))
+                     (insert-t-sub! (right-branch subtree))))
+                (else
+                  (if (null? (left-branch subtree))
+                      (set-left-branch! subtree
+                                        (make-subtree given-key given-value '() '()))
+                      (insert-t-sub! (left-branch subtree))))))))
   (if (null? (cdr tree))
-	  (set-cdr! tree
-				(make-subtree given-key given-value '() '()))
-	  (insert-t-sub! (cdr tree))))
+      (set-cdr! tree
+                (make-subtree given-key given-value '() '()))
+      (insert-t-sub! (cdr tree))))
 
 
 (define tree1 (make-init-tree))
@@ -747,49 +753,49 @@ w
 
 (define (fib n)
   (cond ((= n 0) 0)
-		((= n 1) 1)
-		(else (+ (fib (- n 1))
-				 (fib (- n 2))))))
+        ((= n 1) 1)
+        (else (+ (fib (- n 1))
+                 (fib (- n 2))))))
 
 (define (make-table)
   (list '*table*))
 
 (define (lookup key table)
   (let ((record (myassoc key (cdr table))))
-	(if record
-		(cdr record)
-		#f)))
+    (if record
+        (cdr record)
+        #f)))
 
 (define (myassoc key records)
   (cond ((null? records) #f)
-		((equal? key (caar records)) (car records))
-		(else (myassoc key (cdr records)))))
+        ((equal? key (caar records)) (car records))
+        (else (myassoc key (cdr records)))))
 
 (define (insert! key value table)
   (let ((record (myassoc key (cdr table))))
-	(if record
-		(set-cdr! record value)
-		(set-cdr! table
-				  (cons (cons key value) (cdr table)))))
+    (if record
+        (set-cdr! record value)
+        (set-cdr! table
+                  (cons (cons key value) (cdr table)))))
   'ok)
 
 
 (define (memoize f)
   (let ((table (make-table)))
-	(lambda (x)
-	  (let ((previously-computed-result (lookup x table)))
-		(or previously-computed-result
-			(let ((result (f x)))
-			  (insert! x result table)
-			  result))))))
+    (lambda (x)
+      (let ((previously-computed-result (lookup x table)))
+        (or previously-computed-result
+            (let ((result (f x)))
+              (insert! x result table)
+              result))))))
 
 
 (define memo-fib
   (memoize (lambda (n)
-			 (cond ((= n 0) 0)
-				   ((= n 1) 1)
-				   (else (+ (memo-fib (- n 1))
-							(memo-fib (- n 2))))))))
+             (cond ((= n 0) 0)
+                   ((= n 1) 1)
+                   (else (+ (memo-fib (- n 1))
+                            (memo-fib (- n 2))))))))
 
 (memo-fib 5)
 

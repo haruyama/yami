@@ -7,8 +7,8 @@
 
 (define (find-divisor n test-divisor)
   (cond ((> (square test-divisor) n) n)
-		((divides? test-divisor n) test-divisor)
-		(else (find-divisor n (+ test-divisor 1)))))
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
@@ -18,26 +18,26 @@
 
 (define (enumerate-interval low high)
   (if (> low high) nil
-	  (cons low (enumerate-interval (+ low 1) high))))
+      (cons low (enumerate-interval (+ low 1) high))))
 
 (define (accumulate op initial sequence)
   (if (null? sequence) initial
-	  (op (car sequence)
-		  (accumulate op initial (cdr sequence)))))
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
 
 (accumulate append
-			nil
-			(map
-			 (lambda (i)
-			   (map (lambda (j) (list i j))
-					(enumerate-interval 1 (- i 1))))
-			 (enumerate-interval 1 10)))
+            nil
+            (map
+              (lambda (i)
+                (map (lambda (j) (list i j))
+                     (enumerate-interval 1 (- i 1))))
+              (enumerate-interval 1 10)))
 
 (map
- (lambda (i)
-   (map (lambda (j) (list i j))
-		(enumerate-interval 1 (- i 1))))
- (enumerate-interval 1 10))
+  (lambda (i)
+    (map (lambda (j) (list i j))
+         (enumerate-interval 1 (- i 1))))
+  (enumerate-interval 1 10))
 
 
 (define (flatmap proc seq)
@@ -51,24 +51,24 @@
 
 (define (filter predicate sequence)
   (cond ((null? sequence) nil)
-		((predicate (car sequence))
-		 (cons (car sequence)
-			   (filter predicate (cdr sequence))))
-		(else  (filter predicate (cdr sequence)))))
+        ((predicate (car sequence))
+         (cons (car sequence)
+               (filter predicate (cdr sequence))))
+        (else  (filter predicate (cdr sequence)))))
 
 
 (define (prime-sum-pairs n)
   (map make-pair-sum
-	   (filter prime-sum?
-			   (flatmap
-				(lambda (i)
-					   (map (lambda (j) (list i j))
-							(enumerate-interval 1 (- i 1))))
-					 (enumerate-interval 1 n)))))
+       (filter prime-sum?
+               (flatmap
+                 (lambda (i)
+                   (map (lambda (j) (list i j))
+                        (enumerate-interval 1 (- i 1))))
+                 (enumerate-interval 1 n)))))
 
 (prime-sum-pairs 6)
 (for-each (lambda (x) (display (car x)) (display " "))
-	 (prime-sum-pairs 6))
+          (prime-sum-pairs 6))
 
 
 
@@ -78,27 +78,27 @@
 
 (define (accumulate-n op init seqs)
   (if (null? (car seqs)) nil
-	  (cons (accumulate op init (map car seqs))
-			(accumulate-n op init (map cdr seqs)))))
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
 
 (define (transpose mat)
   (accumulate-n  cons nil  mat))
 
 (for-each
- (lambda (x) (newline)(display x))
- (transpose
-  (prime-sum-pairs 6)))
+  (lambda (x) (newline)(display x))
+  (transpose
+    (prime-sum-pairs 6)))
 
 (define (permutations s)
   (if (null? s) (list nil)
-	  (flatmap (lambda (x)
-				 (map (lambda (p)  (cons x p))
-					  (permutations (remove x s))))
-			   s)))
+      (flatmap (lambda (x)
+                 (map (lambda (p)  (cons x p))
+                      (permutations (remove x s))))
+               s)))
 
 (define (remove item seq)
   (filter (lambda (x) (not (= x item)))
-		  seq))
+          seq))
 
 (permutations (list 1 2 3))
 (permutations (list 3))
@@ -107,16 +107,16 @@
 
 (define (unique-pairs n)
   (flatmap
-   (lambda (i)
-	 (map (lambda (j) (list i j))
-				  (enumerate-interval 1 (- i 1))))
-					 (enumerate-interval 1 n)))
+    (lambda (i)
+      (map (lambda (j) (list i j))
+           (enumerate-interval 1 (- i 1))))
+    (enumerate-interval 2 n)))
 
 (unique-pairs 6)
 
 (define (prime-sum-pairs2 n)
   (map make-pair-sum
-	   (filter prime-sum? (unique-pairs n))))
+       (filter prime-sum? (unique-pairs n))))
 
 (prime-sum-pairs2 6)
 
@@ -124,13 +124,13 @@
 ;p2.41
 (define (unique-3-tuples n)
   (flatmap
-   (lambda (i)
-	 (flatmap (lambda (j)
-			(map (lambda (k)
-				   (list i j k))
-				  (enumerate-interval 1 (- j 1))))
-			(enumerate-interval 1 (- i 1))))
-	 (enumerate-interval 1 n)))
+    (lambda (i)
+      (flatmap (lambda (j)
+                 (map (lambda (k)
+                        (list i j k))
+                      (enumerate-interval 1 (- j 1))))
+               (enumerate-interval 1 (- i 1))))
+    (enumerate-interval 1 n)))
 
 
 (unique-3-tuples 5)
@@ -138,8 +138,12 @@
 
 (define (filter-sum-3-tuples n s)
   (filter (lambda (l) (= s
-						 (accumulate + 0 l)))
-		  (unique-3-tuples n)))
+                         (accumulate + 0 l)))
+          (unique-3-tuples n)))
+
+(define (filter-sum-3-tuples n s)
+  (filter (lambda (l) (= s (apply + l)))
+          (unique-3-tuples n)))
 
 
 (filter-sum-3-tuples 7 12)
@@ -151,21 +155,20 @@
 
 (define (unique-tuples n d)
   (if (= d 0) (list '())
-	  (filter (lambda (x)
-				(or (> 2 (length x))
-					(> (car x) (cadr x))))
-			  (flatmap
-			   (lambda (i)
-				 (map (lambda (j) (cons j i))
-					  (enumerate-interval d n)))
-			   (unique-tuples (- n 1) (- d 1))))))
+      (filter (lambda (x)
+                (or (> 2 (length x))
+                    (> (car x) (cadr x))))
+              (flatmap
+                (lambda (i)
+                  (map (lambda (j) (cons j i))
+                       (enumerate-interval d n)))
+                (unique-tuples (- n 1) (- d 1))))))
 
 (unique-tuples 5 3)
 
 (define (filter-sum-3-tuples2 n s)
-  (filter (lambda (l) (= s
-						 (accumulate + 0 l)))
-		  (unique-tuples n 3)))
+  (filter (lambda (l) (= s (accumulate + 0 l)))
+          (unique-tuples n 3)))
 
 (filter-sum-3-tuples 7 10)
 (filter-sum-3-tuples 6 9)
@@ -195,18 +198,18 @@
 
 (define (enumerate-queen-move k position)
   (filter (lambda (pos)
-			(and (> (car pos) 0) (> (cdr pos) 0)))
-		  (let ((x (car position))
-				(y (cdr position)))
-			(append
-			 (map
-			  (lambda (n) (cons x n))
-			  (enumerate-interval 1 (- k 1)))
-			 (flatmap
-			  (lambda (m) (list (cons (+ x (- y m)) m)
-								(cons (- x (- y m)) m)))
-			  (enumerate-interval 1 (- k 1)))
-			 ))))
+            (and (> (car pos) 0) (> (cdr pos) 0)))
+          (let ((x (car position))
+                (y (cdr position)))
+            (append
+              (map
+                (lambda (n) (cons x n))
+                (enumerate-interval 1 (- k 1)))
+              (flatmap
+                (lambda (m) (list (cons (+ x (- y m)) m)
+                                  (cons (- x (- y m)) m)))
+                (enumerate-interval 1 (- k 1)))
+              ))))
 
 ;(enumerate-queen-move 5 (cons 2 5))
 
@@ -221,13 +224,13 @@
 
 (define (safe? k positions)
   (let ((k-queen (car positions))
-		(rest-of-queens (cdr positions))
-		)
-	(null?
-	 (filter
-	  (lambda (x)
-		(contains? x rest-of-queens))
-	  (enumerate-queen-move k k-queen)))))
+        (rest-of-queens (cdr positions))
+        )
+    (null?
+      (filter
+        (lambda (x)
+          (contains? x rest-of-queens))
+        (enumerate-queen-move k k-queen)))))
 
 
 (safe? 2 (list (cons 1 2) (cons 3 1)))
@@ -236,16 +239,16 @@
 
 (define (queens board-size)
   (define (queens-cols k)
-	(if (= k 0)
-		(list empty-board)
-		(filter
-		 (lambda (positions) (safe? k positions))
-		 (flatmap
-		  (lambda (rest-of-queens)
-			(map (lambda (new-row)
-				   (adjoin-position new-row k rest-of-queens))
-				 (enumerate-interval 1 board-size)))
-		  (queens-cols (- k 1))))))
+    (if (= k 0)
+        (list empty-board)
+        (filter
+          (lambda (positions) (safe? k positions))
+          (flatmap
+            (lambda (rest-of-queens)
+              (map (lambda (new-row)
+                     (adjoin-position new-row k rest-of-queens))
+                   (enumerate-interval 1 board-size)))
+            (queens-cols (- k 1))))))
   (queens-cols board-size))
 
 ;(queens 8)
@@ -261,15 +264,15 @@
 
 (define (queens-cols2 k board-size)
   (if (= k 0)
-	  (list empty-board)
-	  (filter
-	   (lambda (positions) (safe? k positions))
-	   (flatmap
-		(lambda (rest-of-queens)
-		  (map (lambda (new-row)
-				 (adjoin-position new-row k rest-of-queens))
-			   (enumerate-interval 1 board-size)))
-		(queens-cols2 (- k 1) board-size )))))
+      (list empty-board)
+      (filter
+        (lambda (positions) (safe? k positions))
+        (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queens-cols2 (- k 1) board-size )))))
 
 
 ;(require (lib "trace.ss"))
@@ -283,15 +286,15 @@
 
 (define (queens-bad-col k board-size)
   (if (= k 0)
-	  (list empty-board)
-	  (filter
-	   (lambda (positions) (safe? k positions))
-	   (flatmap
-		(lambda (new-row)
-		  (map (lambda (rest-of-queens)
-				 (adjoin-position new-row k rest-of-queens))
-			   (queens-bad-col (- k 1) board-size)))
-		(enumerate-interval 1 board-size)))))
+      (list empty-board)
+      (filter
+        (lambda (positions) (safe? k positions))
+        (flatmap
+          (lambda (new-row)
+            (map (lambda (rest-of-queens)
+                   (adjoin-position new-row k rest-of-queens))
+                 (queens-bad-col (- k 1) board-size)))
+          (enumerate-interval 1 board-size)))))
 
 
 ;(trace queens-bad-col)

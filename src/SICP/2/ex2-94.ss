@@ -19,19 +19,6 @@
       (error "Polys not in same var -- ADD-POLY"
              (list p1 p2))))
 
-
-  ;; (define (sub-poly p1 p2)
-  ;; 	(if (same-variable? (variable p1) (variable p2))
-  ;; 		(make-poly (variable p1)
-  ;; 				   (add-terms (term-list p1)
-  ;; 							  (map (lambda (x)
-  ;; 									 ; 手抜き
-  ;; 									 ; 多項式係数を考慮していない
-  ;; 									 (make-term (order x) (- (coeff x))))
-  ;; 								   (term-list p2))))
-  ;; 		(error "Polys not in same var -- SUB-POLY"
-  ;; 			   (list p1 p2))))
-
   (define (negate-poly p)
     (make-poly (variable p) (negate-term (term-list p))))
   (define (negate-term L) (map

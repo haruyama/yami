@@ -11,9 +11,9 @@
 
 (define (make-code-tree left right)
   (list left
-		right
-		(append (symbols left) (symbols right))
-		(+ (weight left) (weight right))))
+        right
+        (append (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
 
 (define (left-branch tree) (car tree))
 
@@ -21,45 +21,45 @@
 
 (define (symbols tree)
   (if (leaf? tree)
-	  (list (symbol-leaf tree))
-	  (caddr tree)))
+      (list (symbol-leaf tree))
+      (caddr tree)))
 
 (define (weight tree)
   (if (leaf? tree)
-	  (weight-leaf tree)
-	  (cadddr tree)))
+      (weight-leaf tree)
+      (cadddr tree)))
 
 
 (define (decode bits tree)
   (define (decode-1 bits current-branch)
-	(if (null? bits)
-		'()
-		(let ((next-branch
-			   (choose-branch (car bits) current-branch)))
-		  (if (leaf? next-branch)
-			  (cons (symbol-leaf next-branch)
-					(decode-1 (cdr bits) tree))
-			  (decode-1 (cdr bits) next-branch)))))
+    (if (null? bits)
+        '()
+        (let ((next-branch
+                (choose-branch (car bits) current-branch)))
+          (if (leaf? next-branch)
+              (cons (symbol-leaf next-branch)
+                    (decode-1 (cdr bits) tree))
+              (decode-1 (cdr bits) next-branch)))))
   (decode-1 bits tree))
 
 (define (choose-branch bit branch)
   (cond ((= bit 0) (left-branch branch))
-		((= bit 1) (right-branch branch))
-		(else (error "bad bit -- CHOOSE-BRANCH" bit))))
+        ((= bit 1) (right-branch branch))
+        (else (error "bad bit -- CHOOSE-BRANCH" bit))))
 
 (define (adjoin-set x set)
   (cond ((null? set) (list x))
-		((< (weight x) (weight (car set))) (cons x set))
-		(else (cons (car set)
-					(adjoin-set x (cdr set))))))
+        ((< (weight x) (weight (car set))) (cons x set))
+        (else (cons (car set)
+                    (adjoin-set x (cdr set))))))
 
 (define (make-leaf-set pairs)
   (if (null? pairs)
-	  '()
-	  (let ((pair (car pairs)))
-		(adjoin-set (make-leaf (car pair)
-							   (cadr pair))
-					(make-leaf-set (cdr pairs))))))
+      '()
+      (let ((pair (car pairs)))
+        (adjoin-set (make-leaf (car pair)
+                               (cadr pair))
+                    (make-leaf-set (cdr pairs))))))
 
 (define weights '((A 4) (B 2) (C 1) (D 1)))
 
@@ -82,22 +82,22 @@
 
 (define (encode message tree)
   (if (null? message)
-    '()
-    (append (encode-symbol (car message) tree)
-            (encode (cdr message) tree))))
+      '()
+      (append (encode-symbol (car message) tree)
+              (encode (cdr message) tree))))
 
 (cadr sample-tree)
 
 (define (encode-symbol symbol tree)
   (if (leaf? tree)
-    '()
-    (let ((left (left-branch tree))
-          (right (right-branch tree)))
-      (cond ((symbol-exists? symbol left)
-             (cons 0 (encode-symbol symbol left)))
-        ((symbol-exists? symbol right)
-         (cons 1 (encode-symbol symbol right)))
-        (else (error "Invalid symbol -- ENCODE-SYMBOL" symbol))))))
+      '()
+      (let ((left (left-branch tree))
+            (right (right-branch tree)))
+        (cond ((symbol-exists? symbol left)
+               (cons 0 (encode-symbol symbol left)))
+              ((symbol-exists? symbol right)
+               (cons 1 (encode-symbol symbol right)))
+              (else (error "Invalid symbol -- ENCODE-SYMBOL" symbol))))))
 
 ;; (define (symbol-exists? symbol tree)
 ;;   (if (leaf? tree)
@@ -119,7 +119,7 @@
   (if (null? (cdr set))
       (car set)
       (successive-merge
-       (adjoin-set (make-code-tree (car set) (cadr set))
+        (adjoin-set (make-code-tree (car set) (cadr set))
                     (cddr set)))))
 
 (define test (make-leaf-set weights))
@@ -141,10 +141,10 @@
 
 (define message-2-70
   '(GET A JOB 
-		SHA NA NA NA NA NA NA NA NA 
-		GET A JOB SHA NA NA NA NA NA NA NA NA 
-		WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP 
-		SHA BOOM))
+        SHA NA NA NA NA NA NA NA NA 
+        GET A JOB SHA NA NA NA NA NA NA NA NA 
+        WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP 
+        SHA BOOM))
 
 (encode message-2-70 tree-2-70)
 (length (encode message-2-70 tree-2-70))
@@ -153,7 +153,7 @@
 
 (define weights-2-71-1 '((A 1) (B 2) (C 4) (D 8) (E 16)))
 (define weights-2-71-2 '((A 1) (B 2) (C 4) (D 8) (E 16)
-						 (F 32) (G 64) (H 128) (I 256) (J 512)))
+                               (F 32) (G 64) (H 128) (I 256) (J 512)))
 
 (define tree-2-71-1
   (generate-huffman-tree weights-2-71-1))

@@ -18,24 +18,24 @@
 
 ;; (define (equal? a b)
 ;;   (cond ((and (null? a) (null? b)) #t)
-;; 		((and (symbol? a) (symbol? b))
-;; 		 (eq? a b))
-;; 		((and (number? a) (number? b))
-;; 		 (= a b))
-;; 		((and (pair? a) (pair? b))
-;; 		 (if (equal? (car a) (car b)) (equal? (cdr a) (cdr b))
-;; 			#f))
-;; 		(else #f)))
+;;         ((and (symbol? a) (symbol? b))
+;;          (eq? a b))
+;;         ((and (number? a) (number? b))
+;;          (= a b))
+;;         ((and (pair? a) (pair? b))
+;;          (if (equal? (car a) (car b)) (equal? (cdr a) (cdr b))
+;;             #f))
+;;         (else #f)))
 
 (define (equal? a b)
   (cond ((and (null? a) (null? b)) #t)
-		((and (symbol? a) (symbol? b))
-		 (eq? a b))
-		((and (number? a) (number? b))
-		 (= a b))
-		((and (pair? a) (pair? b) (equal? (car a) (car b)))
-			  (equal? (cdr a) (cdr b)))
-		(else #f)))
+        ((and (symbol? a) (symbol? b))
+         (eq? a b))
+        ((and (number? a) (number? b))
+         (= a b))
+        ((and (pair? a) (pair? b) (equal? (car a) (car b)))
+         (equal? (cdr a) (cdr b)))
+        (else #f)))
 
 (eq? '(is a) '(is a))
 
@@ -73,20 +73,20 @@
 
 (define (deriv exp var)
   (cond ((number? exp) 0)
-		((variable? exp)
-		 (if (same-variable? exp var) 1 0))
-		((sum? exp)
-		 (make-sum (deriv (addend exp) var)
-				   (deriv (augend exp) var)))
-		((product? exp)
-		 (make-sum
-		  (make-product (multiplier exp)
-						(deriv
-						 (multiplicand exp) var))
-		  (make-product (deriv (multiplier exp) var)
-						(multiplicand exp))))
-		(else
-		 (error "unknown expression type -- DERIV" exp))))
+        ((variable? exp)
+         (if (same-variable? exp var) 1 0))
+        ((sum? exp)
+         (make-sum (deriv (addend exp) var)
+                   (deriv (augend exp) var)))
+        ((product? exp)
+         (make-sum
+           (make-product (multiplier exp)
+                         (deriv
+                           (multiplicand exp) var))
+           (make-product (deriv (multiplier exp) var)
+                         (multiplicand exp))))
+        (else
+          (error "unknown expression type -- DERIV" exp))))
 
 (deriv '(+ x 3) 'x)
 
@@ -96,19 +96,19 @@
 
 (define (make-sum a1 a2)
   (cond ((=number? a1 0) a2)
-		((=number? a2 0) a1)
-		((and (number? a1) (number? a2)) (+ a1 a2))
-		(else (list '+ a1 a2))))
-		 
+        ((=number? a2 0) a1)
+        ((and (number? a1) (number? a2)) (+ a1 a2))
+        (else (list '+ a1 a2))))
+
 (define (=number? exp num)
   (and (number? exp) (= exp num)))
 
 (define (make-product m1 m2)
   (cond ((or (=number? m1 0) (=number? m2 0)) 0)
-		((=number? m1 1) m2)
-		((=number? m2 1) m1)
-		((and (number? m1) (number? m2)) (* m1 m2))
-		(else (list '* m1 m2))))
+        ((=number? m1 1) m2)
+        ((=number? m2 1) m1)
+        ((and (number? m1) (number? m2)) (* m1 m2))
+        (else (list '* m1 m2))))
 
 ;2.56
 
@@ -119,52 +119,52 @@
 
 (define (make-exponentiation m1 m2)
   (cond ((=number? m2 0) 1)
-		((=number? m2 1) m1)
-		((=number? m1 1) 1)
-		((and (number? m1) (number? m2)) (expt m1 m2))
-		(else (list '** m1 m2))))
+        ((=number? m2 1) m1)
+        ((=number? m1 1) 1)
+        ((and (number? m1) (number? m2)) (expt m1 m2))
+        (else (list '** m1 m2))))
 
 
 (define (deriv exp var)
   (cond ((number? exp) 0)
-		((variable? exp)
-		 (if (same-variable? exp var) 1 0))
-		((sum? exp)
-		 (make-sum (deriv (addend exp) var)
-				   (deriv (augend exp) var)))
-		((product? exp)
-		 (make-sum
-		  (make-product (multiplier exp)
-						(deriv
-						 (multiplicand exp) var))
-		  (make-product (deriv (multiplier exp) var)
-						(multiplicand exp))))
-		((exponentiation? exp)
-		 (make-product (exponent exp)
-					   (make-product
-						(make-exponentiation
-						 (base exp) (- (exponent exp) 1))
-						(deriv (base exp) var))))
-		(else
-		 (error "unknown expression type -- DERIV" exp))))
+        ((variable? exp)
+         (if (same-variable? exp var) 1 0))
+        ((sum? exp)
+         (make-sum (deriv (addend exp) var)
+                   (deriv (augend exp) var)))
+        ((product? exp)
+         (make-sum
+           (make-product (multiplier exp)
+                         (deriv
+                           (multiplicand exp) var))
+           (make-product (deriv (multiplier exp) var)
+                         (multiplicand exp))))
+        ((exponentiation? exp)
+         (make-product (exponent exp)
+                       (make-product
+                         (make-exponentiation
+                           (base exp) (make-sum (exponent exp) -1))
+                         (deriv (base exp) var))))
+        (else
+          (error "unknown expression type -- DERIV" exp))))
 
 (deriv '(+ x (** x 3)) 'x)
 
 ;ex2.57
 ;null?でチェックしたほうが効率的
-(define (augend s) 
-;  (if (= (length (cddr s)) 1) (caddr s)
+(define (augend s)
+  ;  (if (= (length (cddr s)) 1) (caddr s)
   (if (null? (cdddr s)) (caddr s)
-	  (cons '+ (cddr s))))
+      (cons '+ (cddr s))))
 
 (augend '(+ 1 2))
 (augend '(+ 1 2 3))
 (augend '(+ 1 2 3 4))
 
-(define (multiplicand s) 
+(define (multiplicand s)
   (if (null? (cdddr s)) (caddr s)
-  ;(if (= (length (cddr s)) 1) (caddr s)
-	  (cons '* (cddr s))))
+      ;(if (= (length (cddr s)) 1) (caddr s)
+      (cons '* (cddr s))))
 
 (deriv '(* x y (+ x 3)) 'x)
 

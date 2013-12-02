@@ -158,20 +158,20 @@ end
 (replace ?p (Fect Cy D))
 
 (and (replace ?p1 ?p2)
-	 (salary ?p1 ?s1)
-	 (salary ?p2 ?s2)
-	 (lisp-value < ?s1 ?s2))
+(salary ?p1 ?s1)
+(salary ?p2 ?s2)
+(lisp-value < ?s1 ?s2))
 end
 
 ;ex4.58
 (query-driver-loop)
 (assert! (rule (big-shot ?person)
-			   (and
-				(job ?person (?div-p . ?rest-p))
-				(supervisor ?person ?supervisor)
-				(job ?supervisor (?div-s . ?rest-s))
-				(not (same ?div-p ?div-s))
-				)))
+               (and
+                 (job ?person (?div-p . ?rest-p))
+                 (supervisor ?person ?supervisor)
+                 (job ?supervisor (?div-s . ?rest-s))
+                 (not (same ?div-p ?div-s))
+                 )))
 (big-shot ?p)
 end
 
@@ -197,7 +197,7 @@ end
 (meeting-time (Scrooge Eben) ?dt)
 (meeting-time (Aull DeWitt) ?dt)
 ;c
-(meeting-time (Hacker Alyssa P) (Wednesday ?t))
+(meeting-time (Hacker Alyssa P) (Wednesday . ?t))
 end
 
 ;ex4.60
@@ -246,6 +246,7 @@ end
 			   (?x next-to ?y in ?z)))
 (?x next-to ?y in (1 (2 3) 4))
 (?x next-to 1 in (2 1 3 1))
+(1 next-to ?x in (2 1 3 1))
 end
 
 
@@ -255,10 +256,12 @@ end
                (last-pair ?y (?z))))
 (assert! (rule (last-pair (?y) (?y))))
 (last-pair (3) ?x)
+
 (last-pair (1 2 3) ?x)
 (last-pair (2 ?x) (3))
 
 (last-pair (?x) (3))
+;(last-pair ?x (3))
 end
 
 
@@ -322,7 +325,18 @@ end
                (and (reverse ?v ?w)
                     (append-to-form ?w (?u) ?y))))
 
-(reverse (1 2 3) ?x)
+(assert! (rule (reverse (?u . ?v) ?y)
+               (and
+                    (append-to-form ?w (?u) ?y)
+                    (reverse ?v ?w)
+                    )))
+
+;(assert! (rule (reverse ?x ?y)
+;               (and (append-to-form (?car) ?cdr ?x)
+;                    (append-to-form ?rev-cdr (?car) ?y)
+;                    (reverse ?cdr ?rev-cdr)
+;                    )))
+;(reverse (1 2 3) ?x)
 
 ;(reverse ?x (1 2 3))
 
@@ -344,6 +358,13 @@ end
                (last-pair ?rel (grandson))
                ))
 
+
+(assert! (rule
+           (last-grandson? ?gs) 
+           (and
+             (last-pair ?gs (?l))
+             (same? ?l grandson)
+             )))
 
 ((great grandson) ?g ?ggs)
 (?rel Adam Irad)
