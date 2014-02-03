@@ -9,10 +9,10 @@
   (let ((already-run? #f) (result #f))
     (lambda ()
       (if (not already-run?)
-        (begin (set! result (proc))
-          (set! already-run? #t)
-          result)
-        result))))
+          (begin (set! result (proc))
+                 (set! already-run? #t)
+                 result)
+          result))))
 
 ;; define delay
 ;(define-syntax delay
@@ -37,27 +37,27 @@
 
 (define (stream-ref s n)
   (if (= n 0)
-    (stream-car s)
-    (stream-ref (stream-cdr s) (- n 1))))
+      (stream-car s)
+      (stream-ref (stream-cdr s) (- n 1))))
 
 (define (stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
-    (apply proc (map stream-car argstreams))
-    (apply stream-map
-           (cons proc (map stream-cdr argstreams)))))
+      (apply proc (map stream-car argstreams))
+      (apply stream-map
+             (cons proc (map stream-cdr argstreams)))))
 
 (define (stream-for-each proc s)
   (if (stream-null? s)
-    'done
-    (begin (proc (stream-car s))
-      (stream-for-each proc (stream-cdr s)))))
+      'done
+      (begin (proc (stream-car s))
+             (stream-for-each proc (stream-cdr s)))))
 
 (define (stream-filter pred s)
   (cond ((stream-null? s) the-empty-system)
-    ((pred (stream-car s))
-     (cons-stream (stream-car s)
-                  (stream-filter pred (stream-cdr s))))
-    (else (stream-filter pred (stream-cdr s)))))
+        ((pred (stream-car s))
+         (cons-stream (stream-car s)
+                      (stream-filter pred (stream-cdr s))))
+        (else (stream-filter pred (stream-cdr s)))))
 
 (define (display-stream s)
   (stream-for-each display-line s))
@@ -72,8 +72,8 @@
 
 (define (find-divisor n test-divisor)
   (cond ((> (square test-divisor) n )n)
-    ((divides? test-divisor n ) test-divisor)
-    (else (find-divisor n (+ test-divisor 1)))))
+        ((divides? test-divisor n ) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
@@ -84,19 +84,19 @@
 
 (define (stream-enumerate-interval low high)
   (if (> low high)
-    the-empty-system
-    (cons-stream
-      low
-      (stream-enumerate-interval (+ low 1) high))))
+      the-empty-system
+      (cons-stream
+        low
+        (stream-enumerate-interval (+ low 1) high))))
 
 ;; (define (stream-filter pred stream)
 ;;   (cond ((stream-null? stream) the-empty-system)
-;; 		((pred (stream-car stream))
-;; 		 (cons-stream (stream-car stream)
-;; 					  (stream-filter pred
-;; 									 (stream-cdr stream))))
-;; 		(else
-;; 		 (stream-filter pred (stream-cdr stream)))))
+;;         ((pred (stream-car stream))
+;;          (cons-stream (stream-car stream)
+;;                       (stream-filter pred
+;;                                      (stream-cdr stream))))
+;;         (else
+;;          (stream-filter pred (stream-cdr stream)))))
 
 
 
@@ -110,11 +110,11 @@
 ;ex3.50
 (define (stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
-    the-empty-system
-    (cons-stream
-      (apply proc (map stream-car argstreams))
-      (apply stream-map
-             (cons proc (map stream-cdr argstreams))))))
+      the-empty-system
+      (cons-stream
+        (apply proc (map stream-car argstreams))
+        (apply stream-map
+               (cons proc (map stream-cdr argstreams))))))
 
 
 (define s1  (cons-stream 1 the-empty-system))
@@ -160,14 +160,14 @@
 
 (display-stream seq)
 ; 3.3.2
-(define (stream-head s n)
+(define (stream-take s n)
   (define (iter s i)
     (if (>= i n)
-      'done
-      (begin
-        (display (stream-car s))
-        (display " ")
-        (iter (stream-cdr s) (+ i 1)))))
+        'done
+        (begin
+          (display (stream-car s))
+          (display " ")
+          (iter (stream-cdr s) (+ i 1)))))
   (iter s 0))
 
 
@@ -176,8 +176,7 @@
 
 (define integers (integers-starting-from 1))
 
-(stream-head integers 10)
-
+(stream-take integers 10)
 
 (define (divisible? x y) (= (remainder x y) 0))
 
@@ -191,6 +190,8 @@
   (cons-stream a (fibgen b (+ a b))))
 
 (define fibs (fibgen 0 1))
+
+(stream-take fibs 10)
 
 (define (sieve stream)
   (cons-stream
@@ -214,6 +215,7 @@
                (cons-stream 1
                             (add-streams (stream-cdr fibs)
                                          fibs))))
+(stream-take fibs 10)
 (stream-ref fibs 8)
 (stream-ref fibs 9)
 (stream-ref fibs 10)
@@ -224,37 +226,37 @@
 (define double (cons-stream 1 (scale-stream double 2)))
 
 
-(stream-head double 10)
+(stream-take double 10)
 
 (define (prime? n)
   (define (iter ps)
     (cond ((> (square (stream-car ps)) n) true)
-      ((divisible? n (stream-car ps)) false)
-      (else (iter (stream-cdr ps)))))
+          ((divisible? n (stream-car ps)) false)
+          (else (iter (stream-cdr ps)))))
   (iter primes))
 
 (define primes
-  (cons-stream 
+  (cons-stream
     2
     (stream-filter prime? (integers-starting-from 3))))
 
-(stream-head primes 10)
+(stream-take primes 10)
 
 ;ex3.53
 (define s (cons-stream 1 (add-streams s s)))
-(stream-head s 10)
+(stream-take s 10)
 
 ;ex3.54
 (define (mul-streams s1 s2)
   (stream-map * s1 s2))
 
-(stream-head (mul-streams integers integers) 10)
+(stream-take (mul-streams integers integers) 10)
 
-(define factorials (cons-stream 1 
+(define factorials (cons-stream 1
                                 (mul-streams factorials
                                              integers)))
 
-(stream-head factorials 10)
+(stream-take factorials 10)
 
 
 ;ex3.55
@@ -264,33 +266,39 @@
                  (iter (add-streams (stream-cdr ps) s))))
   (iter s))
 
-(stream-head (partial-sums integers) 10)
+(define (partial-sums s)
+  (define sum
+    (cons-stream (stream-car s)
+                 (add-streams (stream-cdr s) sum)))
+  sum)
+
+(stream-take (partial-sums integers) 10)
 
 ;ex3.56
 (define (merge s1 s2)
   (cond ((stream-null? s1) s2)
-    ((stream-null? s2) s1)
-    (else
-      (let ((s1car (stream-car s1))
-            (s2car (stream-car s2)))
-        ;; 		   (newline)
-        ;; 		   (display s1car)
-        ;; 		   (display " ")
-        ;; 		   (display s2car)
-        ;; 		   (newline)
-        (cond ((< s1car s2car)
-               (cons-stream s1car (merge (stream-cdr s1) s2)))
-          ((> s1car s2car)
-           (cons-stream s2car (merge s1 (stream-cdr s2))))
-          (else
-            (cons-stream s1car
-                         (merge (stream-cdr s1)
-                                (stream-cdr s2)))))))))
+        ((stream-null? s2) s1)
+        (else
+          (let ((s1car (stream-car s1))
+                (s2car (stream-car s2)))
+            ;;            (newline)
+            ;;            (display s1car)
+            ;;            (display " ")
+            ;;            (display s2car)
+            ;;            (newline)
+            (cond ((< s1car s2car)
+                   (cons-stream s1car (merge (stream-cdr s1) s2)))
+                  ((> s1car s2car)
+                   (cons-stream s2car (merge s1 (stream-cdr s2))))
+                  (else
+                    (cons-stream s1car
+                                 (merge (stream-cdr s1)
+                                        (stream-cdr s2)))))))))
 
-(stream-head fibs 10)
-(stream-head primes 10)
+(stream-take fibs 10)
+(stream-take primes 10)
 
-(stream-head (merge primes fibs) 10)
+(stream-take (merge primes fibs) 10)
 
 ;; ;1 2 3 4 5 6 8 9 10 12....
 (define S (cons-stream 1 (merge (scale-stream S 2)
@@ -300,11 +308,11 @@
 ;;            1
 ;;            (merge (scale-stream (stream-cons 0 S) 2)
 ;;                   (merge (scale-stream (stream-cons 0 (stream-cons 0 S)) 3)
-;;                          (scale-stream (stream-cons 0 (stream-cons 0 S)) 5)))))					   
+;;                          (scale-stream (stream-cons 0 (stream-cons 0 S)) 5)))))                       
 
-(stream-head S 100)
-(stream-head (scale-stream S 2) 10)
-;(stream-head (stream-filter (lambda (x) (not (= x 0))) S ) 10)
+(stream-take S 100)
+(stream-take (scale-stream S 2) 10)
+;(stream-take (stream-filter (lambda (x) (not (= x 0))) S ) 10)
 ;ex3.57
 ;memo化しているなら 1 1 2 3 ... に対して 0 1 2 3 4 回
 ;指定ないと 一章と一緒 φ^n
@@ -315,11 +323,11 @@
     (expand (remainder (* num radix) den) den radix)))
 
 (/ 1.0 7)
-(stream-head (expand 1 7 10) 10)
+(stream-take (expand 1 7 10) 10)
 (/ 3.0 8)
-(stream-head (expand 3 8 10) 10)
+(stream-take (expand 3 8 10) 10)
 
-(stream-head (expand 4 6 16) 10)
+(stream-take (expand 4 6 16) 10)
 ;ex3.59
 (define (integrate-series ss)
   (define (iter s n)
@@ -333,7 +341,7 @@
 (define exp-series
   (cons-stream 1 (integrate-series exp-series)))
 
-(stream-head exp-series 10)
+(stream-take exp-series 10)
 
 (define cosine-series
   (cons-stream 1 (stream-map - (integrate-series sine-series))))
@@ -341,51 +349,60 @@
 (define sine-series
   (cons-stream 0 (integrate-series cosine-series)))
 
-(stream-head cosine-series 10)
-(stream-head sine-series 10)
+(stream-take cosine-series 10)
+(stream-take sine-series 10)
 ;ex3.60
 (define (mul-series s1 s2)
   (cons-stream (* (stream-car s1) (stream-car s2))
                (add-streams (mul-series s1 (stream-cdr s2))
                             (scale-stream (stream-cdr s1) (stream-car s2)))))
 
-(stream-head (mul-series cosine-series cosine-series) 10)
-(stream-head (mul-series sine-series sine-series) 10)
+(stream-take (mul-series cosine-series cosine-series) 10)
+(stream-take (mul-series sine-series sine-series) 10)
 
-(stream-head (add-streams (mul-series cosine-series cosine-series)
+(stream-take (add-streams (mul-series cosine-series cosine-series)
                           (mul-series sine-series sine-series)) 10)
 
 ;ex3.61
 (define (invert-unit-series s)
   (let ((x the-empty-system))
     (set! x
-      (cons-stream 1 (stream-map - (mul-series (stream-cdr s) x))))
+          (cons-stream 1 (stream-map - (mul-series (stream-cdr s) x))))
     x))
 
 (define (invert-unit-series s)
   (cons-stream 1 (stream-map - (mul-series (stream-cdr s) (invert-unit-series s)))))
 
 
-(stream-head (invert-unit-series exp-series) 10)
+(stream-take (invert-unit-series exp-series) 10)
 
-(stream-head integers 10)
-(stream-head (invert-unit-series integers) 100)
-(stream-head (mul-series integers (invert-unit-series integers)) 10)
+(stream-take integers 10)
+(stream-take (invert-unit-series integers) 100)
+(stream-take (mul-series integers (invert-unit-series integers)) 10)
 
-(stream-head (mul-series exp-series (invert-unit-series exp-series)) 10)
+(stream-take (mul-series exp-series (invert-unit-series exp-series)) 10)
 
-(stream-head (mul-series cosine-series (invert-unit-series cosine-series)) 10)
+(stream-take (mul-series cosine-series (invert-unit-series cosine-series)) 10)
 
 ;ex3.62
 (define (div-series n d)
   (if (= (stream-car d) 0)
-    (error "divine by zero")
-    (mul-series n (invert-unit-series d))))
+      (error "divine by zero")
+      (mul-series n (invert-unit-series d))))
+
+(define (div-series n d)
+  (let ((d0 (stream-car d)))
+  (if (= d0 0)
+      (error "divine by zero")
+      (scale-stream  (mul-series n (invert-unit-series (scale-stream d (/ 1 d0)))) (/ 1 d0)))))
 
 (define tan-series (div-series sine-series cosine-series))
 
-(stream-head tan-series 10)
+(stream-take tan-series 10)
 
+(define tan-2-series (div-series sine-series (scale-stream cosine-series (/ 1 2))))
+
+(stream-take tan-2-series 10)
 ;3.5.3
 (define (average x y)
   (/ (+ x y) 2))
@@ -400,7 +417,7 @@
                              guesses)))
   guesses)
 
-(stream-head (sqrt-stream 2) 10)
+(stream-take (sqrt-stream 2) 10)
 
 (define (pi-summands n)
   (cons-stream (/ 1.0 n)
@@ -409,7 +426,7 @@
 (define pi-stream
   (scale-stream (partial-sums (pi-summands 1)) 4))
 
-(stream-head pi-stream 10)
+(stream-take pi-stream 10)
 
 ;s2s0 - 2s2s1 + s2s2 - s2s2 + 2s2s1 -s1s1
 ; s2s0 - s1s1
@@ -423,7 +440,7 @@
                           (+ s0 (* -2 s1) s2)))
                  (euler-transform (stream-cdr s)))))
 
-(stream-head (euler-transform pi-stream) 10)
+(stream-take (euler-transform pi-stream) 10)
 
 (define (make-tableau transform s)
   (cons-stream s 
@@ -434,7 +451,7 @@
   (stream-map stream-car 
               (make-tableau transform s)))
 
-(stream-head (accelerated-sequence euler-transform
+(stream-take (accelerated-sequence euler-transform
                                    pi-stream) 11)
 
 ;ex3.63
@@ -444,12 +461,12 @@
   (let ((s0 (stream-ref s 0))
         (s1 (stream-ref s 1)))
     (if (> tolerance (abs (- s0 s1)))
-      s1
-      (stream-limit (stream-cdr s) tolerance))))
+        s1
+        (stream-limit (stream-cdr s) tolerance))))
 
-(stream-limit (sqrt-stream 2) 0.0000001)
+(stream-limit (sqrt-stream 2) 0.000000001)
 
-(define (mysqrt  x tolerance)
+(define (mysqrt x tolerance)
   (stream-limit (sqrt-stream x) tolerance))
 
 (mysqrt 3 0.001)
@@ -465,16 +482,16 @@
 (define ln2-stream
   (partial-sums (ln2-summands 1)))
 
-(stream-head ln2-stream 10)
-(stream-head (euler-transform ln2-stream) 10)
-(stream-head (accelerated-sequence euler-transform
+(stream-take ln2-stream 10)
+(stream-take (euler-transform ln2-stream) 10)
+(stream-take (accelerated-sequence euler-transform
                                    ln2-stream) 10)
 
 (define (interleave s1 s2)
   (if (stream-null? s1)
-    s2
-    (cons-stream (stream-car s1)
-                 (interleave s2 (stream-cdr s1)))))
+      s2
+      (cons-stream (stream-car s1)
+                   (interleave s2 (stream-cdr s1)))))
 
 (define (pairs s t)
   (cons-stream 
@@ -484,14 +501,14 @@
                   (stream-cdr t))
       (pairs (stream-cdr s) (stream-cdr t)))))
 
-(stream-head (pairs integers integers) 100)
+(stream-take (pairs integers integers) 100)
 
 
 (define int-pairs (pairs integers integers))
 
-(stream-head int-pairs 100)
+(stream-take int-pairs 100)
 
-(stream-head 
+(stream-take 
   (stream-filter (lambda (pair)
                    (prime? (+ (car pair) (cadr pair))))
                  int-pairs)
@@ -502,10 +519,10 @@
 (define (stream-find s target)
   (define (iter s n)
     (if (> n 50000) 
-      'not_found
-      (if (equal? target (stream-car s))
-        n
-        (iter (stream-cdr s) (+ n 1)))))
+        'not_found
+        (if (equal? target (stream-car s))
+            n
+            (iter (stream-cdr s) (+ n 1)))))
   (iter s 0))
 
 
@@ -547,7 +564,7 @@
         (pairs2 (stream-cdr s) (stream-cdr t))))))
 
 
-(stream-head (pairs2 integers integers) 100)
+(stream-take (pairs2 integers integers) 100)
 
 
 
@@ -556,12 +573,12 @@
 ;;   (cons-stream 
 ;;    (list (stream-car s) (stream-car t) (stream-car u))
 ;;    (interleave
-;; 	(stream-map (lambda (y) (list (stream-car s) (stream-car t) y))
-;; 						(stream-cdr u))
-;; 	(interleave
-;; 	 (stream-map (lambda (pair) (cons (stream-car s) pair))
-;; 				 (pairs (stream-cdr t) (stream-cdr u)))
-;; 	 (triples (stream-cdr s) (stream-cdr t) (stream-cdr u))))))
+;;     (stream-map (lambda (y) (list (stream-car s) (stream-car t) y))
+;;                         (stream-cdr u))
+;;     (interleave
+;;      (stream-map (lambda (pair) (cons (stream-car s) pair))
+;;                  (pairs (stream-cdr t) (stream-cdr u)))
+;;      (triples (stream-cdr s) (stream-cdr t) (stream-cdr u))))))
 ;ex3.69
 (define (triples s t u)
   (cons-stream 
@@ -572,7 +589,7 @@
       (triples (stream-cdr s) (stream-cdr t) (stream-cdr u)))))
 
 
-(stream-head (triples integers integers integers) 100)
+(stream-take (triples integers integers integers) 100)
 
 (stream-find (triples integers integers integers) '(1 2 3))
 (stream-find (triples integers integers integers) '(1 2 5))
@@ -580,7 +597,7 @@
 ;(stream-find (triples integers integers integers) '(5 12 13))
 ;(stream-find (triples integers integers integers) '(6 8 10))
 
-;(stream-head
+;(stream-take
 ;  (stream-filter
 ;    (lambda (triple)
 ;      (let ((i (car triple))
@@ -593,19 +610,19 @@
 
 (define (merge-weighted s1 s2 weight)
   (cond ((stream-null? s1) s2)
-    ((stream-null? s2) s1)
-    (else
-      (let ((s1car (stream-car s1))
-            (s2car (stream-car s2)))
-        (cond 
-          ((equal? s1car s2car)
-           (cons-stream s1car
-                        (merge-weighted (stream-cdr s1)
-                                        (stream-cdr s2) weight)))
-          ((< (weight s1car) (weight s2car))
-           (cons-stream s1car (merge-weighted (stream-cdr s1) s2 weight)))
-          (else
-            (cons-stream s2car (merge-weighted s1 (stream-cdr s2) weight))))))))
+        ((stream-null? s2) s1)
+        (else
+          (let ((s1car (stream-car s1))
+                (s2car (stream-car s2)))
+            (cond 
+              ((equal? s1car s2car)
+               (cons-stream s1car
+                            (merge-weighted (stream-cdr s1)
+                                            (stream-cdr s2) weight)))
+              ((< (weight s1car) (weight s2car))
+               (cons-stream s1car (merge-weighted (stream-cdr s1) s2 weight)))
+              (else
+                (cons-stream s2car (merge-weighted s1 (stream-cdr s2) weight))))))))
 
 
 (define (weighted-pairs s t weight)
@@ -627,15 +644,15 @@
 ;;         weight))))
 
 
-(stream-head (pairs integers integers) 10)
+(stream-take (pairs integers integers) 10)
 
-(stream-head (weighted-pairs integers integers (lambda (x) (apply + x))) 10)
+(stream-take (weighted-pairs integers integers (lambda (x) (apply + x))) 10)
 
 (define (check370 x)
   (cond ((= (remainder x 2) 0) #f)
-    ((= (remainder x 3) 0) #f)
-    ((= (remainder x 5) 0) #f)
-    (else #t))) 
+        ((= (remainder x 3) 0) #f)
+        ((= (remainder x 5) 0) #f)
+        (else #t))) 
 
 
 (check370 1)
@@ -643,7 +660,7 @@
 (check370 3)
 (check370 7)
 
-(stream-head
+(stream-take
   (stream-filter
     (lambda (x)
       (let ((i (car x))
@@ -676,17 +693,17 @@
 (define ramanujan-pairs
   (weighted-pairs integers integers ramanujan-weight))
 
-(stream-head ramanujan-pairs 10)
+(stream-take ramanujan-pairs 10)
 (define (ramanujans-iter s w)
   (let ((neww (ramanujan-weight (stream-car s))))
     (if (= w neww)
-      (cons-stream neww
-                   (ramanujans-iter (stream-cdr s) 0))
-      (ramanujans-iter (stream-cdr s) neww))))
+        (cons-stream neww
+                     (ramanujans-iter (stream-cdr s) 0))
+        (ramanujans-iter (stream-cdr s) neww))))
 
 (define ramanujans (ramanujans-iter ramanujan-pairs 0))
 
-(stream-head ramanujans 10)
+(stream-take ramanujans 10)
 
 ; 3.72
 
@@ -700,19 +717,19 @@
 (define (numbers-372-iter s w n)
   (let ((neww (weight-372 (stream-car s))))
     (if (= w neww)
-      (if (= n 1)
-        (cons-stream neww
-                     (numbers-372-iter (stream-cdr s) 0 0))
-        (numbers-372-iter (stream-cdr s) neww 1))
-      (numbers-372-iter (stream-cdr s) neww 0))))
+        (if (= n 1)
+            (cons-stream neww
+                         (numbers-372-iter (stream-cdr s) 0 0))
+            (numbers-372-iter (stream-cdr s) neww 1))
+        (numbers-372-iter (stream-cdr s) neww 0))))
 
 
 (define numbers-372 (numbers-372-iter pairs-372 0 0))
 
-(stream-head numbers-372 10)
+(stream-take numbers-372 10)
 
 
-;;			
+;;            
 (define (integral integrand initial-value dt)
   (define int
     (cons-stream initial-value
@@ -723,9 +740,9 @@
 
 (define (list->stream l)
   (if (pair? l)
-    (cons-stream (car l)
-                 (list->stream (cdr l)))
-    the-empty-system))
+      (cons-stream (car l)
+                   (list->stream (cdr l)))
+      the-empty-system))
 
 (display-stream (list->stream '(1 2 3)))
 
@@ -739,7 +756,7 @@
 
 (define RC1 (RC 5 1 0.5))
 
-(stream-head (RC1 ones 0) 10)
+(stream-take (RC1 ones 0) 10)
 
 (display-stream (RC1 (list->stream '(1.0 0.9 0.81 0.729 0.6561)) 0))
 
@@ -752,10 +769,10 @@
 (define (sign-change-detector i l)
   (cond ((and (>= l 0) (< i 0))
          -1)
-    ((and (< l 0) (>= i 0))
-     1)
-    (else
-      0)))
+        ((and (< l 0) (>= i 0))
+         1)
+        (else
+          0)))
 
 
 (define (make-zero-crossings input-stream last-value)
@@ -834,22 +851,22 @@
 (define (integral integrand initial-value dt)
   (cons-stream initial-value
                (if (stream-null? integrand)
-                 the-empty-system
-                 (integral (stream-cdr integrand)
-                           (+ (* dt (stream-car integrand))
-                              initial-value)
-                           dt))))
+                   the-empty-system
+                   (integral (stream-cdr integrand)
+                             (+ (* dt (stream-car integrand))
+                                initial-value)
+                             dt))))
 (stream-ref (solve (lambda (y) y) 1 0.001) 1000)
 
 (define (integral delayed-integrand initial-value dt)
   (cons-stream initial-value
                (if (stream-null? delayed-integrand)
-                 the-empty-system
-                 (let ((integrand (force delayed-integrand)))
-                   (integral (delay (stream-cdr integrand))
-                             (+ (* dt (stream-car integrand))
-                                initial-value)
-                             dt)))))
+                   the-empty-system
+                   (let ((integrand (force delayed-integrand)))
+                     (integral (delay (stream-cdr integrand))
+                               (+ (* dt (stream-car integrand))
+                                  initial-value)
+                               dt)))))
 (stream-ref (solve (lambda (y) y) 1 0.001) 1000)
 
 
@@ -873,7 +890,7 @@
   (define ddy (stream-map f dy y))
   y)
 
-(stream-head (solve-2nd-2 (lambda (dy y) (+ (* 1 dy) (* 2 y) )) 0.001 1 0) 10)
+(stream-take (solve-2nd-2 (lambda (dy y) (+ (* 1 dy) (* 2 y) )) 0.001 1 0) 10)
 (stream-ref (solve-2nd-2 (lambda (dy y) (+ (* 4 dy) (* -4 y))) 0.001 1 2) 1000)
 
 (define (RLC R L C dt)
@@ -890,12 +907,12 @@
     ;(stream-map cons vC iL)
     ))
 
-(stream-head
+(stream-take
   (car 
     ((RLC 1 1 0.2 0.1) 10 0))
   50)
 
-(stream-head
+(stream-take
   (cdr
     ((RLC 1 1 0.2 0.1) 10 0))
   50)
@@ -912,13 +929,13 @@
     (lambda ()
       (set! x (rand-update x))
       x)))
-(rand)	
+(rand)    
 
 (define random-numbers
   (cons-stream random-init
                (stream-map rand-update random-numbers)))
 
-(stream-head random-numbers 10)
+(stream-take random-numbers 10)
 
 (define (map-succesive-pairs f s)
   (cons-stream
@@ -930,7 +947,7 @@
                        random-numbers))
 
 
-(stream-head cesaro-stream 10)
+(stream-take cesaro-stream 10)
 
 (define (monte-carlo experiment-stream passed failed)
   (define (next passed failed)
@@ -939,14 +956,14 @@
       (monte-carlo
         (stream-cdr experiment-stream) passed failed)))
   (if (stream-car experiment-stream)
-    (next (+ passed 1) failed)
-    (next passed (+ failed 1))))
+      (next (+ passed 1) failed)
+      (next passed (+ failed 1))))
 
 (define pi
   (stream-map (lambda (p) (sqrt (/ 6 p)))
               (monte-carlo cesaro-stream 0 0)))
 
-(stream-head pi 100)
+(stream-take pi 100)
 
 ;ex3.81
 
@@ -954,29 +971,29 @@
 
 (define (rand-3-81 request-stream random-init)
   (if (stream-null? request-stream)
-    the-empty-system
-    (cond ((eq? 'generate (stream-car request-stream))
-           (let ((new-number (rand-update random-init)))
-             (cons-stream new-number
-                          (rand-3-81 (stream-cdr request-stream) new-number))))
+      the-empty-system
+      (cond ((eq? 'generate (stream-car request-stream))
+             (let ((new-number (rand-update random-init)))
+               (cons-stream new-number
+                            (rand-3-81 (stream-cdr request-stream) new-number))))
 
-      ((number? (stream-car request-stream))
-       (let ((new-number (rand-update (stream-car request-stream))))
-         (cons-stream 
-           new-number
-           (rand-3-81 (stream-cdr request-stream) new-number))))
-      (else
-        (display (stream-car request-stream))
-        (error "aaa")))))
+            ((number? (stream-car request-stream))
+             (let ((new-number (rand-update (stream-car request-stream))))
+               (cons-stream 
+                 new-number
+                 (rand-3-81 (stream-cdr request-stream) new-number))))
+            (else
+              (display (stream-car request-stream))
+              (error "aaa")))))
 
-(define rs (cons-stream	'generate
-                        (cons-stream 'generate
-                                     (cons-stream 1
-                                                  (cons-stream 'generate
-                                                               (cons-stream 'generate
-                                                                            (cons-stream '100
-                                                                                         (cons-stream 'generate
-                                                                                                      the-empty-system))))))))
+(define rs (cons-stream    'generate
+                           (cons-stream 'generate
+                                        (cons-stream 1
+                                                     (cons-stream 'generate
+                                                                  (cons-stream 'generate
+                                                                               (cons-stream '100
+                                                                                            (cons-stream 'generate
+                                                                                                         the-empty-system))))))))
 
 (define rs2 (list->stream '(generate generate 1 generate generate 100 generate)))
 (display-stream (rand-3-81 rs 1))
@@ -987,8 +1004,8 @@
   (let ((a (rand))
         (b (rand)))
     (if (> a b)
-      (/ (* 1.0 b) a)
-      (/ (* 1.0 a) b))))
+        (/ (* 1.0 b) a)
+        (/ (* 1.0 a) b))))
 
 
 (define (random-in-range low high)
@@ -1000,7 +1017,7 @@
     (random-in-range a b)
     (random-stream-in-range a b)))
 
-(stream-head (random-stream-in-range 0 10) 10)
+(stream-take (random-stream-in-range 0 10) 10)
 
 
 
@@ -1018,26 +1035,24 @@
     (circle-experiment)
     (circle-P-stream x1 x2 y1 y2)))
 
-(stream-head (circle-P-stream 2 8 4 10) 100)
-(stream-head 
+(stream-take (circle-P-stream 2 8 4 10) 100)
+(stream-take 
   (monte-carlo (circle-P-stream 2 8 4 10) 0 0) 100)
 
 (define (estimate-integral P x1 x2 y1 y2)
   (if (not (= (- x2 x1) (- y2 y1))) (error "not square")
-    (scale-stream
-      (monte-carlo (P x1 x2 y1 y2) 0 0)
-      (* 1.0 (- x2 x1)  (- y2 y1)))))
+      (scale-stream
+        (monte-carlo (P x1 x2 y1 y2) 0 0)
+        (* 1.0 (- x2 x1)  (- y2 y1)))))
 
 
-(stream-head (estimate-integral circle-P-stream 2 8 4 10) 100)
-(stream-head (estimate-integral circle-P-stream -1 1 -1 1) 100)
-;(stream-head (estimate-integral circle-P-stream -1 1 -1 1) 1000)
+(stream-take (estimate-integral circle-P-stream 2 8 4 10) 100)
+(stream-take (estimate-integral circle-P-stream -1 1 -1 1) 100)
+;(stream-take (estimate-integral circle-P-stream -1 1 -1 1) 1000)
 
 
-(define nyo 
+(define nyo
   (stream-map cons random-numbers
               random-numbers))
 
-(stream-head nyo 10)
-
-
+(stream-take nyo 10)

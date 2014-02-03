@@ -28,9 +28,9 @@
 
 
 (define (myappend list1 list2)
-	(if (null? list1)
-			list2
-			(cons (car list1) (myappend (cdr list1) list2))))
+  (if (null? list1)
+      list2
+      (cons (car list1) (myappend (cdr list1) list2))))
 (use slib)
 (require 'trace)
 (trace myappend)
@@ -50,7 +50,7 @@
 (define (reverse l)
   (define (reverse-iter a b)
     (if (null? a) b
-		(reverse-iter (cdr a) (cons (car a) b))))
+        (reverse-iter (cdr a) (cons (car a) b))))
   (reverse-iter l '()))
 (reverse squares)
 
@@ -71,9 +71,9 @@
   (cond ((= amount 0) 1)
         ((or (< amount 0) (no-more? coin-values)) 0)
         (else
-         (+ (cc amount (except-first-denomination coin-values))
-            (cc (- amount (first-denomination coin-values))
-                coin-values)))))
+          (+ (cc amount (except-first-denomination coin-values))
+             (cc (- amount (first-denomination coin-values))
+                 coin-values)))))
 
 (cc 100 us-coins)
 (cc 100 us-coins2)
@@ -82,22 +82,22 @@
 
 ;ex 2.20
 (define (same-parity x . y)
-    (define (same-parity-iter parity l r)
-      (cond ((null? l) (reverse r))
-            ((= parity (remainder (car l) 2))
-             (same-parity-iter parity (cdr l) (cons (car l) r)))
-            (else
-             (same-parity-iter parity (cdr l) r))))
-    (same-parity-iter (remainder x 2) y (list x)))
+  (define (same-parity-iter parity l r)
+    (cond ((null? l) (reverse r))
+          ((= parity (remainder (car l) 2))
+           (same-parity-iter parity (cdr l) (cons (car l) r)))
+          (else
+            (same-parity-iter parity (cdr l) r))))
+  (same-parity-iter (remainder x 2) y (list x)))
 
 (define (same-parity x . y)
-    (define (same-parity-iter parity l r)
-      (cond ((null? l) (reverse r))
-            ((= parity (remainder (car l) 2))
-             (same-parity-iter parity (cdr l) (cons (car l) r)))
-            (else
-             (same-parity-iter parity (cdr l) r))))
-    (same-parity-iter (remainder x 2) y (list x)))
+  (define (same-parity-iter parity l r)
+    (cond ((null? l) (reverse r))
+          ((= parity (remainder (car l) 2))
+           (same-parity-iter parity (cdr l) (cons (car l) r)))
+          (else
+            (same-parity-iter parity (cdr l) r))))
+  (same-parity-iter (remainder x 2) y (list x)))
 
 
 (define (same-parity . w)
@@ -111,20 +111,20 @@
             ((same-parity? (car items))
              (cons (car items) (iter (cdr items) result)))
             (else
-             (iter (cdr items) result))))
+              (iter (cdr items) result))))
     (iter w '())))
 
 (define (same-parity x . y)
   (let ((x-parity (remainder x 2)))
-	(define (same-parity? item)
-	  (= x-parity (remainder item 2)))
-	(define (iter items)
-	  (cond ((null? items) '())
-			((same-parity? (car items))
-			 (cons (car items) (iter (cdr items))))
-			(else
-			 (iter (cdr items)))))
-	(cons x (iter y))))
+    (define (same-parity? item)
+      (= x-parity (remainder item 2)))
+    (define (iter items)
+      (cond ((null? items) '())
+            ((same-parity? (car items))
+             (cons (car items) (iter (cdr items))))
+            (else
+              (iter (cdr items)))))
+    (cons x (iter y))))
 
 (define (same-parity x . y)
   (define (iter items)
@@ -237,6 +237,10 @@
 (define (my-for-each proc l)
   (if (null? l) '()
       (cons (proc (car l)) (my-for-each proc (cdr l)))))
+
+(define (my-for-each proc l)
+  (if (null? l) '()
+      ((lambda () (proc (car l)) (my-for-each proc (cdr l))))))
 
 (define (my-for-each2 proc l)
   (if (null? l) '()

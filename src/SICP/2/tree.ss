@@ -45,7 +45,7 @@
 
 ; 2.26
 (define x (list 1 2 3))
-(define y (list 4 5 6)) 
+(define y (list 4 5 6))
 (append x y)
 (cons x y)
 (list x y)
@@ -59,20 +59,20 @@
 (define (deep-reverse x)
  (define (iter l a)
    (cond ((null? l) a)
-         ((not (pair? (car l))) 
+         ((not (pair? (car l)))
           (iter (cdr l) (cons (car l) a)))
          (else
-          (iter (cdr l)   
-           (if (null? a) 
+          (iter (cdr l)
+           (if (null? a)
                (list (deep-reverse (car l)))
                (cons (deep-reverse (car l)) a))))))
- (iter x nil)) 
+ (iter x nil))
 
 (deep-reverse x)
 
 (define (deep-reverse x)
   (if (pair? x) (reverse (map deep-reverse x))
-	  x))
+      x))
 ;; ;
 (deep-reverse x)
 ;
@@ -82,27 +82,30 @@
 ; 2.28
 ;
 (define x (list (list 1 2) (list 3 4)))
- ;(display x)
+;(display x)
 ;; ;(newline)
 (define (fringe x)
   (cond ((null? x) x)
-		((not (pair? x)) (list x))
-		(else (append (fringe (car x)) (fringe (cdr x))))))
+        ((not (pair? x)) (list x))
+        (else (append (fringe (car x)) (fringe (cdr x))))))
 
 
-(define (fringe x)
-	(let rec ((x x) (acc '()))
-		(cond ((null? x) acc)
-					((not (pair? x)) (cons x acc))
-					(else (rec (car x) (rec (cdr x) acc)))))) 	
-
+(fringe x)
 
 (define (fringe x)
-	(define (loop x acc)
-		(cond ((null? x) acc)
-					((not (pair? x)) (cons x acc))
-					(else (loop (car x) (loop (cdr x) acc)))))
-	(loop x '()))
+  (let rec ((x x) (acc '()))
+    (cond ((null? x) acc)
+          ((not (pair? x)) (cons x acc))
+          (else (rec (car x) (rec (cdr x) acc))))))
+
+(fringe x)
+
+(define (fringe x)
+  (define (loop x acc)
+    (cond ((null? x) acc)
+          ((not (pair? x)) (cons x acc))
+          (else (loop (car x) (loop (cdr x) acc)))))
+  (loop x '()))
 
 
 (fringe x)
@@ -139,20 +142,20 @@
   (car mb))
 ;
 (define (branch-structure mb)
-;  (begin (display mb) (newline))
+  ;  (begin (display mb) (newline))
   (car (cdr mb)))
 ;
 (branch-length mb4)
 ;
 (branch-structure mb4)
 ;
-(define mobile? pair?) 
+(define mobile? pair?)
 
 
 ;; (define (total-weight-sub mobile weight)
 ;;   (define (iter mb w)
 ;; ;    (begin (display mb) (newline))
-;;     (if (mobile? (branch-structure mb)) 
+;;     (if (mobile? (branch-structure mb))
 ;; 		(total-weight-sub (branch-structure mb) w)
 ;; 		(+ w (branch-structure mb))))
 ;;   (+ (iter (left-branch mobile) weight) (iter (right-branch mobile) 0)))
@@ -160,28 +163,28 @@
 
 (define (total-weight m)
   (if (not (mobile? m)) m
-	  (+ (total-weight (branch-structure (left-branch m)))
-		 (total-weight (branch-structure (right-branch m))))))
+      (+ (total-weight (branch-structure (left-branch m)))
+         (total-weight (branch-structure (right-branch m))))))
 
 (define (total-weight m)
   (if (mobile? m)
-	  (+ (total-weight (branch-structure (left-branch m)))
-		 (total-weight (branch-structure (right-branch m))))
-		m
-		))
+      (+ (total-weight (branch-structure (left-branch m)))
+         (total-weight (branch-structure (right-branch m))))
+      m
+      ))
 
 
 (total-weight m1)
 
 (define (balanced? m)
   (cond ((not (mobile? m)) #t)
-				((= (* (branch-length (left-branch m))
-							 (total-weight (branch-structure (left-branch m))))
-						(* (branch-length (right-branch m))
-							 (total-weight (branch-structure (right-branch m)))))
-				 (and (balanced? (branch-structure (left-branch m)))
-							(balanced? (branch-structure (right-branch m)))))
-				(else #f)))
+        ((= (* (branch-length (left-branch m))
+               (total-weight (branch-structure (left-branch m))))
+            (* (branch-length (right-branch m))
+               (total-weight (branch-structure (right-branch m)))))
+         (and (balanced? (branch-structure (left-branch m)))
+              (balanced? (branch-structure (right-branch m)))))
+        (else #f)))
 
 (left-branch m1)
 
@@ -194,24 +197,24 @@
 
 (balanced? (make-mobile (make-branch 5 20) (make-branch 10 10)))
 
-(balanced? (make-mobile (make-branch 5 20) 
-						(make-branch 10 (make-mobile (make-branch 5 5)
-													 (make-branch 5 5)))))
+(balanced? (make-mobile (make-branch 5 20)
+                        (make-branch 10 (make-mobile (make-branch 5 5)
+                                                     (make-branch 5 5)))))
 
-		 		 
+
 
 ;; (define (calc-mobile-torque-sub mb length)
-  
+
 ;;   (if (mobile? (branch-structure mb))
-;;       (+ 
-;;        (calc-mobile-torque-sub 
+;;       (+
+;;        (calc-mobile-torque-sub
 ;;         (left-branch (branch-structure mb)) (+ length (branch-length mb)))
-;;        (calc-mobile-torque-sub 
+;;        (calc-mobile-torque-sub
 ;;         (right-branch (branch-structure mb)) (+ length (branch-length mb))))
 ;;        (* (+ length (branch-length mb)) (branch-structure mb))))
-  
-;; ;                                       
-;; ;                                   
+
+;; ;
+;; ;
 ;; ;
 ;; (define (calc-mobile-torque mb)
 ;;   (calc-mobile-torque-sub mb 0))
@@ -222,38 +225,39 @@
 
 (define (square x) (* x x))
 (define (square-tree tree)
- (map (lambda (sub-tree)
-        (if (pair? sub-tree)
-            (square-tree sub-tree)
-            (square sub-tree)))
-      tree))
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (square-tree sub-tree)
+             (square sub-tree)))
+       tree))
 
 (define (square-tree tree)
   (cond ((null? tree) nil)
-		((not (pair? tree)) (square tree))
-		(else (cons (square-tree (car tree))
-					(square-tree (cdr tree))))))
+        ((not (pair? tree)) (square tree))
+        (else (cons (square-tree (car tree))
+                    (square-tree (cdr tree))))))
 
 ; 2.31
 (define (tree-map proc tree)
   (map (lambda (sub-tree)
          (if (pair? sub-tree)
              (tree-map proc sub-tree)
-             (proc sub-tree))) tree)) 
+             (proc sub-tree))) tree))
 ;
 (define (square-tree tree)
   (tree-map square tree))
 
 (square-tree
- (list 1
-	   (list 2 (list 3 4) 5)
-	   (list 6 7)))
+  (list 1
+        (list 2 (list 3 4) 5)
+        (list 6 7)))
 
 ; 2.32
 (define (subsets s)
- (if (null? s) (list nil)
-     (let ((rest (subsets (cdr s))))
-       (append rest (map (lambda (l) (cons (car s) l))                           
-                           rest)))))
- 
+  (if (null? s) (list nil)
+      (let ((rest (subsets (cdr s))))
+        (append rest (map (lambda (l) (cons (car s) l))
+                          rest)))))
+
 (subsets (list 1 2 3))
+(display (subsets (list 1 2 3)))

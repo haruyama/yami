@@ -41,29 +41,14 @@
       (error "Polys not in same var -- ADD-POLY"
              (list p1 p2))))
 
-
-  ;; (define (sub-poly p1 p2)
-  ;; 	(if (same-variable? (variable p1) (variable p2))
-  ;; 		(make-poly (variable p1)
-  ;; 				   (add-terms (term-list p1)
-  ;; 							  (map (lambda (x)
-  ;; 									 ; 手抜き
-  ;; 									 ; 多項式係数を考慮していない
-  ;; 									 (make-term (order x) (- (coeff x))))
-  ;; 								   (term-list p2))))
-  ;; 		(error "Polys not in same var -- SUB-POLY"
-  ;; 			   (list p1 p2))))
-
   (define (negate-poly p)
     (make-poly (variable p) (negate-term (term-list p))))
   (define (negate-term L) (map
                             (lambda (x) (make-term (order x)
                                                    (negate (coeff x)))) L))
 
-
   (define (sub-poly p1 p2)
     (add-poly p1 (negate-poly p2)))
-
 
   (define (mul-poly p1 p2)
     (if (same-variable? (variable p1) (variable p2))
@@ -106,9 +91,6 @@
           (tag (make-poly (variable p1) (cadr reduced)))))
       (error "Polys not in same var -- REDUCE-POLY"
              (list p1 p2))))
-
-
-
 
   (define (tag p) (attach-tag 'polynomial p))
   (put '=zero-poly? '(polynomial)
@@ -170,4 +152,50 @@
 
 (install-scheme-number-package)
 
+(define (install-rational-package)
+  (define (numer x) (car x))
+  (define (denom x) (cdr x))
+  (define (make-rat n d)
+    (let ((r (reduce n d)))
+          (cons (car r) (cadr r))))
+  (define (add-rat x y)
+    (make-rat (add (mul (numer x) (denom y))
+                   (mul (numer y) (denom x)))
+              (mul (denom x) (denom y))))
+
+  (define (sub-rat x y)
+    (make-rat (sub (mul (numer x) (denom y))
+                   (mul (numer y) (denom x)))
+              (mul (denom x) (denom y))))
+
+  (define (mul-rat x y)
+    (make-rat (mul (numer x) (numer y))
+              (mul (denom x) (denom y))))
+  (define (div-rat x y)
+    (make-rat (mul (numer x) (denom y))
+              (mul (denom x) (numer y))))
+
+  (define (tag x)
+    (attach-tag 'rational x))
+
+  (put 'add '(rational rational)
+       (lambda (x y) (tag (add-rat x y))))
+
+  (put 'sub '(rational rational)
+       (lambda (x y) (tag (sub-rat x y))))
+
+  (put 'mul '(rational rational)
+       (lambda (x y) (tag (mul-rat x y))))
+
+  (put 'div '(rational rational)
+       (lambda (x y) (tag (div-rat x y))))
+
+  (put 'make 'rational
+       (lambda (n d) (tag (make-rat n d))))
+  'done)
+
+(define (make-rational n d)
+  ((get 'make 'rational) n d))
+
+(install-rational-package)
 

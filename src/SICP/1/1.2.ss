@@ -611,7 +611,8 @@ define (fact-iter product counter max-count)
 
 (define (remainder-check k n)
   (define (remainder-check-sub k n r)
-	(if (= r 1) (if (or (= k 1) (= k (- n 1))) r
+	(if (= r 1)
+        (if (or (= k 1) (= k (- n 1))) r
 					0)
 		r)
 	)
