@@ -1,3 +1,5 @@
+(load "./4.4.ss")
+;(load "./4.4_microshaft.ss")
 ;ex4.70
 ;問題文中の定義では無限ストリームになる
 
@@ -60,15 +62,15 @@ end
 
 ;; (query-driver-loop)
 ;; (or (married Mickery ?x)
-;; 	(same Mickery ?x))
+;;     (same Mickery ?x))
 ;; end
 
 ;; (define (flatten-stream stream)
 ;;   (if (stream-null? stream)
-;; 	  the-empty-stream
-;; 	  (interleave
-;; 	   (stream-car stream)
-;; 	   (flatten-stream (stream-cdr stream)))))
+;;       the-empty-stream
+;;       (interleave
+;;        (stream-car stream)
+;;        (flatten-stream (stream-cdr stream)))))
 
 
 
@@ -98,10 +100,10 @@ end
 
 ;; (define (flatten-stream stream)
 ;;   (if (stream-null? stream)
-;; 	  the-empty-stream
-;; 	  (interleave-delayed
-;; 	   (stream-car stream)
-;; 	   (delay (flatten-stream (stream-cdr stream))))))
+;;       the-empty-stream
+;;       (interleave-delayed
+;;        (stream-car stream)
+;;        (delay (flatten-stream (stream-cdr stream))))))
 
 ;b
 ;空ストリームと単一のストリームしかこないので, 影響しない.
@@ -138,7 +140,6 @@ end
 end
 
 (query-driver-loop)
-
 (and (supervisor ?x ?y)
      (unique (supervisor ?anyone ?y)))
 
@@ -162,19 +163,19 @@ end
 
 ;; (display-stream
 ;;  (simple-query (query-syntax-process '(job ?x (computer programmer)))
-;; 		(singleton-stream '())))
+;;         (singleton-stream '())))
 
 
 ;; (define (instantiate exp frame unbound-var-handler)
 ;;   (define (copy exp)
-;; 	(cond ((var? exp)
-;; 		   (let ((binding (binding-in-frame exp frame)))
-;; 			 (if binding
-;; 				 (copy (binding-value binding))
-;; 				 (unbound-var-handler exp frame))))
-;; 		  ((pair? exp)
-;; 		   (cons (copy (car exp)) (copy (cdr exp))))
-;; 		  (else exp)))
+;;     (cond ((var? exp)
+;;            (let ((binding (binding-in-frame exp frame)))
+;;              (if binding
+;;                  (copy (binding-value binding))
+;;                  (unbound-var-handler exp frame))))
+;;           ((pair? exp)
+;;            (cons (copy (car exp)) (copy (cdr exp))))
+;;           (else exp)))
 ;;   (newline)
 ;;   (display "exp: ")
 ;;   (display exp)
@@ -198,14 +199,14 @@ end
 
 ;; (define (instantiate exp frame unbound-var-handler)
 ;;   (define (copy exp)
-;; 	(cond ((var? exp)
-;; 		   (let ((binding (binding-in-frame exp frame)))
-;; 			 (if binding
-;; 				 (copy (binding-value binding))
-;; 				 (unbound-var-handler exp frame))))
-;; 		  ((pair? exp)
-;; 		   (cons (copy (car exp)) (copy (cdr exp))))
-;; 		  (else exp)))
+;;     (cond ((var? exp)
+;;            (let ((binding (binding-in-frame exp frame)))
+;;              (if binding
+;;                  (copy (binding-value binding))
+;;                  (unbound-var-handler exp frame))))
+;;           ((pair? exp)
+;;            (cons (copy (car exp)) (copy (cdr exp))))
+;;           (else exp)))
 ;;   (copy exp))
 
 ;(trace conjoin)
@@ -220,14 +221,17 @@ end
 
 ;4.4.4.3
 ;
+(find-assertions (query-syntax-process '(job ?x (computer programmer)))
+                 (singleton-stream '()))
+
 (display-stream
   (find-assertions (query-syntax-process '(job ?x (computer programmer)))
                    (singleton-stream '())))
 
 
-(fetch-assertions (query-syntax-process '(job ?x (computer programmer)))
-                  (singleton-stream '()))
-
+(display-stream
+  (fetch-assertions (query-syntax-process '(job ?x (computer programmer)))
+                    (singleton-stream '())))
 
 (check-an-assertion '(job (Hacker Alyssa P) (computer programmer))
                     (query-syntax-process '(job ?x (computer programmer)))
@@ -256,6 +260,9 @@ end
 ;4.4.4.4
 
 (query-driver-loop)
+(assert! (rule (wheel ?person)
+               (and (supervisor ?middle-manager ?person)
+                    (supervisor ?x ?middle-manager))))
 (wheel ?p)
 end
 
@@ -279,8 +286,6 @@ end
 (rename-variables-in
   (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
 
-
-
 ;(trace unify-match)
 (query-driver-loop)
 (wheel ?p)
@@ -296,7 +301,7 @@ end
 (unify-match '(? x) '(? x)
              (singleton-stream '()))
 
-(query-syntax-process '(?x ?x))
+;(query-syntax-process '(?x ?x))
 ;(?x ?x) (?y ?y)
 (unify-match '((? x) (? x)) '((? y) (? y))
              (singleton-stream '()))
@@ -318,4 +323,8 @@ end
                      (singleton-stream '())))
 
 (depends-on? '((? x) (? x)) '(? x)
+             (singleton-stream '()))
+(depends-on? '(? x) '(? x)
+             (singleton-stream '()))
+(depends-on? '(? x) '(? y)
              (singleton-stream '()))

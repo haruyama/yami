@@ -86,6 +86,7 @@
 f1
 
 (define env1 the-empty-environment)
+env1
 (define env2 (extend-environment '(a b) '(1 2) env1))
 env2
 
@@ -97,6 +98,7 @@ env3
 
 (lookup-variable-value 'c env3)
 (lookup-variable-value 'a env3)
+(lookup-variable-value 'd env3)
 
 (set-variable-value! 'c 5 env3)
 env3

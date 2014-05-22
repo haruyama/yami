@@ -145,8 +145,9 @@ end
 ;x が未定義の場合に (cons-stream x <b>)はできない.
 
 (driver-loop)
-(define y (cons x (* x x)))
+(define y (cons z (* x x)))
 (define x 2)
+(define z 3)
 (display (car y))
 (display (cdr y))
 end

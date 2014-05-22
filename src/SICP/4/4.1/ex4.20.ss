@@ -88,19 +88,33 @@
                 (append (map (lambda (x y) (cons 'set! (cons x y))) vars exps)
                         body)))))
 
+(let->combination
+  (letrec->let
+    (quote
+      (letrec ((even?
+                 (lambda (n)
+                   (if (= n 0)
+                       true
+                       (odd? (- n 1)))))
+               (odd?
+                 (lambda(n)
+                   (if (= n 0)
+                       false
+                       (even? (- n 1))))))
+        (even? x)))))
 
-(letrec->let
+(let->combination
   (quote
-    (letrec ((even?
+    (let ((even?
                (lambda (n)
                  (if (= n 0)
-                   true
-                   (odd? (- n 1)))))
+                     true
+                     (odd? (- n 1)))))
              (odd?
                (lambda(n)
                  (if (= n 0)
-                   false
-                   (even? (- n 1))))))
+                     false
+                     (even? (- n 1))))))
       (even? x))))
 
 

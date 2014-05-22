@@ -162,7 +162,7 @@ end
     (require (not (= fletcher 5)))
     (require (not (= fletcher 1)))
     (require (> miller cooper))
-    ;	(require (not (= (abs (- smith fletcher)) 1)))
+    ;(require (not (= (abs (- smith fletcher)) 1)))
     (require (not (= (abs (- fletcher cooper)) 1)))
     (list (list 'baker baker)
           (list 'cooper cooper)
@@ -232,7 +232,7 @@ end
           ((= baker 5) false)
           ((< miller cooper) false)
           ((= (abs (- smith fletcher)) 1) false)
-          ;		  ((not (distinct? items)) false)
+          ;          ((not (distinct? items)) false)
           (else true))))
 
 (define (accumulate op initial sequence)
@@ -305,7 +305,7 @@ end
     (require (xor  (= kitty 2) (= mary 4)))
     (require (xor  (= mary 4) (= betty 1)))
     (require
-      (distinct? 	(list betty ethel joan kitty mary)))
+      (distinct?     (list betty ethel joan kitty mary)))
     (list betty ethel joan kitty mary)))
 
 (ex4-42)
@@ -339,8 +339,8 @@ end
         )
     (let ((fathers
             (list moore downing hall barnacle parker)))
-      ;	  (require
-      ;	   (distinct? (map car fathers)))
+      ;      (require
+      ;       (distinct? (map car fathers)))
       (require
         (distinct? (map cdr fathers)))
       (require
@@ -365,8 +365,8 @@ end
         )
     (let ((fathers
             (list moore downing hall barnacle parker)))
-      ;	  (require
-      ;	   (distinct? (map car fathers)))
+      ;      (require
+      ;       (distinct? (map car fathers)))
       (require
         (distinct? (map cdr fathers)))
       (require
@@ -465,37 +465,37 @@ end
 ;; (driver-loop)
 ;; (define (eight-queen)
 ;;   (let (
-;; 		(row1 (cons 1 (amb 1 2 3 4 5 6 7 8)))
-;; 		(row2 (cons 2 (amb 1 2 3 4 5 6 7 8)))
-;; 		(row3 (cons 3 (amb 1 2 3 4 5 6 7 8)))
-;; 		(row4 (cons 4 (amb 1 2 3 4 5 6 7 8)))
-;; 		(row5 (cons 5 (amb 1 2 3 4 5 6 7 8)))
-;; 		(row6 (cons 6 (amb 1 2 3 4 5 6 7 8)))
-;; 		)
-;; 	(let ((rows-a (list row1 row2 row3 row4 row5 row6)))
-;; 	  (require
-;; 	   (distinct? (map cdr rows-a)))
-;; 	  (require
-;; 	   (eight-queen-sub rows-a))
-;; 	  (let
-;; 		  (
-;; 		   (row7 (cons 7 (amb 1 2 3 4 5 6 7 8)))
-;; 		   )
-;; 		(let ((rows-b (list row1 row2 row3 row4 row5 row6 row7)))
-;; 		  (require
-;; 		   (distinct? (map cdr rows-b)))
-;; 		  (require
-;; 		   (eight-queen-sub rows-b))
+;;         (row1 (cons 1 (amb 1 2 3 4 5 6 7 8)))
+;;         (row2 (cons 2 (amb 1 2 3 4 5 6 7 8)))
+;;         (row3 (cons 3 (amb 1 2 3 4 5 6 7 8)))
+;;         (row4 (cons 4 (amb 1 2 3 4 5 6 7 8)))
+;;         (row5 (cons 5 (amb 1 2 3 4 5 6 7 8)))
+;;         (row6 (cons 6 (amb 1 2 3 4 5 6 7 8)))
+;;         )
+;;     (let ((rows-a (list row1 row2 row3 row4 row5 row6)))
+;;       (require
+;;        (distinct? (map cdr rows-a)))
+;;       (require
+;;        (eight-queen-sub rows-a))
+;;       (let
+;;           (
+;;            (row7 (cons 7 (amb 1 2 3 4 5 6 7 8)))
+;;            )
+;;         (let ((rows-b (list row1 row2 row3 row4 row5 row6 row7)))
+;;           (require
+;;            (distinct? (map cdr rows-b)))
+;;           (require
+;;            (eight-queen-sub rows-b))
 
-;; 		  (let (
-;; 				(row8 (cons 8 (amb 1 2 3 4 5 6 7 8)))
-;; 				)
-;; 			(let ((rows (list row1 row2 row3 row4 row5 row6 row7 row8)))
-;; 			  (require
-;; 			   (distinct? (map cdr rows)))
-;; 			  (require
-;; 			   (eight-queen-sub rows))
-;; 			  rows)))))))
+;;           (let (
+;;                 (row8 (cons 8 (amb 1 2 3 4 5 6 7 8)))
+;;                 )
+;;             (let ((rows (list row1 row2 row3 row4 row5 row6 row7 row8)))
+;;               (require
+;;                (distinct? (map cdr rows)))
+;;               (require
+;;                (eight-queen-sub rows))
+;;               rows)))))))
 
 
 ;; (eight-queen)
@@ -529,7 +529,7 @@ end
 (define (parse input)
   (set! *unparsed* input)
   (let ((sent (parse-sentence)))
-    ;	(newline) (display "unparsed: " )(display *unparsed*) (newline)
+    ;    (newline) (display "unparsed: " )(display *unparsed*) (newline)
     (require (null? *unparsed*))
     sent))
 (parse '(the cat eats))
@@ -547,8 +547,8 @@ end
         (parse-verb-phrase)))
 (define (parse-verb-phrase)
   (define (maybe-extend verb-phrase)
-    ;	(newline) (display "verb-maybe-extend: ")
-    ;	(display verb-phrase) (newline)
+    ;    (newline) (display "verb-maybe-extend: ")
+    ;    (display verb-phrase) (newline)
     (amb verb-phrase
          (maybe-extend (list 'verb-phrase
                              verb-phrase
@@ -560,8 +560,8 @@ end
         (parse-word nouns)))
 (define (parse-noun-phrase)
   (define (maybe-extend noun-phrase)
-    ;	(newline) (display "noun-maybe-extend: ")
-    ;	(display noun-phrase) (newline)
+    ;    (newline) (display "noun-maybe-extend: ")
+    ;    (display noun-phrase) (newline)
     (amb noun-phrase
          (maybe-extend (list 'noun-phrase
                              noun-phrase
@@ -606,8 +606,8 @@ end
 ;;   (require (not (null? *unparsed*)))
 ;;   (require (memq (car *unparsed*) (cdr word-list)))
 ;;   (let ((found-word (car *unparsed*)))
-;; 	(set! *unparsed* (cdr *unparsed*))
-;; 	(list (car word-list) found-word)))
+;;     (set! *unparsed* (cdr *unparsed*))
+;;     (list (car word-list) found-word)))
 
 ;; (parse '(the cat eats))
 ;; try-again
@@ -616,9 +616,9 @@ end
 ;; (driver-loop)
 ;; (define (parse-verb-phrase)
 ;;   (amb (parse-word verbs)
-;; 	   (list 'verb-phrase
-;; 			 (parse-verb-phrase)
-;; 			 (parse-prepositional-phrase))))
+;;        (list 'verb-phrase
+;;              (parse-verb-phrase)
+;;              (parse-prepositional-phrase))))
 ;; (parse '(the cat eats))
 ;; try-again
 ;; end
@@ -824,8 +824,6 @@ end
               (lambda ()
                 (alternative env succeed fail))))))
 
-
-
 (define (analyze exp)
   (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
@@ -860,7 +858,6 @@ end
            x)
          'all-odd)
 end
-
 
 ;ex4.53
 (driver-loop)
