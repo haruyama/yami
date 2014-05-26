@@ -44,3 +44,5 @@ end
   (f 10))
 end
 ;error
+
+;http://practical-scheme.net/wiliki/wiliki.cgi?Scheme%3A%E5%86%85%E9%83%A8define%E3%81%AE%E8%A9%95%E4%BE%A1%E9%A0%86

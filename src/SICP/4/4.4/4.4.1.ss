@@ -1,62 +1,7 @@
 (load "./4.4.ss")
 (define user-initial-environment (make-module #f))
 
-(query-driver-loop)
-(assert! (address (Bitdiddle Ben) (Slumerville (Ridge Road) 10)))
-
-(assert! (job (Bitdiddle Ben) (computer wizard)))
-(assert! (salary (Bitdiddle Ben) 60000))
-
-(assert! (address (Hacker Alyssa P) (Cambridge (Mass Ave) 78)))
-(assert! (job (Hacker Alyssa P) (computer programmer)))
-(assert! (salary (Hacker Alyssa P) 40000))
-(assert! (supervisor (Hacker Alyssa P) (Bitdiddle Ben)))
-
-(assert! (address (Fect Cy D) (Cambridge (Ames Street) 3)))
-(assert! (job (Fect Cy D) (computer programmer)))
-(assert! (salary (Fect Cy D) 35000))
-(assert! (supervisor (Fect Cy D) (Bitdiddle Ben)))
-
-(assert! (address (Tweakit Lem E) (Boston (Bay State Road) 22)))
-(assert! (job (Tweakit Lem E) (computer technician)))
-(assert! (salary (Tweakit Lem E) 25000))
-(assert! (supervisor (Tweakit Lem E) (Bitdiddle Ben)))
-
-(assert! (address (Reasoner Louis) (Slumerville (Pine Tree Road) 80)))
-(assert! (job (Reasoner Louis) (computer programmer trainee)))
-(assert! (salary (Reasoner Louis) 30000))
-(assert! (supervisor (Reasoner Louis) (Hacker Alyssa P)))
-
-(assert! (supervisor (Bitdiddle Ben) (Warbucks Oliver)))
-
-(assert! (address (Warbucks Oliver) (Swellesley (Top Heap Road))))
-(assert! (job (Warbucks Oliver) (administration big wheel)))
-(assert! (salary (Warbucks Oliver) 150000))
-
-(assert! (address (Scrooge Eben) (Weston (Shady Lane) 10)))
-(assert! (job (Scrooge Eben) (accounting chief accountant)))
-(assert! (salary (Scrooge Eben) 75000))
-(assert! (supervisor (Scrooge Eben) (Warbucks Oliver)))
-
-(assert! (address (Cratchet Robert) (Allston (N Harvard Street) 16)))
-(assert! (job (Cratchet Robert) (accounting scrivener)))
-(assert! (salary (Cratchet Robert) 18000))
-(assert! (supervisor (Cratchet Robert) (Scrooge Eben)))
-
-(assert! (address (Aull DeWitt) (Slumerville (Onion Square) 5)))
-(assert! (job (Aull DeWitt) (administration secretary)))
-(assert! (salary (Aull DeWitt) 25000))
-(assert! (supervisor (Aull DeWitt) (Warbucks Oliver)))
-
-(assert! (can-do-job (computer wizard) (computer programmer)))
-(assert! (can-do-job (computer wizard) (computer technician)))
-
-(assert! (can-do-job (computer programmer)
-            (computer programmer trainee)))
-
-(assert! (can-do-job (administration secretary)
-            (administration big wheel)))
-end
+;(load "./4.4_microshaft.ss")
 
 (query-driver-loop)
 (job ?x (computer programmer))
@@ -78,49 +23,49 @@ end
 
 (query-driver-loop)
 (and (job ?person (computer programmer))
-	 (address ?person ?where))
+     (address ?person ?where))
 (or (supervisor ?x (Bitdiddle Ben))
-	(supervisor ?x (Hacker Alyssa P)))
+    (supervisor ?x (Hacker Alyssa P)))
 
 (and (supervisor ?x (Bitdiddle Ben))
-	 (not (job ?x (computer programmer))))
+     (not (job ?x (computer programmer))))
 
 (and (salary ?persion ?amount)
-	 (lisp-value > ?amount 30000))
+     (lisp-value > ?amount 30000))
 end
 
 ;ex4.56
 (query-driver-loop)
 ;a
 (and (supervisor ?x (Bitdiddle Ben))
-	 (address ?x ?y))
+     (address ?x ?y))
 ;b
 (and (salary (Bitdiddle Ben) ?ben-amount)
-	 (salary ?x ?amount)
-	 (lisp-value < ?amount ?ben-amount))
+     (salary ?x ?amount)
+     (lisp-value < ?amount ?ben-amount))
 ;c
 (and (supervisor ?person ?supervisor)
-	 (not (job ?supervisor (computer . ?x)))
-	 (job ?supervisor ?y))
+     (not (job ?supervisor (computer . ?x)))
+     (job ?supervisor ?y))
 end
 
 (query-driver-loop)
 
 (assert! (rule (lives-near ?person-1 ?person-2)
-			   (and (address ?person-1 (?town . ?rest-1))
-					(address ?person-2 (?town . ?rest-2))
-					(not (same ?person-1 ?person-2)))))
+               (and (address ?person-1 (?town . ?rest-1))
+                    (address ?person-2 (?town . ?rest-2))
+                    (not (same ?person-1 ?person-2)))))
 
 (assert! (rule (same ?x ?x)))
 
 (assert! (rule (wheel ?person)
-			   (and (supervisor ?middle-manager ?person)
-					(supervisor ?x ?middle-manager))))
+               (and (supervisor ?middle-manager ?person)
+                    (supervisor ?x ?middle-manager))))
 
 (assert! (rule (outranked-by ?staff-person ?boss)
-			   (or (supervisor ?staff-person ?boss)
-				   (and (supervisor ?staff-person ?middle-manager)
-						(outranked-by ?middle-manager ?boss)))))
+               (or (supervisor ?staff-person ?boss)
+                   (and (supervisor ?staff-person ?middle-manager)
+                        (outranked-by ?middle-manager ?boss)))))
 end
 
 (query-driver-loop)
@@ -128,26 +73,26 @@ end
 (lives-near ?x ?y)
 (wheel ?x)
 (and (job ?x (computer programmer))
-	 (lives-near ?x (Bitdiddle Ben)))
+     (lives-near ?x (Bitdiddle Ben)))
 (and (job ?x ?type)
-	 (lives-near ?x (Bitdiddle Ben)))
+     (lives-near ?x (Bitdiddle Ben)))
 (outranked-by ?person ?boss)
 end
 
 ;ex4.57
 (query-driver-loop)
 (assert! (rule (can-replace-job ?job-1 ?job-2)
-			   (or
+               (or
                  (can-do-job ?job-1 ?job-2)
-				   (and (can-do-job ?job-1 ?job-m)
-						(can-replace-job ?job-m ?job-2))
-				   )))
+                 (and (can-do-job ?job-1 ?job-m)
+                      (can-replace-job ?job-m ?job-2))
+                 )))
 (assert! (rule (replace ?person-1 ?person-2)
-			   (and (job ?person-1 ?job-1)
-					(job ?person-2 ?job-2)
-					(or (can-replace-job ?job-1 ?job-2)
-						(same ?job-1 ?job-2))
-					(not (same ?person-1 ?person-2)))))
+               (and (job ?person-1 ?job-1)
+                    (job ?person-2 ?job-2)
+                    (or (can-replace-job ?job-1 ?job-2)
+                        (same ?job-1 ?job-2))
+                    (not (same ?person-1 ?person-2)))))
 end
 
 (query-driver-loop)
@@ -158,9 +103,9 @@ end
 (replace ?p (Fect Cy D))
 
 (and (replace ?p1 ?p2)
-(salary ?p1 ?s1)
-(salary ?p2 ?s2)
-(lisp-value < ?s1 ?s2))
+     (salary ?p1 ?s1)
+     (salary ?p2 ?s2)
+     (lisp-value < ?s1 ?s2))
 end
 
 ;ex4.58
@@ -173,6 +118,8 @@ end
                  (not (same ?div-p ?div-s))
                  )))
 (big-shot ?p)
+(and (job ?w ?s)
+     (big-shot ?w))
 end
 
 ;ex4.59
@@ -188,10 +135,10 @@ end
 
 ;b
 (assert!
- (rule (meeting-time ?person ?day-and-time)
-	   (and (job ?person (?div . ?rest-p))
-			(or (meeting whole-company ?day-and-time)
-				(meeting ?div ?day-and-time)))))
+  (rule (meeting-time ?person ?day-and-time)
+        (and (job ?person (?div . ?rest-p))
+             (or (meeting whole-company ?day-and-time)
+                 (meeting ?div ?day-and-time)))))
 
 (meeting-time (Hacker Alyssa P) ?dt)
 (meeting-time (Scrooge Eben) ?dt)
@@ -231,7 +178,7 @@ end
 (query-driver-loop)
 (assert! (rule (append-to-form () ?y ?y)))
 (assert! (rule (append-to-form (?u . ?v) ?y (?u . ?z))
-			   (append-to-form ?v ?y ?z)))
+               (append-to-form ?v ?y ?z)))
 (append-to-form (a b) (c d) ?z)
 
 (append-to-form (a b) ?y (a b c d))
@@ -243,7 +190,7 @@ end
 (query-driver-loop)
 (assert! (rule (?x next-to ?y in (?x ?y . ?u))))
 (assert! (rule (?x next-to ?y in (?v . ?z))
-			   (?x next-to ?y in ?z)))
+               (?x next-to ?y in ?z)))
 (?x next-to ?y in (1 (2 3) 4))
 (?x next-to 1 in (2 1 3 1))
 (1 next-to ?x in (2 1 3 1))
@@ -278,14 +225,14 @@ end
 (assert! (son Ada Jubal))
 
 (assert! (rule (grandson-of ?g ?s)
-			   (and (son-of ?p ?s)
-					(son-of ?g ?p))))
+               (and (son-of ?p ?s)
+                    (son-of ?g ?p))))
 
 (assert! (rule (son-of ?m ?s)
-			   (or
-				(son ?m ?s)
-				(and (wife ?m ?w)
-					 (son ?w ?s)))))
+               (or
+                 (son ?m ?s)
+                 (and (wife ?m ?w)
+                      (son ?w ?s)))))
 
 (grandson-of ?g ?s)
 (son-of ?m ?s)
@@ -325,20 +272,7 @@ end
                (and (reverse ?v ?w)
                     (append-to-form ?w (?u) ?y))))
 
-(assert! (rule (reverse (?u . ?v) ?y)
-               (and
-                    (append-to-form ?w (?u) ?y)
-                    (reverse ?v ?w)
-                    )))
-
-;(assert! (rule (reverse ?x ?y)
-;               (and (append-to-form (?car) ?cdr ?x)
-;                    (append-to-form ?rev-cdr (?car) ?y)
-;                    (reverse ?cdr ?rev-cdr)
-;                    )))
-;(reverse (1 2 3) ?x)
-
-;(reverse ?x (1 2 3))
+(reverse (1 2 3) ?x)
 
 ;ex4.69
 
