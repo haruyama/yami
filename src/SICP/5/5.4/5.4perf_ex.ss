@@ -2,17 +2,17 @@
 (start eceval)
 (define (factorial n)
   (if (= n 1)
-	  1
-	  (* (factorial (- n 1)) n)))
+    1
+    (* (factorial (- n 1)) n)))
 (factorial 5)
 (factorial 6)
 
 (define (factorial-iter n)
   (define (iter product counter)
-	(if (> counter n)
-		product
-		(iter (* counter product)
-			  (+ counter 1))))
+    (if (> counter n)
+      product
+      (iter (* counter product)
+            (+ counter 1))))
   (iter 1 1))
 (factorial-iter 5)
 (factorial-iter 6)
@@ -32,8 +32,8 @@
 (start eceval)
 (define (fib n)
   (if (< n 2)
-      n
-      (+ (fib (- n 1)) (fib (- n 2)))))
+    n
+    (+ (fib (- n 1)) (fib (- n 2)))))
 (fib 3)
 (fib 4)
 (fib 5)
