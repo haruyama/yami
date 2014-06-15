@@ -11,13 +11,17 @@
 (list-union '(a b c) '(b c))
 (list-difference '(a b c) '(b c))
 
+(preserving '(continue)
+            (empty-instruction-sequence)
+            (compile-linkage 'hoge))
+
 (quoted? 'a)
 
 (compile
   '(define (factorial n)
      (if (= n 1)
-         1
-         (* (factorial (- n 1)) n)))
+       1
+       (* (factorial (- n 1)) n)))
   'val
   'next)
 
@@ -25,20 +29,17 @@
 (compile
   '(define (factorial-alt n)
      (if (= n 1)
-         1
-         (* n (factorial (- n 1)))))
+       1
+       (* n (factorial (- n 1)))))
   'val
   'next)
-
-
-
 
 (print-after-compiler
   (compile
     '(define (factorial n)
        (if (= n 1)
-           1
-           (* (factorial (- n 1)) n)))
+         1
+         (* (factorial (- n 1)) n)))
     'val
     'next))
 
@@ -46,8 +47,8 @@
   (compile
     '(define (factorial-alt n)
        (if (= n 1)
-           1
-           (* n (factorial (- n 1)))))
+         1
+         (* n (factorial (- n 1)))))
     'val
     'next))
 
@@ -56,10 +57,10 @@
     '(define (factorial n)
        (define (iter product counter)
          (if (> counter n)
-             product
-             (iter (* counter product)
-                   (+ counter 1))))
-         (iter 1 1))
+           product
+           (iter (* counter product)
+                 (+ counter 1))))
+       (iter 1 1))
     'val
     'next))
 
