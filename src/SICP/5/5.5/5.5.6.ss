@@ -290,6 +290,7 @@
     'next
     '()))
 
+;ex5.43
 (define (make-assignment var val)
   (list 'set! var val))
 (define (make-let clauses body) (list 'let clauses body))
