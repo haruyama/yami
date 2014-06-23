@@ -16,7 +16,6 @@ end
 (factorial 5)
 end
 
-
 (compile-and-go
   '(define (fib n)
      (if (< n 2)

@@ -16,6 +16,9 @@
             (compile-linkage 'hoge))
 
 (quoted? 'a)
+(quoted? ''a)
+
+(compile-quoted ''a 'x 'next)
 
 (compile
   '(define (factorial n)

@@ -2,6 +2,7 @@
 
 ;ex5.20
 ; http://www.serendip.ws/archives/3384
+; (cons x (cons x nil)) の 内側のconsから評価されるだろうから内側のほうがp2になるのでは
 
 ;ex5.21
 

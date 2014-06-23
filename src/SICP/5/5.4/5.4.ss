@@ -702,7 +702,7 @@
     ev-cond-loop
     (test (op null?) (reg unev))
     (branch (label ev-cond-null))
-    (assign exp (op car) (reg unev))
+    (assign exp (op car) (reg unev)); cond-first-clause
     (test (op cond-else-clauses?) (reg exp))
     (branch (label ev-cond-actions))
     (save exp)
