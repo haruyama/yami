@@ -274,6 +274,12 @@ end
 
 (reverse (1 2 3) ?x)
 
+(assert! (rule (reverse2 () ())))
+(assert! (rule (reverse2 ?y (?u . ?v))
+               (and (reverse2 ?w ?v)
+                    (append-to-form ?w (?u) ?y))))
+(reverse2 ?x (1 2 3))
+
 ;ex4.69
 
 (assert! (rule ((great . ?rel) ?x ?y)
@@ -306,4 +312,5 @@ end
   (?rel Adam Irad)
   (is-last-grandson? ?rel)
   )
+((great great grandson) ?g ?ggs)
 end
