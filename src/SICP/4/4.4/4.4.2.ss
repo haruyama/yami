@@ -5,6 +5,7 @@
 
 ;ex4.71
 ;無限ループの場合に結果を表示できなくなる場合がある
+;https://github.com/suzuken/sicp/blob/master/chapter4/q4.71.scm
 ;Louisの定義
 
 (define (interleave s1 s2)
