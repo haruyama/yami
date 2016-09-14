@@ -38,17 +38,17 @@
 (define (width i)
   (/ (- (upper-bound i) (lower-bound i)) 2))
 
-(define (make-center-parcent c p)
+(define (make-center-percent c p)
   (make-center-width c (* c (/ p 100))))
 
-(define (parcent i)
+(define (percent i)
   (* (/ (width i) (center i)) 100))
 
 (define i (make-center-width 5 5))
-(parcent i)
+(percent i)
 
-(define i (make-center-parcent 100 10))
-(parcent i)
+(define i (make-center-percent 100 10))
+(percent i)
 
 
 (define r1 (make-center-percent 1005 1))
@@ -63,6 +63,7 @@
     (div-interval one 
                   (add-interval (div-interval one r1)
                                 (div-interval one r2)))))
+
 (define r2 (make-center-percent 300 0.2))
 (par1 r1 r2)
 (par2 r1 r2)
