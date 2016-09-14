@@ -41,7 +41,7 @@
 
 
 (define (make-center-percent c p)
-  (let ((w (* c (/ p 100.0))))
+  (let ((w (* (abc c) (/ p 100.0))))
     (make-center-width c w)))
 
 (define (percent i)
