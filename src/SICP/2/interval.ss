@@ -40,37 +40,33 @@
         (uby (upper-bound y)))
        (cond ((> lbx 0) ; x が正
               (cond ((> lby 0) ; y が正
-                     (make-interval (* lbx lby)
-                                    (* ubx uby)))
+                     (make-interval (* lbx lby) (* ubx uby)))
                     ((< uby 0) ; y が負
-                     (make-interval (* ubx lby)
-                                    (* lbx uby)))
+                     (make-interval (* ubx lby) (* lbx uby)))
                     (else ; y が零を跨る
-                      (make-interval (* ubx lby)
-                                     (* ubx uby)))))
+                      (make-interval (* ubx lby) (* ubx uby)))))
              ((< ubx 0) ; x が負
               (cond ((> lby 0) ; y が正
-                     (make-interval (* lbx uby)
-                                    (* ubx lby)))
+                     (make-interval (* lbx uby) (* ubx lby)))
                     ((< uby 0) ; y が負
-                     (make-interval (* ubx uby)
-                                    (* lbx lby)))
+                     (make-interval (* ubx uby) (* lbx lby)))
                     (else ; y が零を跨る
-                      (make-interval (* lbx uby)
-                                     (* lbx lby)))))
+                      (make-interval (* lbx uby) (* lbx lby)))))
              (else ; x が零を跨る
                (cond ((> lby 0) ; y が正
-                      (make-interval (* lbx uby)
-                                     (* ubx uby)))
+                      (make-interval (* lbx uby) (* ubx uby)))
                      ((< uby 0) ; y が負
-                      (make-interval (* ubx lby)
-                                     (* lbx lby)))
+                      (make-interval (* ubx lby) (* lbx lby)))
                      (else ; y が零を跨る
                        (make-interval (min (* lbx uby) (* ubx lby))
                                       (max (* lbx lby) (* ubx uby)))))))))
 
 (mul-interval (make-interval 1 2) (make-interval 1 5))
 (mul-interval-2.11 (make-interval 1 2) (make-interval 1 5))
+
+(mul-interval (make-interval 1 2) (make-interval 0 5))
+(mul-interval-2.11 (make-interval 1 2) (make-interval 0 5))
+
 
 (mul-interval (make-interval 1 2) (make-interval -1 5))
 (mul-interval-2.11 (make-interval 1 2) (make-interval -1 5))
@@ -88,7 +84,7 @@
 
 ; ex2.12
 (define (make-center-percent c p)
-  (make-center-width c (* c (/ p 100))))
+  (make-center-width c (* (abs c ) (/ p 100))))
 
 (define (percent i)
   (* (/ (width i) (center i)) 100))
@@ -97,6 +93,10 @@
 (percent i)
 
 (define i (make-center-percent 100.0 10))
+(display i)
+(percent i)
+
+(define i (make-center-percent -100.0 10))
 (display i)
 (percent i)
 
