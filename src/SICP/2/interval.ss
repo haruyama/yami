@@ -86,6 +86,9 @@
 (define (make-center-percent c p)
   (make-center-width c (* (abs c ) (/ p 100))))
 
+(define (make-center-percent-noabs c p)
+  (make-center-width c (* c (/ p 100))))
+
 (define (percent i)
   (* (/ (width i) (center i)) 100))
 
@@ -107,7 +110,7 @@
 (mul-interval (make-center-percent 100.0 1) (make-center-percent 100.0 2))
 (mul-interval (make-center-percent 100.0 5) (make-center-percent 100.0 2))
 (mul-interval (make-center-percent 100.0 5) (make-center-percent 100.0 10))
-(mul-interval (make-center-percent 100.0 10) (make-center-percent 100.0 10))
+(mul-interval (make-center-percent 99.0 10) (make-center-percent 100.0 10))
 
 
 (define (par1 r1 r2)
@@ -115,7 +118,7 @@
                 (add-interval r1 r2)))
 (define (par2 r1 r2)
   (let ((one (make-interval 1 1)))
-    (div-interval one 
+    (div-interval one
                   (add-interval (div-interval one r1)
                                 (div-interval one r2)))))
 
@@ -132,3 +135,27 @@
 
 (div-interval r1 r1)
 (div-interval r1 r2)
+
+(add-interval r1 r1)
+
+(define r3 (make-center-percent 100.0 1))
+(div-interval r3 r3)
+(add-interval r3 r3)
+
+
+(define r4 (make-center-percent 100.0 2))
+(div-interval r4 r4)
+(add-interval r3 r4)
+(div-interval r3 r4)
+(div-interval r3 (make-interval 1 1))
+
+(define r5 (make-center-percent 200.0 1))
+(par1 r5 r5)
+(par2 r5 r5)
+
+(define r6 (make-center-percent 200.0 3))
+(par1 r6 r6)
+(par2 r6 r6)
+
+(par1 r5 r6)
+(par2 r5 r6)
