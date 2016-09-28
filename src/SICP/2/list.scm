@@ -224,6 +224,17 @@
 
 (square-list-ba (list 1 2 3 4))
 
+(define (square-list items)
+  (define (iter things answer)
+    (if (null? things)
+      (reverse answer)
+      (iter (cdr things)
+            (cons (square (car things))
+                  answer))))
+  (iter items nil))
+
+(square-list (list 1 2 3 4))
+
 ;ex 2.23
 (for-each (lambda (x) (newline) (display x)) (list 57 321 88))
 
@@ -236,11 +247,9 @@
 
 (define (my-for-each proc l)
   (if (null? l) '()
-      (cons (proc (car l)) (my-for-each proc (cdr l)))))
-
-(define (my-for-each proc l)
-  (if (null? l) '()
       ((lambda () (proc (car l)) (my-for-each proc (cdr l))))))
+
+(my-for-each (lambda (x) (newline) (display x)) (list 57 321 88))
 
 (define (my-for-each2 proc l)
   (if (null? l) '()
