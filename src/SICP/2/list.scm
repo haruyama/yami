@@ -45,14 +45,16 @@
       (last-pair (cdr l))))
 (last-pair odds)
 (last-pair (list 23 72 149 34))
+;(last-pair nil)
 
 ;ex 2.18
 (define (reverse l)
   (define (reverse-iter a b)
     (if (null? a) b
         (reverse-iter (cdr a) (cons (car a) b))))
-  (reverse-iter l '()))
+  (reverse-iter l nil))
 (reverse squares)
+(reverse nil)
 
 ;ex 2.19
 (define us-coins (list 50 25 10 5 1))
@@ -188,7 +190,9 @@
         answer
         (iter (cdr things) (cons (square (car things))
                                  answer))))
+  ;(trace iter)
   (iter items '()))
+
 
 (square-list-r (list 1 2 3 4))
 
@@ -196,8 +200,8 @@
   (define (iter things answer)
     (if (null? things)
         answer
-        (iter (cdr things) (cons answer (square (car things))
-                                 ))))
+        (iter (cdr things) (cons answer (square (car things))))))
+  ;(trace iter)
   (iter items '()))
 
 (square-list-b (list 1 2 3 4))
@@ -263,3 +267,12 @@
         (else (proc (car l)) (my-for-each3 proc (cdr l)))))
 
 (my-for-each3 (lambda (x) (newline) (display x)) (list 57 321 88))
+
+;https://github.com/YuichiroSato/SICP/blob/master/chapter-2/2-23.scm
+(define  (sato-for-each f ls)
+  (define  (iter ls1 val)
+    (if  (null? ls1)
+      val
+      (iter  (cdr ls1)  (f  (car ls1)))))
+  (iter ls  ()))
+(sato-for-each (lambda (x) (newline) (display x)) (list 57 321 88))
