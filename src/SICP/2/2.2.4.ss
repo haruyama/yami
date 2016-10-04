@@ -237,6 +237,28 @@
     (let ((smaller (up-split painter (- n 1))))
       (below painter (beside smaller smaller)))))
 
+(define (square-of-four tl tr bl br)
+  (lambda (painter)
+    (let ((top (beside (tl painter) (tr painter)))
+          (bottom (beside (bl painter) (br painter))))
+      (below bottom top))))
+
+(define (flipped-pairs painter)
+  (let ((combine4 (square-of-for identity flip-vert
+                                 identity flip-vert)))
+    (combine4 painter)))
+
+(define (square-limit paintern n)
+  (let ((combine4 (square-of-for flip-horiz identity
+                                 rotate180 flip-vert)))
+    (combine4 (corner painter n))))
+
+;ex2.45
+(define (split proc1 proc2)
+  (lambda (painter n)
+    (if (= n 0) painter
+      (let ((smaller ((split proc1 proc2) painter (- n 1))))
+        (proc1 painter (proc2 smaller smaller)))))))
 
 (define  (init)
   (gl-clear-color 1.0 1.0 1.0 1.0))
