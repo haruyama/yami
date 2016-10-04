@@ -11,14 +11,14 @@
 ;(length (list x x))
 ;
 (define (count-leaves x)
- (cond ((not (pair? x)) 1)
-       ((null? x) 0)
+ (cond ((null? x) 0)
+       ((not (pair? x)) 1)
        (else (+ (count-leaves (car x))
                 (count-leaves (cdr x))))))
 ;
 (count-leaves x)
 ;
-;(count-leaves (list x x))
+(count-leaves (list x x))
 
 ; 2.24
 
@@ -29,19 +29,20 @@
 (display x)
 (newline)
 (car (cdr (car (cdr (cdr x)))))
-(car (cdr (car (cdr (cdr x)))))
+(car (cdaddr x))
 
 (define x (list (list 7)))
 (display x)
 (newline)
 (car (car x))
+(caar x)
 
 (define x (list 1 (list 2 (list 3 (list 4 (list 5 (list 6 7)))))))
 (display x)
 (newline)
-(car (cdr x))
-(car (cdr (car (cdr x))))
+;(car (cdr (car (cdr x))))
 (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr x))))))))))))
+(cadadr (cadadr (cadadr x )))
 
 ; 2.26
 (define x (list 1 2 3))
@@ -54,7 +55,7 @@
 (define x (list (list 1 2) (list 3 4)))
 ;(display x)
 ;(newline)
-;(reverse x)
+(reverse x)
 ;
 (define (deep-reverse x)
  (define (iter l a)
@@ -73,7 +74,6 @@
 (define (deep-reverse x)
   (if (pair? x) (reverse (map deep-reverse x))
       x))
-;; ;
 (deep-reverse x)
 ;
 (deep-reverse (list (list 1 2) (list 3 4) (list 5 6 (list 7 8))))
@@ -88,7 +88,6 @@
   (cond ((null? x) x)
         ((not (pair? x)) (list x))
         (else (append (fringe (car x)) (fringe (cdr x))))))
-
 
 (fringe x)
 
@@ -156,23 +155,21 @@
 ;;   (define (iter mb w)
 ;; ;    (begin (display mb) (newline))
 ;;     (if (mobile? (branch-structure mb))
-;; 		(total-weight-sub (branch-structure mb) w)
-;; 		(+ w (branch-structure mb))))
+;;      (total-weight-sub (branch-structure mb) w)
+;;      (+ w (branch-structure mb))))
 ;;   (+ (iter (left-branch mobile) weight) (iter (right-branch mobile) 0)))
 ;; (total-weight-sub m1 0)
 
-(define (total-weight m)
-  (if (not (mobile? m)) m
-      (+ (total-weight (branch-structure (left-branch m)))
-         (total-weight (branch-structure (right-branch m))))))
+;(define (total-weight m)
+;  (if (not (mobile? m)) m
+;      (+ (total-weight (branch-structure (left-branch m)))
+;         (total-weight (branch-structure (right-branch m))))))
 
 (define (total-weight m)
   (if (mobile? m)
       (+ (total-weight (branch-structure (left-branch m)))
          (total-weight (branch-structure (right-branch m))))
-      m
-      ))
-
+      m))
 
 (total-weight m1)
 
@@ -186,13 +183,6 @@
               (balanced? (branch-structure (right-branch m)))))
         (else #f)))
 
-(left-branch m1)
-
-(branch-length (left-branch m1))
-(branch-length (right-branch m1))
-(total-weight  (branch-structure (left-branch m1)))
-(total-weight  (branch-structure (right-branch m1)))
-
 (balanced? m1)
 
 (balanced? (make-mobile (make-branch 5 20) (make-branch 10 10)))
@@ -200,8 +190,6 @@
 (balanced? (make-mobile (make-branch 5 20)
                         (make-branch 10 (make-mobile (make-branch 5 5)
                                                      (make-branch 5 5)))))
-
-
 
 ;; (define (calc-mobile-torque-sub mb length)
 
@@ -221,9 +209,35 @@
 ;; (calc-mobile-torque mb1)
 ;; (calc-mobile-torque mb4)
 
+(define  (scale-tree tree factor)
+  (cond  ((null? tree) nil)
+    ((not  (pair? tree))  (* tree factor))
+    (else  (cons  (scale-tree  (car tree) factor)
+                  (scale-tree  (cdr tree) factor)))))
+
+(scale-tree  (list 1  (list 2  (list 3 4) 5)  (list 6 7))
+             10)
+
+(define  (scale-tree tree factor)
+  (map  (lambda  (sub-tree)
+          (if  (pair? sub-tree)
+            (scale-tree sub-tree factor)
+            (* sub-tree factor)))
+        tree))
+
+(scale-tree  (list 1  (list 2  (list 3 4) 5)  (list 6 7))
+             10)
+
 ; 2.30
 
 (define (square x) (* x x))
+
+(define (square-tree tree)
+  (cond ((null? tree) nil)
+        ((not (pair? tree)) (square tree))
+        (else (cons (square-tree (car tree))
+                    (square-tree (cdr tree))))))
+
 (define (square-tree tree)
   (map (lambda (sub-tree)
          (if (pair? sub-tree)
@@ -231,11 +245,8 @@
              (square sub-tree)))
        tree))
 
-(define (square-tree tree)
-  (cond ((null? tree) nil)
-        ((not (pair? tree)) (square tree))
-        (else (cons (square-tree (car tree))
-                    (square-tree (cdr tree))))))
+(define x (cons (list 1 2) (list 3 4)))
+(square-tree x)
 
 ; 2.31
 (define (tree-map proc tree)
@@ -247,6 +258,7 @@
 (define (square-tree tree)
   (tree-map square tree))
 
+(square-tree x)
 (square-tree
   (list 1
         (list 2 (list 3 4) 5)
