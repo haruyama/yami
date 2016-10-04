@@ -70,6 +70,7 @@
 ;(edge1-frame f)
 ;(edge2-frame f)
 
+;ex2.48
 (define (make-segment start end)
   (cons start end))
 (define (start-segment segment)
@@ -102,7 +103,6 @@
       segment-list)))
 
 ;ex2.49
-
 (define rim
   (segments->painter (list
                       (make-segment (make-vect 0.0 0.0)
@@ -202,14 +202,107 @@
 
 (define frame  (make-frame  (make-vect 0 0)  (make-vect 1 0)  (make-vect 0 1)))
 
+(define (transform-painter painter origin corner1 corner2)
+  (lambda (frame)
+    (let ((m (frame-coord-map frame)))
+      (let ((new-origin (m origin)))
+        (painter (make-frame new-origin
+                             (sub-vect (m corner1) new-origin)
+                             (sub-vect (m corner2) new-origin)))))))
+
+(define (flip-vert painter)
+  (transform-painter painter
+                     (make-vect 0.0 1.0)
+                     (make-vect 1.0 1.0)
+                     (make-vect 0.0 0.0)))
+
+(define (shrink-to-upper-right painter)
+  (transform-painter painter
+                     (make-vect 0.5 0.5)
+                     (make-vect 1.0 0.5)
+                     (make-vect 0.5 1.0)))
+
+(define (rotate90 painter)
+  (transform-painter painter
+                     (make-vect 1.0 0.0)
+                     (make-vect 1.0 1.0)
+                     (make-vect 0.0 0.0)))
+
+(define (squash-invards painter)
+  (transform-painter painter
+                     (make-vect 1.0 0.0)
+                     (make-vect 0.65 0.35)
+                     (make-vect 0.35 0.65)))
+
+(define (beside painter1 painter2)
+  (let ((split-point (make-vect 0.5 0.0)))
+    (let ((paint-left
+            (transform-painter painter1
+                               (make-vect 0.0 0.0)
+                               split-point
+                               (make-vect 0.0 1.0))) 
+          (paint-right
+            (transform-painter painter2
+                               split-point
+                               (make-vect 1.0 0.0)
+                               (make-vect 0.5 1.0))))
+      (lambda (frame)
+        (paint-left frame)
+        (paint-right frame)))))
+
+;ex2.50
+(define (flip-horiz painter)
+  (transform-painter painter
+                     (make-vect 1.0 0.0)
+                     (make-vect 0.0 0.0)
+                     (make-vect 1.0 1.0)))
+
+(define (rotate180 painter)
+  (transform-painter painter
+                     (make-vect 1.0 1.0)
+                     (make-vect 0.0 1.0)
+                     (make-vect 1.0 0.0)))
+
+(define (rotate270 painter)
+  (transform-painter painter
+                     (make-vect 0.0 1.0)
+                     (make-vect 0.0 0.0)
+                     (make-vect 1.0 1.0)))
+
+;ex2.51
+(define (below painter1 painter2)
+  (let ((split-point (make-vect 0.0 0.5)))
+    (let ((paint-bottom
+            (transform-painter painter1
+                               (make-vect 0.0 0.0)
+                               (make-vect 1.0 0.0)
+                               split-point
+                               ))
+          (paint-top
+            (transform-painter painter2
+                               split-point
+                               (make-vect 1.0 0.5)
+                               (make-vect 0.0 1.0))))
+      (lambda (frame)
+        (paint-bottom frame)
+        (paint-top frame)))))
+
+;(define (below painter1 painter2)
+;  (rotate90 (beside (rotate270 painter1) (rotate270 painter2))))
+
+;(define (below painter1 painter2) 
+;  (rotate270 (beside (rotate90 painter1) (rotate90 painter2))))
+
+
 (define wave2 (beside wave (flip-vert wave)))
+;(define wave2 (beside wave (rotate270 wave)))
 (define wave4 (below wave2 wave2))
 
 (define (flipped-pairs painter)
-  (let (painter2 (beside painter (flip-vert painter)))
-    (below painter2 painter)))
+  (let ((painter2 (beside painter (flip-vert painter))))
+    (below painter2 painter2)))
 
-(define wave4 (flipped-pairs wave))
+;(define wave4 (flipped-pairs wave))
 
 (define (right-split painter n)
   (if (= n 0) painter 
@@ -231,7 +324,7 @@
     (let ((half (beside (flip-horiz quarter) quarter)))
       (below (flip-vert half) half))))
 
-;ex 2.44
+;ex2.44
 (define (up-split painter n)
   (if (= n 0) painter
     (let ((smaller (up-split painter (- n 1))))
@@ -244,21 +337,25 @@
       (below bottom top))))
 
 (define (flipped-pairs painter)
-  (let ((combine4 (square-of-for identity flip-vert
+  (let ((combine4 (square-of-four identity flip-vert
                                  identity flip-vert)))
     (combine4 painter)))
 
-(define (square-limit paintern n)
-  (let ((combine4 (square-of-for flip-horiz identity
+(define (square-limit painter n)
+  (let ((combine4 (square-of-four flip-horiz identity
                                  rotate180 flip-vert)))
-    (combine4 (corner painter n))))
+    (combine4 (corner-split painter n))))
 
 ;ex2.45
 (define (split proc1 proc2)
   (lambda (painter n)
     (if (= n 0) painter
       (let ((smaller ((split proc1 proc2) painter (- n 1))))
-        (proc1 painter (proc2 smaller smaller)))))))
+        (proc1 painter (proc2 smaller smaller))))))
+
+;(define right-split  (split beside below))
+;(define up-split  (split below beside))
+
 
 (define  (init)
   (gl-clear-color 1.0 1.0 1.0 1.0))
@@ -272,7 +369,12 @@
   ;(rimx frame)
   ;(batu frame)
   ;(diamond frame)
-  (wave frame)
+  ;(wave frame)
+  ;(wave2 frame)
+  ;(wave4 frame)
+  ;((right-split wave 4) frame)
+  ;((corner-split wave 4) frame)
+  ((square-limit wave 4) frame)
 
   (gl-end)
   (gl-flush))
