@@ -380,7 +380,7 @@
   (gl-flush))
 
 (define (main args)
-  (glut-init args) 
+  (glut-init args)
   (glut-init-display-mode GLUT_RGBA)
   (glut-create-window  "Painter Line Test")
   (glut-display-func disp)
