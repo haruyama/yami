@@ -70,10 +70,6 @@
 (for-each (lambda (x) (display (car x)) (display " "))
           (prime-sum-pairs 6))
 
-
-
-(prime-sum-pairs 6)
-
 (prime-sum-pairs 10)
 
 (define (accumulate-n op init seqs)
@@ -92,7 +88,7 @@
 (define (permutations s)
   (if (null? s) (list nil)
       (flatmap (lambda (x)
-                 (map (lambda (p)  (cons x p))
+                 (map (lambda (p) (cons x p))
                       (permutations (remove x s))))
                s)))
 
@@ -103,8 +99,7 @@
 (permutations (list 1 2 3))
 (permutations (list 3))
 
-;p2.40
-
+;ex2.40
 (define (unique-pairs n)
   (flatmap
     (lambda (i)
@@ -120,8 +115,7 @@
 
 (prime-sum-pairs2 6)
 
-
-;p2.41
+;ex2.41
 (define (unique-3-tuples n)
   (flatmap
     (lambda (i)
@@ -137,14 +131,12 @@
 
 
 (define (filter-sum-3-tuples n s)
-  (filter (lambda (l) (= s
-                         (accumulate + 0 l)))
+  (filter (lambda (l) (= s (accumulate + 0 l)))
           (unique-3-tuples n)))
 
 (define (filter-sum-3-tuples n s)
   (filter (lambda (l) (= s (apply + l)))
           (unique-3-tuples n)))
-
 
 (filter-sum-3-tuples 7 12)
 (filter-sum-3-tuples 6 9)
@@ -165,17 +157,18 @@
                 (unique-tuples (- n 1) (- d 1))))))
 
 (unique-tuples 5 3)
+(unique-tuples 10 5)
 
 (define (filter-sum-3-tuples2 n s)
   (filter (lambda (l) (= s (accumulate + 0 l)))
           (unique-tuples n 3)))
 
-(filter-sum-3-tuples 7 10)
-(filter-sum-3-tuples 6 9)
-(filter-sum-3-tuples 6 10)
-(filter-sum-3-tuples 6 11)
-(filter-sum-3-tuples 6 12)
-(filter-sum-3-tuples 6 13)
+(filter-sum-3-tuples2 7 10)
+(filter-sum-3-tuples2 6 9)
+(filter-sum-3-tuples2 6 10)
+(filter-sum-3-tuples2 6 11)
+(filter-sum-3-tuples2 6 12)
+(filter-sum-3-tuples2 6 13)
 
 (reverse (filter-sum-3-tuples2 7 10))
 (reverse (filter-sum-3-tuples2 6 9))
@@ -185,10 +178,7 @@
 (reverse (filter-sum-3-tuples2 6 13))
 
 
-(reverse (filter-sum-3-tuples2 7 12))
-
-
-;p2.42
+;ex2.42
 
 (define empty-board '())
 
@@ -208,10 +198,9 @@
               (flatmap
                 (lambda (m) (list (cons (+ x (- y m)) m)
                                   (cons (- x (- y m)) m)))
-                (enumerate-interval 1 (- k 1)))
-              ))))
+                (enumerate-interval 1 (- k 1)))))))
 
-;(enumerate-queen-move 5 (cons 2 5))
+(enumerate-queen-move 5 (cons 2 5))
 
 ;(member (cons 1 2) (list (cons 1 2) (cons 2 3)))
 (define contains? member)
@@ -231,7 +220,6 @@
         (lambda (x)
           (contains? x rest-of-queens))
         (enumerate-queen-move k k-queen)))))
-
 
 (safe? 2 (list (cons 1 2) (cons 3 1)))
 (safe? 3 (list (cons 3 3) (cons 1 2) (cons 3 1)))
@@ -310,6 +298,3 @@
 ; (n^n-1)/(n-1)=1+n+..+n^(n-1)
 ; n=3のとき
 ; n=8のとき (16777216-1)/7=2396745
-
-
-

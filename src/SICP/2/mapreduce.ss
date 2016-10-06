@@ -20,9 +20,6 @@
 
 (fib 10)
 
-(use slib)
-(require 'trace)
-
 (define (even-fibs n)
   (define (next k)
     (if (> k n)
@@ -31,9 +28,6 @@
           (if (even? f)  (cons f (next (+ k 1)))
               (next (+ k 1))))))
   (next 0))
-
-
-
 
 (even-fibs 10)
 
@@ -122,20 +116,21 @@
 
 (product-of-squares-of-odd-elements (list 1 2 3 4 5))
 
-
-;(define (map p sequence)
-;  (accumulate (lambda (x y) (cons (p x) y)) nil sequence))
+;ex2.33
+(define (mymap p sequence)
+  (accumulate (lambda (x y) (cons (p x) y)) nil sequence))
 
 
 (map square (list 1 2 3 4 5))
+(mymap square (list 1 2 3 4 5))
 
-;(define (append seq1 seq2)
-;  (accumulate cons seq2
-;              seq1))
+(define (myappend seq1 seq2)
+  (accumulate cons seq2 seq1))
 
 (append (list 1 2 3) (list 4 5 6))
+(myappend (list 1 2 3) (list 4 5 6))
 
-(define (length sequence)
+(define (mylength sequence)
   (accumulate (lambda (x y) (+ 1 y))
               0
               sequence))
@@ -143,16 +138,19 @@
 (length (list 1 2 3))
 (length (list 2 3 4 5))
 
+(mylength (list 1 2 3))
+(mylength (list 2 3 4 5))
 
+;ex2.34
 (define (horner-eval x coefficient-sequence)
   (accumulate (lambda (this-coeff higher-terms)
-                (+ this-coeff (* x higher-terms))
-                )
+                (+ this-coeff (* x higher-terms)))
               0
               coefficient-sequence))
 
 (horner-eval 2 (list 1 3 0 5 0 1))
 
+;ex2.35
 (define (count-leaves x)
   (cond ((null? x) 0)
         ((not (pair? x)) 1)
@@ -174,6 +172,9 @@
                         (else
                           (count-leaves x)))) t)))
 
+(count-leaves x)
+(count-leaves y)
+
 (define (count-leaves t)
   (accumulate + 0
               (map (lambda (x) 1) (enumerate-tree t))))
@@ -181,18 +182,7 @@
 (count-leaves x)
 (count-leaves y)
 
-
-;(define (count-leaves t)
-;  (accumulate + 0
-;              (map
-;               (lambda (x)
-;                 (cond ;((null? x) 0)
-;                       ((not (pair? x)) 1)
-;                       (else
-;                        (count-leaves x)))) t)))
-
-;(count-leaves y) ; 間違い
-
+;ex2.36
 (define (accumulate-n op init seqs)
   (if (null? (car seqs)) nil
       (cons (accumulate op init (map car seqs))
@@ -203,6 +193,7 @@
 
 (accumulate-n + 0 s)
 
+;ex2.37
 (define m1 (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
 (define m2 (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
 
@@ -220,8 +211,7 @@
 (dot-product v1 v2)
 
 (define (matrix-*-vector m v)
-  (map (lambda (x) (dot-product x v))
-       m))
+  (map (lambda (x) (dot-product x v)) m))
 
 (matrix-*-vector m3 v2)
 
@@ -232,8 +222,7 @@
 
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
-    (map (lambda (x)
-           (matrix-*-vector cols x))
+    (map (lambda (x) (matrix-*-vector cols x))
          m)))
 
 (matrix-*-matrix m3 m3)
@@ -242,6 +231,7 @@
 
 (matrix-*-matrix '((1 2) (3 4)) '((1 2 3) (4 5 6)))
 
+;ex2.38
 (define (fold-left op initial sequence)
   (define (iter result rest)
     (if (null? rest) result
@@ -257,7 +247,7 @@
 (fold-right list nil (list 1 2 3))
 (fold-left list nil (list 1 2 3))
 
-
+;ex2.39
 (define (reverse sequence)
   (fold-right (lambda (x y)
                 (append y (list x))
