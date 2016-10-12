@@ -8,6 +8,7 @@
   (if (= count 0) b
       (fib-iter (+ a b) a (- count 1))))
 
+(fib 10)
 
 (define (sum-odd-squares tree)
   (cond ((null? tree) 0)
@@ -17,8 +18,6 @@
                  (sum-odd-squares (cdr tree))))))
 
 (sum-odd-squares (list 1 (list 2 3)))
-
-(fib 10)
 
 (define (even-fibs n)
   (define (next k)
@@ -52,7 +51,6 @@
 
 (accumulate * 1 (list 1 2 3 4 5))
 
-
 (accumulate cons nil (list 1 2 3 4 5))
 
 (define (enumerate-interval low high)
@@ -68,7 +66,6 @@
                       (enumerate-tree (cdr tree))))))
 
 (enumerate-tree (list 1 (list 2 (list 3 4)) 5))
-
 
 (define (sum-odd-squares tree)
   (accumulate +
@@ -116,10 +113,15 @@
 
 (product-of-squares-of-odd-elements (list 1 2 3 4 5))
 
+;(define (salary-of-highest-paid-programmer records)
+;  (accumulate max
+;              0
+;              (map salary
+;                   (filter programmer? records))))
+
 ;ex2.33
 (define (mymap p sequence)
   (accumulate (lambda (x y) (cons (p x) y)) nil sequence))
-
 
 (map square (list 1 2 3 4 5))
 (mymap square (list 1 2 3 4 5))
@@ -249,15 +251,11 @@
 
 ;ex2.39
 (define (reverse sequence)
-  (fold-right (lambda (x y)
-                (append y (list x))
-                )
+  (fold-right (lambda (x y) (append y (list x)))
               nil sequence))
 (reverse (list 1 2 3))
 
 (define (reverse sequence)
-  (fold-left (lambda (x y)
-               (cons y x)
-               )
+  (fold-left (lambda (x y) (cons y x))
              nil sequence))
 (reverse (list 1 2 3))

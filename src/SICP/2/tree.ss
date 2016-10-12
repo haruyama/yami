@@ -326,6 +326,13 @@
          (if (pair? sub-tree)
            (tree-map proc sub-tree)
            (proc sub-tree))) tree))
+
+(define (tree-map proc tree)
+  (cond ((null? tree) nil)
+    ((not (pair? tree)) (proc tree))
+    (else (cons (tree-map proc (car tree))
+                (tree-map proc (cdr tree))))))
+
 ;
 (define (square-tree tree)
   (tree-map square tree))
@@ -338,10 +345,10 @@
 
 ; 2.32
 (define (subsets s)
-  (if (null? s) (list nil)
+  (if (null? s)
+    (list nil)
     (let ((rest (subsets (cdr s))))
       (append rest (map (lambda (l) (cons (car s) l))
                         rest)))))
 
 (subsets (list 1 2 3))
-(display (subsets (list 1 2 3)))
