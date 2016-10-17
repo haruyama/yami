@@ -260,14 +260,17 @@
             (map (lambda (new-row)
                    (adjoin-position new-row k rest-of-queens))
                  (enumerate-interval 1 board-size)))
-          (queens-cols2 (- k 1) board-size )))))
+          (queens-cols2 (- k 1) board-size)))))
 
 
-;(require (lib "trace.ss"))
+;(use slib)
+;(require 'trace)
 ;(trace queens-cols2)
 
 (length (queens2 8))
-;(queens2 3)
+(queens2 3)
+; CALL 4 回
+; (n+1) 回
 
 (define (queens-bad board-size)
   (queens-bad-col board-size board-size))
@@ -278,7 +281,7 @@
       (filter
         (lambda (positions) (safe? k positions))
         (flatmap
-          (lambda (new-row)
+          (lambda (new-row) ; ここから下が変わっている
             (map (lambda (rest-of-queens)
                    (adjoin-position new-row k rest-of-queens))
                  (queens-bad-col (- k 1) board-size)))
@@ -287,14 +290,28 @@
 
 ;(trace queens-bad-col)
 
+(queens-bad 1)
+; CALL 2 回
+(queens-bad 2)
+; CALL 7 回
 (queens-bad 3)
+; CALL 40 回
+(queens-bad 4)
+; CALL 341 回
 
-;r+r^2+r^3....+r^n
-;=r(1-r^n)/(1-r)
-;n+n^2+n^3....+n^n
-;=n(1-n^n)/(1-n)
-;(n^n+1-n)/(n-1)
+;1+n+n^2+n^3....+n^n
+;= (n^(n+1)-1)/(n-1)
 
-; (n^n-1)/(n-1)=1+n+..+n^(n-1)
-; n=3のとき
-; n=8のとき (16777216-1)/7=2396745
+; n=8のとき 19173961
+
+
+; CALL の比は 
+;(n^(n+1)-1) / (n-1)(n+1)
+;(n^(n+1)-1) / (n^2-1)
+; n = 3 : 80/8 = 10
+; n = 4 : 341/5
+
+; n = 8 : 19173961 / 9 = 2130440.11
+
+
+
