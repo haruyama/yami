@@ -249,7 +249,7 @@
   (iter initial sequence))
 
 (define fold-right accumulate)
-'
+
 (fold-right / 1 (list 1 2 3))
 (fold-left / 1 (list 1 2 3))
 
