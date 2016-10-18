@@ -181,6 +181,13 @@
   (accumulate + 0
               (map (lambda (x) 1) (enumerate-tree t))))
 
+(define (count-leaves t)
+  (accumulate (lambda (x y) (+ 1 y)) 0
+              (enumerate-tree t)))
+
+(define (count-leaves t)
+  (length (enumerate-tree t)))
+
 (count-leaves x)
 (count-leaves y)
 

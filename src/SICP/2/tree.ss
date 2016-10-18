@@ -320,6 +320,11 @@
 (define x (cons (list 1 2) (list 3 4)))
 (square-tree x)
 
+(square-tree
+  (list 1
+        (list 2  (list 3 4) 5)
+        (list 6 7)))
+
 ; 2.31
 (define (tree-map proc tree)
   (map (lambda (sub-tree)
