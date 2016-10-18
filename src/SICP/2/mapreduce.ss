@@ -249,6 +249,49 @@
 (fold-right list nil (list 1 2 3))
 (fold-left list nil (list 1 2 3))
 
+; 参考: 関数プログラミング入門 Haskellで学ぶ原理と技法 p124  4.6 畳み込み則
+
+; 結合法則が成り立つ場合
+
+; 単位元を持つ半群 (モノイド) をなす文字列結合演算
+
+; 結合則は成りたつが
+(string-append (string-append "a" "bb") "ccc")
+(string-append "a" (string-append "bb" "ccc"))
+
+; 可換ではない
+(string-append "a" "bb")
+(string-append "bb" "a")
+
+; 単位元が初期値ならば等しい
+(fold-right string-append ""  (list "a" "bb" "ccc"))
+(fold-left string-append ""   (list "a" "bb" "ccc"))
+
+; 単位元が初期値でないと等しくない
+(fold-right string-append "init"  (list "a" "bb" "ccc"))
+(fold-left string-append "init"   (list "a" "bb" "ccc"))
+
+; 単位元でなくても 可換な元が初期値であれば等しくなる
+; (文字列連結の場合は単位元のみ)
+; 単位元がない場合でも 可換な元があれば等しくできる
+
+; 可換だが非結合な演算の場合等しくならない場合がある
+; a x b = b x a
+; a x ( b x c) != (a x b) x c
+
+; 1 は単位元. 結合法則は成り立たない
+; 1 x 1 = 1
+; 1 x 2 = 2
+; 1 x 3 = 3
+; 2 x 2 = 3
+; 2 x 3 = 2
+; 3 x 3 = 2
+
+; 1 x (2 x 3) = 3
+; (1 x 2) x 3 = 2
+
+; 初期値以外の演算で可換であることは必要とされていない
+
 ;ex2.39
 (define (reverse sequence)
   (fold-right (lambda (x y) (append y (list x)))
