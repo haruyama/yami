@@ -201,7 +201,6 @@
 (define s (list (list 1 2 3) (list 4 5 6) (list 7 8 9) (list 10 11 12)))
 
 (accumulate-n + 0 s)
-
 ;ex2.37
 (define m1 (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
 (define m2 (list (list 1 2 3 4) (list 4 5 6 6) (list 6 7 8 9)))
@@ -231,8 +230,7 @@
 
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
-    (map (lambda (x) (matrix-*-vector cols x))
-         m)))
+    (map (lambda (x) (matrix-*-vector cols x)) m)))
 
 (matrix-*-matrix m3 m3)
 (matrix-*-matrix m4 m5)
@@ -285,16 +283,16 @@
 ; a x b = b x a
 ; a x ( b x c) != (a x b) x c
 
-; 1 は単位元. 結合法則は成り立たない
+; 結合法則は成り立たない
 ; 1 x 1 = 1
-; 1 x 2 = 2
+; 1 x 2 = 1
 ; 1 x 3 = 3
 ; 2 x 2 = 3
-; 2 x 3 = 2
+; 2 x 3 = 1
 ; 3 x 3 = 2
 
-; 1 x (2 x 3) = 3
-; (1 x 2) x 3 = 2
+; 1 x (2 x 3) = 1
+; (1 x 2) x 3 = 3
 
 ; 初期値以外の演算で可換であることは必要とされていない
 

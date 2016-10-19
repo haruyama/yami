@@ -119,6 +119,7 @@
        (filter prime-sum? (unique-pairs n))))
 
 (prime-sum-pairs2 6)
+(prime-sum-pairs2 10)
 
 ;ex2.41
 (define (unique-3-tuples n)
