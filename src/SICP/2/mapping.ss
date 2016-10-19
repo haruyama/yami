@@ -7,8 +7,8 @@
 
 (define (find-divisor n test-divisor)
   (cond ((> (square test-divisor) n) n)
-        ((divides? test-divisor n) test-divisor)
-        (else (find-divisor n (+ test-divisor 1)))))
+    ((divides? test-divisor n) test-divisor)
+    (else (find-divisor n (+ test-divisor 1)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
@@ -18,12 +18,12 @@
 
 (define (enumerate-interval low high)
   (if (> low high) nil
-      (cons low (enumerate-interval (+ low 1) high))))
+    (cons low (enumerate-interval (+ low 1) high))))
 
 (define (accumulate op initial sequence)
   (if (null? sequence) initial
-      (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
+    (op (car sequence)
+        (accumulate op initial (cdr sequence)))))
 
 (accumulate append
             nil
