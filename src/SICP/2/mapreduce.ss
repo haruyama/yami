@@ -278,9 +278,8 @@
 (fold-right string-append "init"  (list "a" "bb" "ccc"))
 (fold-left string-append "init"   (list "a" "bb" "ccc"))
 
-; 単位元でなくても 可換な元が初期値であれば等しくなる
-; (文字列連結の場合は単位元のみ)
 ; 単位元がない場合でも 可換な元があれば等しくできる
+; (文字列連結の場合は単位元のみ)
 
 ; 可換だが非結合な演算の場合等しくならない場合がある
 ; a x b = b x a
