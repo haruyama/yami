@@ -12,7 +12,6 @@
 (define (xcor-vect v)
   (car v))
 
-
 (define (ycor-vect v)
   (cdr v))
 
@@ -31,6 +30,9 @@
 
 (define (scale-vect s v)
   (op-vect * (make-vect s s) v))
+
+;(define (scale-vect s v)
+;  (make-vect (* s (xcor-vect v)) (* s (ycor-vect v))))
 
 ;(add-vect (make-vect 1 2) (make-vect 3 4))
 ;(sub-vect (make-vect 1 2) (make-vect 3 4))
