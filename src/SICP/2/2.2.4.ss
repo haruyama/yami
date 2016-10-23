@@ -200,8 +200,6 @@
 
 (define wave  (segments->painter wave-segments))
 
-(define frame  (make-frame  (make-vect 0 0)  (make-vect 1 0)  (make-vect 0 1)))
-
 (define (transform-painter painter origin corner1 corner2)
   (lambda (frame)
     (let ((m (frame-coord-map frame)))
@@ -356,6 +354,10 @@
 ;(define right-split  (split beside below))
 ;(define up-split  (split below beside))
 
+(define frame  (make-frame  (make-vect 0 0)  (make-vect 1 0)  (make-vect 0 1)))
+;(define frame  (make-frame  (make-vect 0 0)  (make-vect 0.7 0.3)  (make-vect 0.3 0.7)))
+;(define frame  (make-frame  (make-vect 0.3 0)  (make-vect 0.4 0)  (make-vect 0 1)))
+;(define frame  (make-frame  (make-vect 0 0.3)  (make-vect 1 0)  (make-vect 0 0.4)))
 
 (define  (init)
   (gl-clear-color 1.0 1.0 1.0 1.0))
@@ -369,12 +371,12 @@
   ;(rimx frame)
   ;(batu frame)
   ;(diamond frame)
-  ;(wave frame)
+  (wave frame)
   ;(wave2 frame)
   ;(wave4 frame)
   ;((right-split wave 4) frame)
   ;((corner-split wave 4) frame)
-  ((square-limit wave 4) frame)
+  ;((square-limit wave 4) frame)
 
   (gl-end)
   (gl-flush))
