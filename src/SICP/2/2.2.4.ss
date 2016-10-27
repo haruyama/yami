@@ -57,16 +57,16 @@
 ;(edge2-frame f)
 
 ;(define  (make-frame origin edge1 edge2)
-;  (list origin (cons edge1 edge2)))
+;  (cons origin (cons edge1 edge2)))
 
 ;(define  (origin-frame frame)
 ;  (car frame))
 
 ;(define  (edge1-frame frame)
-;  (caadr frame))
+;  (cadr frame))
 
 ;(define  (edge2-frame frame)
-;  (cdadr frame))
+;  (cddr frame))
 ;(define f (make-frame (make-vect 10 20) (make-vect 30 40) (make-vect 50 60)))
 ;(origin-frame f)
 ;(edge1-frame f)
@@ -145,7 +145,7 @@
                       (make-segment (make-vect 0.5 0.0)
                                     (make-vect 0.0 0.5)))))
 
-;http://www.billthelizard.com/2011/10/sicp-249-defining-primitive-painters.html 
+;http://www.billthelizard.com/2011/10/sicp-249-defining-primitive-painters.html
 (define wave-segments
   (list
     (make-segment
@@ -240,7 +240,7 @@
             (transform-painter painter1
                                (make-vect 0.0 0.0)
                                split-point
-                               (make-vect 0.0 1.0))) 
+                               (make-vect 0.0 1.0)))
           (paint-right
             (transform-painter painter2
                                split-point
@@ -290,7 +290,7 @@
 ;(define (below painter1 painter2)
 ;  (rotate90 (beside (rotate270 painter1) (rotate270 painter2))))
 
-;(define (below painter1 painter2) 
+;(define (below painter1 painter2)
 ;  (rotate270 (beside (rotate90 painter1) (rotate90 painter2))))
 
 
@@ -305,7 +305,7 @@
 ;(define wave4 (flipped-pairs wave))
 
 (define (right-split painter n)
-  (if (= n 0) painter 
+  (if (= n 0) painter
     (let ((smaller (right-split painter (- n 1))))
       (beside painter (below smaller smaller)))))
 
@@ -373,10 +373,11 @@
   ;(rimx frame)
   ;(batu frame)
   ;(diamond frame)
-  (wave frame)
+  ;(wave frame)
   ;(wave2 frame)
   ;(wave4 frame)
   ;((right-split wave 4) frame)
+  ((up-split wave 4) frame)
   ;((corner-split wave 4) frame)
   ;((square-limit wave 4) frame)
 
