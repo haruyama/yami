@@ -361,6 +361,88 @@
 ;(define frame  (make-frame  (make-vect 0.3 0)  (make-vect 0.4 0)  (make-vect 0 1)))
 ;(define frame  (make-frame  (make-vect 0 0.3)  (make-vect 1 0)  (make-vect 0 0.4)))
 
+;2.52
+; a
+
+;(define wave-segments
+;  (list
+;    (make-segment
+;      (make-vect 0.006 0.840)
+;      (make-vect 0.155 0.591))
+;    (make-segment
+;      (make-vect 0.006 0.635)
+;      (make-vect 0.155 0.392))
+;    (make-segment
+;      (make-vect 0.304 0.646)
+;      (make-vect 0.155 0.591))
+;    (make-segment
+;      (make-vect 0.298 0.591)
+;      (make-vect 0.155 0.392))
+;    (make-segment
+;      (make-vect 0.304 0.646)
+;      (make-vect 0.403 0.646))
+;    (make-segment
+;      (make-vect 0.298 0.591)
+;      (make-vect 0.354 0.492))
+;    (make-segment
+;      (make-vect 0.403 0.646)
+;      (make-vect 0.348 0.845))
+;    (make-segment
+;      (make-vect 0.354 0.492)
+;      (make-vect 0.249 0.000))
+;    (make-segment
+;      (make-vect 0.403 0.000)
+;      (make-vect 0.502 0.293))
+;    (make-segment
+;      (make-vect 0.502 0.293)
+;      (make-vect 0.602 0.000))
+;    (make-segment
+;      (make-vect 0.348 0.845)
+;      (make-vect 0.403 0.999))
+;    (make-segment
+;      (make-vect 0.602 0.999)
+;      (make-vect 0.652 0.845))
+;    (make-segment
+;      (make-vect 0.652 0.845)
+;      (make-vect 0.602 0.646))
+;    (make-segment
+;      (make-vect 0.602 0.646)
+;      (make-vect 0.751 0.646))
+;    (make-segment
+;      (make-vect 0.751 0.646)
+;      (make-vect 0.999 0.343))
+;    (make-segment
+;      (make-vect 0.751 0.000)
+;      (make-vect 0.597 0.442))
+;    (make-segment
+;      (make-vect 0.597 0.442)
+;      (make-vect 0.999 0.144))
+;    (make-segment
+;      (make-vect 0.45 0.75)
+;      (make-vect 0.5 0.7))
+;    (make-segment
+;      (make-vect 0.5 0.7)
+;      (make-vect 0.55 0.75))
+;    ))
+
+;(define wave  (segments->painter wave-segments))
+
+;;http://www.serendip.ws/archives/859
+
+;(define (right-split painter n)
+;  (if (= n 0) painter
+;    (beside painter (right-split painter (- n 1)))))
+
+;(define (up-split painter n)
+;  (if (= n 0) painter
+;    (below painter (up-split painter (- n 1)))))
+
+;(define (square-limit painter n)
+;  (let ((combine4 (square-of-four flip-horiz identity
+;                                  rotate180 flip-vert)))
+;    (combine4 (corner-split (flip-horiz painter) n))))
+
+
 (define  (init)
   (gl-clear-color 1.0 1.0 1.0 1.0))
 
@@ -377,9 +459,9 @@
   ;(wave2 frame)
   ;(wave4 frame)
   ;((right-split wave 4) frame)
-  ((up-split wave 4) frame)
+  ;((up-split wave 4) frame)
   ;((corner-split wave 4) frame)
-  ;((square-limit wave 4) frame)
+  ((square-limit wave 4) frame)
 
   (gl-end)
   (gl-flush))
