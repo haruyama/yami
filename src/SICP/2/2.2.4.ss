@@ -230,7 +230,7 @@
 
 (define (squash-invards painter)
   (transform-painter painter
-                     (make-vect 1.0 0.0)
+                     (make-vect 0.0 0.0)
                      (make-vect 0.65 0.35)
                      (make-vect 0.35 0.65)))
 
@@ -462,6 +462,7 @@
   ;((up-split wave 4) frame)
   ;((corner-split wave 4) frame)
   ((square-limit wave 4) frame)
+  ;((squash-invards wave) frame) 
 
   (gl-end)
   (gl-flush))
