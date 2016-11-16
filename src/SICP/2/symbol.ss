@@ -191,6 +191,8 @@
 
 (deriv '(+ x (** x 3)) 'x)
 
+(deriv '(* x (** x 3)) 'x)
+
 ;ex2.57
 (define (augend s)
   (if (null? (cdddr s)) (caddr s)
@@ -204,6 +206,10 @@
   (if (null? (cdddr s)) (caddr s)
       (cons '* (cddr s))))
 
+(multiplicand '(* 1 2))
+(multiplicand '(* 1 2 3))
+(multiplicand '(* 1 2 3 4))
+
 (deriv '(* x y (+ x 3)) 'x)
 (deriv '(* x y (+ x 3 x)) 'x)
 
@@ -215,9 +221,11 @@
         ((=number? a2 0) a1)
         ((and (number? a1) (number? a2)) (+ a1 a2))
         (else (list a1 '+ a2))))
+
 (define (sum? x)
   (and (pair? x) (eq? (cadr x) '+)))
 (define (addend s) (car s))
+
 (define (make-product m1 m2)
   (cond ((or (=number? m1 0) (=number? m2 0)) 0)
         ((=number? m1 1) m2)
@@ -226,6 +234,7 @@
         (else (list m1 '* m2))))
 (define (product? x)
   (and (pair? x) (eq? (cadr x) '*)))
+
 (define (multiplier p) (car p))
 
 (define (make-exponentiation base exponent)
@@ -290,8 +299,9 @@
 
 (multiplicand '(x * y * z * 3 * x * (y + 2)))
 (multiplicand '(x * (y + 2)))
+(multiplicand '(x * 2))
 
-; exponentiation を除く
+; exponentiation を除いている
 (define (deriv exp var)
   (cond ((number? exp) 0)
         ((variable? exp)
