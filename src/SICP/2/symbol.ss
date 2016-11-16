@@ -268,6 +268,7 @@
 (augend '(x * y * z + 3))
 (augend '(y + 3))
 
+; deriv では sum? が先にチェックされるので sum? のチェックはなくても動くはず
 (define (product? x)
   (cond ((sum? x) #f)
     ((pair?  (memq '* x)) #t)
