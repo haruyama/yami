@@ -8,7 +8,6 @@
 
 (define (weight-leaf x) (caddr x))
 
-
 (define (make-code-tree left right)
   (list left
         right
@@ -65,12 +64,14 @@
 
 (make-leaf-set weights)
 
+;ex2.67
 (define sample-tree
   (make-code-tree (make-leaf 'A 4)
                   (make-code-tree
                     (make-leaf 'B 2)
                     (make-code-tree (make-leaf 'D 1)
                                     (make-leaf 'C 1)))))
+sample-tree
 
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
@@ -80,6 +81,7 @@
 (symbols (make-leaf 'E 1))
 (weight sample-tree)
 
+;ex2.68
 (define (encode message tree)
   (if (null? message)
       '()
@@ -110,8 +112,9 @@
 
 (decode sample-message sample-tree)
 (encode (decode sample-message sample-tree) sample-tree)
-(encode '(E) sample-tree)
+;(encode '(E) sample-tree)
 
+;ex2.69
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
 
@@ -133,7 +136,7 @@
 
 (encode (decode sample-message sample-tree2) sample-tree2)
 
-
+;ex2.70
 (define weights-2-70 '((A 2) (BOOM 1 ) (GET 2) (JOB 2) (NA 16) (SHA 3) (YIP 9) (WAH 1)))
 
 (define tree-2-70
@@ -180,3 +183,5 @@
 
 (encode message-j tree-2-71-2)
 (encode message-a tree-2-71-2)
+; http://community.schemewiki.org/?sicp-ex-2.71
+; http://community.schemewiki.org/?sicp-ex-2.72

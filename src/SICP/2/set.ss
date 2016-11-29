@@ -129,6 +129,7 @@
 
 (entry test-tree)
 (left-branch test-tree)
+(right-branch test-tree)
 
 (entry
   (left-branch
@@ -153,6 +154,7 @@
 (adjoin-set 1 test-tree)
 (adjoin-set 4 test-tree)
 
+;ex2.63
 (define (tree->list-1 tree)
   (if (null? tree) '()
       (append (tree->list-1 (left-branch tree))
@@ -161,7 +163,6 @@
 
 (tree->list-1 (adjoin-set 4 test-tree))
 (tree->list-1 test-tree2)
-(tree->list-1 test-tree3)
 
 (define (tree->list-2 tree)
   (define (copy-to-list tree result-list)
@@ -177,8 +178,11 @@
 (tree->list-2 test-tree2)
 (tree->list-2 test-tree3)
 
-(quotient (- 10 1) 2)
+;b
+;http://community.schemewiki.org/?sicp-ex-2.63
 
+
+;ex2.64
 (define (list->tree elements)
   (car (partial-tree elements (length elements))))
 
@@ -199,11 +203,19 @@
                 (cons (make-tree this-entry left-tree right-tree)
                       remaining-elts))))))))
 
+;(quotient (- 10 1) 2)
+
 (partial-tree '(1 2 3) 3)
+(partial-tree '(1 2 3) 2)
+(partial-tree '(1 2 3) 1)
+(partial-tree '(1 2 3) 0)
 
 (list->tree '(1 2 3 4 5 6))
 (list->tree '(1 3 5 7 9 11))
+;b
+;http://community.schemewiki.org/?sicp-ex-2.64
 
+;ex2.65
 (define tree->list tree->list-2)
 
 (define (union-set set1 set2)
@@ -247,10 +259,11 @@
         (else (lookup given-key (cdr set-of-records)))))
 
 
-
-
+(lookup 3 '(4 3 2 1))
 (lookup 1 '(4 3 2 1))
+(lookup 5 '(4 3 2 1))
 
+;ex2.66
 (define (lookup2 given-key set-of-records)
   (if (null? set-of-records) false
       (let ((x (entry set-of-records)))
