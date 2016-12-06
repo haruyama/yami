@@ -17,38 +17,61 @@
   (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
                      (- (angle z1) (angle z2))))
 
-;; ;Ben
-;; (define (real-part z) (car z))
-;; (define (imag-part z) (cdr z))
-
 (define (square x) (* x x))
 (define pi (atan  0 -1.0))
 
-;; (define (magnitude z)
-;;   (sqrt (+ (square (real-part z)) (square (imag-part z)))))
+;; ;Ben
+(define (real-part z) (car z))
+(define (imag-part z) (cdr z))
 
-;; (define (angle z)
-;;   (atan (imag-part z) (real-part z)))
+(define (magnitude z)
+   (sqrt (+ (square (real-part z)) (square (imag-part z)))))
 
-;; (define (make-from-real-imag x y) (cons x y))
-;; (define (make-from-mag-ang r a) (cons (* r (cos a)) (* (r sin a))))
+(define (angle z)
+  (atan (imag-part z) (real-part z)))
+
+(define (make-from-real-imag x y) (cons x y))
+(define (make-from-mag-ang r a) (cons (* r (cos a)) (* r (sin a))))
+
+(define z1 (make-from-real-imag 1 -1))
+(define z2 (make-from-mag-ang 1 (/ pi 4)))
+(real-part z1)
+(imag-part z1)
+(magnitude z1)
+(angle z1)
+
+(real-part z2)
+(imag-part z2)
+(magnitude z2)
+(angle z2)
+
+(add-complex z1 z2)
+(sub-complex z1 z2)
+(mul-complex z1 z2)
+(div-complex z1 z2)
+
+(magnitude (add-complex z1 z2))
+(magnitude (sub-complex z1 z2))
+(magnitude (mul-complex z1 z2))
+(magnitude (div-complex z1 z2))
 
 ;; ;Alyssa
-;; (define (real-part z)
-;;   (* (magnitude z) (cos (angle z))))
+(define (real-part z)
+  (* (magnitude z) (cos (angle z))))
 
-;; (define (imag-part z)
-;;   (* (magnitude z) (sin (angle z))))
+(define (imag-part z)
+  (* (magnitude z) (sin (angle z))))
 
-;; (define (magnitude z) (car z))
-;; (define (angle z) (cdr z))
+(define (magnitude z) (car z))
+(define (angle z) (cdr z))
 
-;; (define (make-from-real-imag x y)
-;;   (cons (sqrt (+ (square x) (square y)))
-;; 		(atan y x)))
+(define (make-from-real-imag x y)
+  (cons (sqrt (+ (square x) (square y)))
+        (atan y x)))
 
-;; (define (make-from-mag-ang r a) (cons r a))
+(define (make-from-mag-ang r a) (cons r a))
 
+;2.4.2
 (define (attach-tag type-tag contents)
   (cons type-tag contents))
 
@@ -147,13 +170,13 @@
 
 (add-complex
   (make-from-real-imag 0.0 0.0)
-  (make-from-mag-ang 1.0 (/ pi 2))
-  )
+  (make-from-mag-ang 1.0 (/ pi 2)))
 
 (mul-complex
   (make-from-real-imag 1.0 0.0)
   (make-from-real-imag 0.0 1.0))
 
+; 2.4.3
 (define true #t)
 (define false #f)
 (define (make-table)
@@ -265,6 +288,9 @@
 (real-part p)
 
 (add-complex r p)
+(sub-complex r p)
+(mul-complex r p)
+(div-complex r p)
 ;2.73
 (define (variable? x) (symbol? x))
 
@@ -294,6 +320,8 @@
 (operator '(+ x y))
 (operands '(+ x y))
 
+; b
+
 (define (deriv-sum operands var)
   (make-sum (deriv (car operands) var)
             (deriv (cadr operands) var)))
@@ -306,7 +334,7 @@
 (deriv '(+ x (+ x y)) 'x)
 (deriv '(+ x x y) 'x)
 
-(deriv '(* x x) 'x)
+;(deriv '(* x x) 'x)
 
 (define (deriv-mul operands var)
   (make-sum
@@ -335,7 +363,7 @@
         ((=number? m1 1) 1)
         (else (list '** m1 m2))))
 
-
+; c
 (define (deriv-exp operands var)
   (make-product (cadr operands)
                 (make-product
@@ -348,22 +376,34 @@
 (deriv '(** x y) 'x)
 (deriv '(** x 2) 'x)
 
+; d
 (define (deriv2 exp var)
   (cond ((number? exp) 0)
         ((variable? exp) (if (same-variable? exp var) 1 0))
         (else ((get (operator exp) 'deriv) (operands exp)
                                            var))))
 
-(put 'deriv '+ deriv-sum)
 (put '+ 'deriv  deriv-sum)
+(put '* 'deriv  deriv-mul)
+(put '** 'deriv  deriv-exp)
 
 
 (deriv '(+ x y) 'x)
 (deriv '(+ x y) 'y)
+(deriv '(* x y) 'x)
+(deriv '(* x x) 'x)
+(deriv '(+ x (* y x)) 'x)
+(deriv '(** x y) 'x)
+(deriv '(** x 2) 'x)
 
 
 (deriv2 '(+ x y) 'x)
 (deriv2 '(+ x y) 'y)
+(deriv2 '(* x y) 'x)
+(deriv2 '(* x x) 'x)
+(deriv2 '(+ x (* y x)) 'x)
+(deriv2 '(** x y) 'x)
+(deriv2 '(** x 2) 'x)
 ;2.74
 ;('pex (name address define))
 (define (install-pex-package)
@@ -433,6 +473,7 @@
 
 (install-ecnavi-package)
 
+; a
 ;こうではなく事業所ファイルにタグを付ける(構造化する)のが題意に当っている
 (define (get-record name office)
   (let ((get-employee-office (get 'get-employee office)))
@@ -443,6 +484,7 @@
 (get-record 'stanno 'pex)
 (get-record 'haruyama 'ecnavi)
 
+; b
 (define (get-salary-office record)
   (apply-generic 'get-salary record))
 
@@ -472,6 +514,9 @@
 (find-employee-record 'haruyama '(pex ecnavi))
 (find-employee-record 'kida '(pex ecnavi))
 
+; d
+; パッケージ追加
+
 ;p109 message passing
 (define (make-from-real-imag x y)
   (define (dispatch op)
@@ -491,6 +536,7 @@
 ((make-from-real-imag 1 1) 'magnitude)
 
 
+; 2.75
 (define (make-from-mag-ang r a)
   (define (dispatch op)
     (cond ((eq? op 'real-part)
