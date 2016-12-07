@@ -81,6 +81,7 @@
         ((< x (car set)) (cons x set))
         (else (cons (car set) (adjoin-set x (cdr set))))))
 
+(adjoin-set 0 '(1 2 3))
 (adjoin-set 1 '(1 2 3))
 (adjoin-set 4 '(1 2 3))
 
@@ -90,8 +91,7 @@
         (else
           (let ((x1 (car set1)) (x2 (car set2)))
             (cond ((= x1 x2)
-                   (cons x1 (union-set (cdr set1)
-                                       (cdr set2))))
+                   (cons x1 (union-set (cdr set1) (cdr set2))))
                   ((< x1 x2)
                    (cons x1 (union-set (cdr set1) set2)))
                   ((< x2 x1)
@@ -162,7 +162,9 @@
                     (tree->list-1 (right-branch tree))))))
 
 (tree->list-1 (adjoin-set 4 test-tree))
+(tree->list-1 test-tree)
 (tree->list-1 test-tree2)
+(tree->list-1 test-tree3)
 
 (define (tree->list-2 tree)
   (define (copy-to-list tree result-list)
@@ -175,6 +177,7 @@
   (copy-to-list tree '()))
 
 (tree->list-2 (adjoin-set 4 test-tree))
+(tree->list-2 test-tree)
 (tree->list-2 test-tree2)
 (tree->list-2 test-tree3)
 
@@ -203,7 +206,7 @@
                 (cons (make-tree this-entry left-tree right-tree)
                       remaining-elts))))))))
 
-;(quotient (- 10 1) 2)
+(quotient (- 6 1) 2)
 
 (partial-tree '(1 2 3) 3)
 (partial-tree '(1 2 3) 2)

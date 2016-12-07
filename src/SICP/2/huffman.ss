@@ -76,6 +76,10 @@ sample-tree
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
 (decode sample-message sample-tree)
+(decode '(0) sample-tree)
+(decode '(1 0) sample-tree)
+(decode '(1 1 1) sample-tree)
+(decode '(1 1 0) sample-tree)
 
 (symbols sample-tree)
 (symbols (make-leaf 'E 1))
@@ -100,12 +104,6 @@ sample-tree
               ((symbol-exists? symbol right)
                (cons 1 (encode-symbol symbol right)))
               (else (error "Invalid symbol -- ENCODE-SYMBOL" symbol))))))
-
-;; (define (symbol-exists? symbol tree)
-;;   (if (leaf? tree)
-;;       (eq? symbol (symbol-leaf tree))
-;;       (or (symbol-exists? symbol (left-branch tree))
-;;           (symbol-exists? symbol (right-branch tree)))))
 
 (define (symbol-exists? symbol tree)
   (memq symbol (symbols tree)))
