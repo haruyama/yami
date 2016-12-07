@@ -124,10 +124,8 @@ sample-tree
                     (cddr set)))))
 
 (define test (make-leaf-set weights))
+test
 (successive-merge test)
-(car test)
-(cadr test)
-(cddr test)
 
 (define sample-tree2
   (generate-huffman-tree weights))
@@ -141,7 +139,7 @@ sample-tree
   (generate-huffman-tree weights-2-70))
 
 (define message-2-70
-  '(GET A JOB 
+  '(GET A JOB
         SHA NA NA NA NA NA NA NA NA 
         GET A JOB SHA NA NA NA NA NA NA NA NA 
         WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP 
@@ -159,27 +157,26 @@ sample-tree
 (define tree-2-71-1
   (generate-huffman-tree weights-2-71-1))
 
+(display tree-2-71-1)
+
 (define tree-2-71-2
   (generate-huffman-tree weights-2-71-2))
 
-(display tree-2-71-1)
-
-(define message-d
-  '(D))
-(define message-a
-  '(A))
-(define message-j
-  '(J))
+(display tree-2-71-2)
 
 
-;(require (lib "trace.ss"))
-;(untrace encode-symbol)
-;(trace symbol-exists?)
+(use slib)
+(require 'trace)
+(untrace encode-symbol)
+(trace symbol-exists?)
 
-(encode message-d tree-2-71-1)
-(encode message-a tree-2-71-1)
+(encode '(E) tree-2-71-1)
+(encode '(A) tree-2-71-1)
 
-(encode message-j tree-2-71-2)
-(encode message-a tree-2-71-2)
+(encode '(J) tree-2-71-2)
+(encode '(A) tree-2-71-2)
 ; http://community.schemewiki.org/?sicp-ex-2.71
 ; http://community.schemewiki.org/?sicp-ex-2.72
+; 最大頻度: weights で頻度が高いものを先頭に置くように設計すれば Θ(1) そのような前提はないので θ (n)
+; 最小頻度 θ(n^2)
+
