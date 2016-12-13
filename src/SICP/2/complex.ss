@@ -353,6 +353,7 @@
 
 (deriv '(+ x (* y x)) 'x)
 
+; c
 (define (=number? exp num)
   (and (number? exp) (= exp num)))
 
@@ -363,7 +364,6 @@
         ((=number? m1 1) 1)
         (else (list '** m1 m2))))
 
-; c
 (define (deriv-exp operands var)
   (make-product (cadr operands)
                 (make-product
@@ -405,40 +405,43 @@
 (deriv2 '(** x y) 'x)
 (deriv2 '(** x 2) 'x)
 ;2.74
-;('pex (name address define))
+;('pex (address name define))
 (define (install-pex-package)
   (define (get-name record)
-    (car record))
-  (define (get-address record)
     (cadr record))
+  (define (get-address record)
+    (car record))
   (define (get-salary record)
     (caddr record))
   (define (make-record name address salary)
-    (list name address salary))
+    (list address name salary))
 
+  (define (tag records) (attach-tag 'pex records))
+  (define (get-record name records)
+    (cond ((null? records) #f)
+      ((eq? name (get-name (car records))) (car records))
+      (else 
+        (get-record name (cdr records)))))
 
-  (define (tag record) (attach-tag 'pex record))
+  (put 'get-name 'pex get-name)
+  (put 'get-address 'pex get-address)
+  (put 'get-salary 'pex get-salary)
 
-  (define record-pex1 (tag (make-record 's-tanno 'mansion 1000000000000000)))
-  (define (get-employee name)
-    (if (eq? name 'stanno) record-pex1
-        '()))
-
-
-
-  (put 'get-name '(pex) get-name)
-  (put 'get-address '(pex) get-address)
-  (put 'get-salary '(pex) get-salary)
-
-  (put 'get-employee 'pex get-employee)
-  (put 'make-record-pex 'pex
-       (lambda (name address salary)
-         (tag (make-record name address salary))
-         ;実際にはテーブルに追加する必要がある
-         ))
+  (put 'make-record 'pex make-record)
+  (put 'attach-tag 'pex tag)
+  (put 'get-record 'pex get-record)
   )
 
 (install-pex-package)
+
+(define pex-records
+  ((get 'attach-tag 'pex)
+   (let ((make-record (get 'make-record 'pex)))
+     (list
+       (make-record 's-tanno 'mansion 100000000)
+       (make-record 'taro    'koya    100)
+       ))))
+pex-records
 
 
 ;('ecnavi name (address salary))
@@ -453,66 +456,65 @@
 
   (define (tag record) (attach-tag 'ecnavi record))
 
-  (define record-ecnavi1 (tag (make-record 'haruyama 'underground 1)))
-  (define (get-employee name)
-    (if (eq? name 'haruyama) record-ecnavi1
-        '()))
+  (define (get-record name records)
+    (cond ((null? records) #f)
+      ((eq? name (get-name (car records))) (car records))
+      (else 
+        (get-record name (cdr records)))))
 
 
-  (put 'get-name '(ecnavi) get-name)
-  (put 'get-address '(ecnavi) get-address)
-  (put 'get-salary '(ecnavi) get-salary)
+  (put 'get-name 'ecnavi get-name)
+  (put 'get-address 'ecnavi get-address)
+  (put 'get-salary 'ecnavi get-salary)
 
-  (put 'get-employee 'ecnavi get-employee)
-  (put 'make-record-ecnavi 'ecnavi
-       (lambda (name address salary)
-         (tag (make-record name address salary))
-         ;実際にはテーブルに追加する必要がある
-         ))
+  (put 'make-record 'ecnavi make-record)
+  (put 'attach-tag 'ecnavi tag)
+  (put 'get-record 'ecnavi get-record)
   )
 
 (install-ecnavi-package)
 
-; a
-;こうではなく事業所ファイルにタグを付ける(構造化する)のが題意に当っている
-(define (get-record name office)
-  (let ((get-employee-office (get 'get-employee office)))
-    (let ((employee (get-employee-office name)))
-      (if (null? employee) #f
-          employee))))
+(define ecnavi-records
+  ((get 'attach-tag 'ecnavi)
+   (let ((make-record (get 'make-record 'ecnavi)))
+     (list
+       (make-record 'haruyama 'underground 1)
+       ))))
+ecnavi-records
 
-(get-record 'stanno 'pex)
-(get-record 'haruyama 'ecnavi)
+; a
+(define (get-record name tagged-records)
+  (let ((office (type-tag tagged-records))
+        (records (cdr tagged-records)))
+    ((get 'get-record office) name records)))
+
+(get-record 'stanno pex-records)
+(get-record 's-tanno pex-records)
+(get-record 'haruyama ecnavi-records)
+
 
 ; b
-(define (get-salary-office record)
-  (apply-generic 'get-salary record))
-
-(define (get-salary office name)
-  (get-salary-office (get-record name office)))
-
-(get-salary 'pex 'stanno)
-(get-salary 'ecnavi 'haruyama)
-
-(define nil '())
-
-(define (filter predicate sequence)
-  (cond ((null? sequence) nil)
-        ((predicate (car sequence))
-         (cons (car sequence)
-               (filter predicate (cdr sequence))))
-        (else  (filter predicate (cdr sequence)))))
+(define  (get-salary name tagged-records)
+  (let ((record (get-record name tagged-records)))
+    (if record ((get 'get-salary (type-tag tagged-records)) record)
+      #f
+      )))
 
 
-(define (find-employee-record name office-list)
-  (filter (lambda (employee)
-            (not (eq? #f employee)))
-          (map (lambda (office)
-                 (get-record name office)) office-list)))
+(get-salary 's-tanno pex-records)
+(get-salary 'stanno pex-records)
+(get-salary 'haruyama ecnavi-records)
 
-(find-employee-record 'stanno '(pex ecnavi))
-(find-employee-record 'haruyama '(pex ecnavi))
-(find-employee-record 'kida '(pex ecnavi))
+(define (find-employee-record name all-tagged-records)
+  (if (null? all-tagged-records) #f
+    (let ((tagged-records (car all-tagged-records)))
+      (let ((record (get-record name tagged-records)))
+        (if record record
+          (find-employee-record name (cdr all-tagged-records)))))))
+
+(find-employee-record 's-tanno (list pex-records ecnavi-records))
+(find-employee-record 'stanno (list pex-records ecnavi-records))
+(find-employee-record 'haruyama (list pex-records ecnavi-records))
 
 ; d
 ; パッケージ追加
