@@ -87,10 +87,10 @@
 (define s1 (make-scheme-number 1))
 (define s2 (make-scheme-number 2))
 
-(add s1 s2)
-(sub s1 s2)
-(mul s1 s2)
-(div s1 s2)
+;(add s1 s2)
+;(sub s1 s2)
+;(mul s1 s2)
+;(div s1 s2)
 
 (define (gcd a b)
   (if (= b 0)
@@ -147,10 +147,10 @@
 (define r1 (make-rational 1 2))
 (define r2 (make-rational 3 2))
 
-(add r1 r2)
-(sub r1 r2)
-(mul r1 r2)
-(div r1 r2)
+;(add r1 r2)
+;(sub r1 r2)
+;(mul r1 r2)
+;(div r1 r2)
 
 (define (install-rectangular-package)
   (define (real-part z) (car z))
@@ -214,7 +214,7 @@
   (define (make-from-mag-ang r a)
     ((get 'make-from-mag-ang 'polar) r a))
 
-  (define (add-complex z2 z2)
+  (define (add-complex z1 z2)
     (make-from-real-imag (+ (real-part z1) (real-part z2))
                          (+ (imag-part z1) (imag-part z2))))
 
@@ -260,21 +260,29 @@
 (define c2 (make-complex-from-mag-ang 1 (/ pi 2)))
 
 
-(add c1 c2)
-(sub c1 c2)
-(mul c1 c2)
-(div c1 c2)
+;(add c1 c2)
+;(sub c1 c2)
+;(mul c1 c2)
+;(div c1 c2)
 
-(magnitude c1)
 
 ;ex2.77
+;(magnitude c1)
+
+;(use slib)
+;(require 'trace)
+;(trace apply-generic)
+
+;(magnitude c1)
+
 (put 'real-part '(complex) real-part)
 (put 'imag-part '(complex) imag-part)
 (put 'magnitude '(complex) magnitude)
 (put 'angle '(complex) angle)
 
+;(magnitude c1)
 
-(magnitude c1)
+;(untrace apply-generic)
 
 ;ex2.78
 (define (type-tag datum)
@@ -394,7 +402,7 @@
 (equ? r3 c2)
 (equ? c2 r3)
 
-
+;ex2.80
 (define (=zero? x)
   (equ? 0 x))
 
@@ -406,7 +414,7 @@
 (=zero? (make-rational 1 0))
 (=zero? (make-complex-from-mag-ang 1 0))
 
-
+; 2.5.2
 
 (define (install-complex-package)
   (define (make-from-real-imag x y)
@@ -460,12 +468,12 @@
 
 (install-complex-package)
 
-
-
 (add (make-complex-from-mag-ang 1 0) 1)
 
 (define (scheme-number->complex n)
   (make-complex-from-real-imag (contents n) 0))
+
+;; 強制型変換
 
 (define (make-coercion-table)
   (let ((local-table (list '*coercion-table*)))
@@ -525,10 +533,9 @@
               (error "No method for these types"
                      (list op type-tags)))))))
 
+;; 型の階層構造
 
-
-
-
+; install-complex-package を reset
 (define (install-complex-package)
   (define (make-from-real-imag x y)
     ((get 'make-from-real-imag 'rectangular) x y))
@@ -574,7 +581,7 @@
 
 (install-complex-package)
 
-(add 2 (make-complex-from-real-imag 2 1))
+;(add 2 (make-complex-from-real-imag 2 1))
 
 ;ex2.81
 
@@ -602,6 +609,8 @@
 (install-scheme-number-package)
 
 
+;a
+
 (define (scheme-number->scheme-number n) n)
 (define (complex->complex z) z)
 
@@ -613,7 +622,11 @@
 
 (exp 2 2)
 ;(exp (make-complex-from-real-imag 2 0) (make-complex-from-real-imag 2 0))
+; 無限loop
 
+;b
+
+;c
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
@@ -637,7 +650,9 @@
                                    (list op type-tags)))))
                 (error "No method for these types"
                        (list op type-tags))))))))
-(exp (make-complex-from-real-imag 2 0) (make-complex-from-real-imag 2 0))
+;(exp (make-complex-from-real-imag 2 0) (make-complex-from-real-imag 2 0))
+; 無限ループはしない
+; exp を定義していないのでエラーになる
 
 ;ex2.82
 (define (id x) x)
@@ -651,11 +666,9 @@
 
 
 (define (try-coercion type-tags args)
-  (try-coercion-sub type-tags type-tags args)
-  )
+  (try-coercion-sub type-tags type-tags args))
 
 (define (try-coercion-sub check tags args)
-
   (if (null? check) #f
       (let ((type (car check)))
         (let ((coercion-list
@@ -672,11 +685,11 @@
       '()
       (cons
         ((car coercion-list) (car args))
-        (do-coercion (cdr coercion-list) (cdr args)
-                     ))))
+        (do-coercion (cdr coercion-list) (cdr args)))))
 
 
 (try-coercion '(scheme-number complex) '(1 (complex rectangular 2.0 . 0.0)))
+(try-coercion '(scheme-number scheme-number complex) '(1 2 (complex rectangular 2.0 . 0.0)))
 (try-coercion '(rational complex) '(1 (complex rectangular 2.0 . 0.0)))
 
 (define (get-coercion-list type tags)
@@ -688,19 +701,17 @@
 
 
 (define (apply-generic op . args)
-  (display "op: ")
-  (display op)
-  (newline)
-  (display "args: ")
-  (display args)
-  (newline)
+;  (display "op: ")
+;  (display op)
+;  (newline)
+;  (display "args: ")
+;  (display args)
+;  (newline)
   (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
       (if proc
           (apply proc (map contents args))
           (let ((coercion-args  (try-coercion type-tags args)))
-
-
             (if (not (eq? #f coercion-args))
                 (apply apply-generic (cons op coercion-args))
                 (error "No method for these types"
@@ -843,8 +854,7 @@
 
 (install-complex-package)
 
-(define
-  package-types '(scheme-number rational complex))
+(define package-types '(scheme-number rational complex))
 
 (define (compare-type x y types)
   (if (null? types)
@@ -863,7 +873,7 @@
 
 (define (type-level type)
   (define (type-level-sub type types level)
-    (cond ((null? types) (error 'no type' type))
+    (cond ((null? types) (error "no type" type))
           ((eq? type (car types)) level)
           (else
             (type-level-sub type (cdr types) (+ level 1)))))
@@ -896,17 +906,14 @@
 (equal-level? '(rational scheme-number))
 (equal-level? '(rational rational rational))
 
-(define (raise-level max arg)
-  (if (= max (type-level (type-tag arg))) arg
-      (raise-level max
-                   (raise-number arg))))
+; l まで level を上げる
+(define (raise-level l arg)
+  (if (= l (type-level (type-tag arg))) arg
+      (raise-level l (raise-number arg))))
 
 (raise-level 2 (make-rational 2 3))
 
 (raise-level 2 1)
-
-
-
 
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
@@ -929,10 +936,10 @@
                                            args))))))))
 
 (add 1 (make-rational 1 2))
+(add 1 (make-complex-from-real-imag 1 2))
 
 ;ex2.85
 (define (install-scheme-number-package)
-
   (define (raise-number x)
     (make-rational (contents x) 1))
 
@@ -1076,11 +1083,9 @@
 
 (project-number (make-rational 1 2))
 
-(raise-number
-  (project-number (make-rational 1 2)))
+(raise-number (project-number (make-rational 1 2)))
 
-(equ?
-  (raise-number
+(equ?  (raise-number
     (project-number (make-complex-from-real-imag 1.5 0)))
   (make-complex-from-real-imag 1.5 0))
 
@@ -1106,4 +1111,224 @@
 (drop (make-rational 1 2))
 
 ;ex2.86
-;(ά)
+;http://community.schemewiki.org/?sicp-ex-2.86
+; sine, cosine, arctan, exp を 
+; scheme-number, ratoinal に sine, cosine, arctan, expo を定義 complex 内の sin, cos, atan はおきかえる
+; complex 内の +, -, *, / を add, sub, mul, div におきかえる. sqrt は expo で
+(define (sine x) (apply-generic 'sine x)) 
+(define (cosine x) (apply-generic 'cosine x))
+(define (arctan x) (apply-generic 'arctan x))
+(define (expo x y) (apply-generic 'expo x y))
+
+(define (install-scheme-number-package)
+  (define (raise-number x)
+    (make-rational (contents x) 1))
+
+  (define (tag x)
+    (attach-tag 'scheme-number x))
+  (put 'add '(scheme-number scheme-number)
+       (lambda (x y) (tag (+ x y))))
+  (put 'sub '(scheme-number scheme-number)
+       (lambda (x y) (tag (- x y))))
+  (put 'mul '(scheme-number scheme-number)
+       (lambda (x y) (tag (* x y))))
+  (put 'div '(scheme-number scheme-number)
+       (lambda (x y) (tag (/ x y))))
+
+  (put 'sine '(scheme-number)
+       (lambda (x) (tag (sin x))))
+  (put 'cosine '(scheme-number)
+       (lambda (x) (tag (cos x))))
+  (put 'arctan '(scheme-number)
+       (lambda (x) (tag (atan x))))
+  (put 'expo '(scheme-number scheme-number)
+       (lambda (x y) (tag (exp x y))))
+
+  (put 'make 'scheme-number
+       (lambda (x) (tag x)))
+
+  (put 'raise-number 'scheme-number
+       (lambda (x) (raise-number x)))
+
+  'done)
+
+(install-scheme-number-package)
+
+(expo 3 2)
+
+(define (install-rational-package)
+  (define (numer x) (car x))
+  (define (denom x) (cdr x))
+  (define (make-rat n d)
+    (let ((g (gcd n d)))
+      (cons (/ n g) (/ d g))))
+  (define (add-rat x y)
+    (make-rat (+ (* (numer x) (denom y))
+                 (* (numer y) (denom x)))
+              (* (denom x) (denom y))))
+
+  (define (sub-rat x y)
+    (make-rat (- (* (numer x) (denom y))
+                 (* (numer y) (denom x)))
+              (* (denom x) (denom y))))
+
+  (define (mul-rat x y)
+    (make-rat (* (numer x) (numer y))
+              (* (denom x) (denom y))))
+  (define (div-rat x y)
+    (make-rat (* (numer x) (denom y))
+              (* (denom x) (numer y))))
+
+  (define (raise-number x)
+    (make-complex-from-real-imag
+      (/ (* 1.0 (numer (contents x))) (denom (contents x))) 0))
+
+  (define (project-number x)
+    (make-scheme-number
+      (numer (contents x))))
+
+  (define (tag x)
+    (attach-tag 'rational x))
+
+  (put 'add '(rational rational)
+       (lambda (x y) (tag (add-rat x y))))
+
+  (put 'sub '(rational rational)
+       (lambda (x y) (tag (sub-rat x y))))
+
+  (put 'mul '(rational rational)
+       (lambda (x y) (tag (mul-rat x y))))
+
+  (put 'div '(rational rational)
+       (lambda (x y) (tag (div-rat x y))))
+
+  (put 'make 'rational
+       (lambda (n d) (tag (make-rat n d))))
+
+  (put 'raise-number 'rational
+       (lambda (x) (raise-number x)))
+
+  (put 'project-number 'rational
+       (lambda (x) (project-number x)))
+
+  (put 'sine '(rational)
+       (lambda (x) (make-scheme-number (sin (/ (numer x) (denom x))))))
+  (put 'cosine '(rational)
+       (lambda (x) (make-scheme-number (cos (/ (numer x) (denom x))))))
+  (put 'arctan '(rational)
+       (lambda (x) (make-scheme-number (atan (/ (numer x) (denom x))))))
+  (put 'expo '(rational rational)
+       (lambda (x y) (make-scheme-number (exp (/ (numer x) (denom x)) (/ (numer y) (denom y))))))
+
+
+  'done)
+
+(install-rational-package)
+
+(expo (make-rational 1 2) 2)
+
+(define (install-rectangular-package)
+  (define (square x) (mul x x)) 
+  (define (sqrt x) (exp x 0.5)) 
+  (define (real-part z) (car z))
+  (define (imag-part z) (cdr z))
+  (define (make-from-real-imag x y) (cons x y))
+  (define (magnitude z)
+    (sqrt (add (square (real-part z))
+             (square (imag-part z)))))
+  (define (angle z)
+    (arctan (imag-part z) (real-part z)))
+  (define (make-from-mag-ang r a)
+    (cons (mul r (cosine a)) (mul r (sine a))))
+
+  (define (tag x) (attach-tag 'rectangular x))
+  (put 'real-part '(rectangular) real-part)
+  (put 'imag-part '(rectangular) imag-part)
+  (put 'magnitude '(rectangular) magnitude)
+  (put 'angle '(rectangular) angle)
+  (put 'make-from-real-imag 'rectangular
+       (lambda (x y) (tag (make-from-real-imag x y))))
+  (put 'make-from-mag-ang 'rectangular
+       (lambda (r a) (tag (make-from-mag-ang r a))))
+  'done )
+
+(install-rectangular-package)
+
+(define (install-polar-package)
+  (define (square x) (mul x x)) 
+  (define (sqrt x) (exp x 0.5)) 
+  (define (magnitude z) (car z))
+  (define (angle z) (cdr z))
+  (define (make-from-mag-ang x y) (cons x y))
+  (define (real-part z)
+    (mul (magnitude z) (cosine (angle z))))
+  (define (imag-part z)
+    (mul (magnitude z) (sine (angle z))))
+  (define (make-from-real-imag x y)
+    (cons (sqrt (add (square x) (square y))) (arctan y x)))
+
+  (define (tag x) (attach-tag 'polar x))
+  (put 'real-part '(polar) real-part)
+  (put 'imag-part '(polar) imag-part)
+  (put 'magnitude '(polar) magnitude)
+  (put 'angle '(polar) angle)
+  (put 'make-from-real-imag 'polar
+       (lambda (x y) (tag (make-from-real-imag x y))))
+  (put 'make-from-mag-ang 'polar
+       (lambda (r a) (tag (make-from-mag-ang r a))))
+  'done )
+(install-polar-package)
+
+(define (install-complex-package)
+  (define (make-from-real-imag x y)
+    ((get 'make-from-real-imag 'rectangular) x y))
+  (define (make-from-mag-ang r a)
+    ((get 'make-from-mag-ang 'polar) r a))
+
+  (define (add-complex z1 z2)
+    (make-from-real-imag (add (real-part z1) (real-part z2))
+                         (add (imag-part z1) (imag-part z2))))
+
+  (define (sub-complex z1 z2)
+    (make-from-real-imag (sub (real-part z1) (real-part z2))
+                         (sub (imag-part z1) (imag-part z2))))
+
+  (define (mul-complex z1 z2)
+    (make-from-mag-ang (mul (magnitude z1) (magnitude z2))
+                       (add (angle z1) (angle z2))))
+  (define (div-complex z1 z2)
+    (make-from-mag-ang (div (magnitude z1) (magnitude z2))
+                       (sub (angle z1) (angle z2))))
+
+  (define (project-number z)
+    (make-rational (round->exact (mul (real-part z) 2310)) 2310))
+
+  (define (tag z) (attach-tag 'complex z))
+  (put 'add '(complex complex)
+       (lambda (z1 z2) (tag (add-complex z1 z2))))
+
+  (put 'sub '(complex complex)
+       (lambda (z1 z2) (tag (sub-complex z1 z2))))
+
+  (put 'mul '(complex complex)
+       (lambda (z1 z2) (tag (mul-complex z1 z2))))
+
+  (put 'div '(complex complex)
+       (lambda (z1 z2) (tag (div-complex z1 z2))))
+
+  (put 'make-from-real-imag 'complex
+       (lambda (x y) (tag (make-from-real-imag x y))))
+
+  (put 'make-from-mag-ang 'complex
+       (lambda (r a) (tag (make-from-mag-ang r a))))
+
+  (put 'project-number 'complex
+       (lambda (x) (project-number x)))
+
+  'done)
+
+(install-complex-package)
+
+
+(add (make-complex-from-real-imag 1 2) (make-complex-from-real-imag 1 3))
+(add (make-complex-from-real-imag (make-rational 1 2) 2) (make-complex-from-real-imag 1 3))
