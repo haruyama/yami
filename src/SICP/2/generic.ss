@@ -267,11 +267,13 @@
 
 
 ;ex2.77
-;(magnitude c1)
+(magnitude c1)
 
 ;(use slib)
 ;(require 'trace)
 ;(trace apply-generic)
+;(trace magnitude)
+;(trace get)
 
 ;(magnitude c1)
 
@@ -282,7 +284,9 @@
 
 ;(magnitude c1)
 
-;(untrace apply-generic)
+(untrace apply-generic)
+(untrace magnitude)
+(untrace get)
 
 ;ex2.78
 (define (type-tag datum)
@@ -308,6 +312,7 @@
           (error  "Bad tagged datum -- TYPE-TAG" datum))))
 
 (add 1 2)
+(add (cons 'scheme-number 1) 2)
 (add r1 r2)
 (add c1 c2)
 
