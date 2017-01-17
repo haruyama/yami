@@ -862,20 +862,20 @@
 
 (define package-types '(scheme-number rational complex))
 
-(define (compare-type x y types)
-  (if (null? types)
-      (error "compare-type error" x y)
-      (let ((type (car types)))
-        (cond ((and (eq? x type) (eq? y type))
-               'equal)
-              ((eq? x type) 'lesser)
-              ((eq? y type) 'greater)
-              (else
-                (compare-type x y (cdr types)))))))
+;(define (compare-type x y types)
+;  (if (null? types)
+;      (error "compare-type error" x y)
+;      (let ((type (car types)))
+;        (cond ((and (eq? x type) (eq? y type))
+;               'equal)
+;              ((eq? x type) 'lesser)
+;              ((eq? y type) 'greater)
+;              (else
+;                (compare-type x y (cdr types)))))))
 
-(compare-type 'scheme-number 'scheme-number package-types)
-(compare-type 'complex 'scheme-number package-types)
-(compare-type 'scheme-number 'complex package-types)
+;(compare-type 'scheme-number 'scheme-number package-types)
+;(compare-type 'complex 'scheme-number package-types)
+;(compare-type 'scheme-number 'complex package-types)
 
 (define (type-level type)
   (define (type-level-sub type types level)
@@ -889,15 +889,15 @@
 (type-level 'rational)
 (type-level 'complex)
 
-(define (max-type-level types)
-  (define (max-type-level-sub types max)
-    (if (null? types)
-        max
-        (let ((level (type-level (car types))))
-          (if (> level max)
-              (max-type-level-sub (cdr types) level)
-              (max-type-level-sub (cdr types) max)))))
-  (max-type-level-sub types -1))
+;(define (max-type-level types)
+;  (define (max-type-level-sub types max)
+;    (if (null? types)
+;        max
+;        (let ((level (type-level (car types))))
+;          (if (> level max)
+;              (max-type-level-sub (cdr types) level)
+;              (max-type-level-sub (cdr types) max)))))
+;  (max-type-level-sub types -1))
 
 (define (max-type-level types)
   (apply max (map type-level types)))
@@ -920,6 +920,7 @@
 (raise-level 2 (make-rational 2 3))
 
 (raise-level 2 1)
+(raise-level 1 2)
 
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
