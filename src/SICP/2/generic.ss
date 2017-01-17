@@ -660,6 +660,14 @@
 ; exp を定義していないのでエラーになる
 
 ;ex2.82
+(define coercion-table (make-coercion-table))
+(define get-coercion (coercion-table 'lookup-proc))
+(define put-coercion  (coercion-table 'insert-proc!))
+
+(define (scheme-number->complex n)
+  (make-complex-from-real-imag (contents n) 0))
+(put-coercion 'scheme-number 'complex scheme-number->complex)
+(get-coercion 'scheme-number 'complex)
 (define (id x) x)
 
 (define (filter predicate sequence)
@@ -677,9 +685,10 @@
   (if (null? check) #f
       (let ((type (car check)))
         (let ((coercion-list
-                (filter (lambda (x) (if (eq? #f x) #f #t))
+                (filter (lambda (x) x)
                         (map (lambda (x)
-                               (get-coercion x type)) tags))))
+                               (if (eq? x type) id
+                                 (get-coercion x type))) tags))))
           (if (= (length coercion-list) (length tags))
               (do-coercion coercion-list args)
               (try-coercion-sub (cdr check) tags args))))))
