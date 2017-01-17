@@ -1143,6 +1143,7 @@
 
 (add (make-rational 1 2) (make-rational 3 2))
 (add (make-complex-from-real-imag 1 2) (make-complex-from-real-imag 3 -2))
+(add (make-complex-from-real-imag 1 2) (make-complex-from-real-imag 3 -1))
 
 ;ex2.86
 ;http://community.schemewiki.org/?sicp-ex-2.86
