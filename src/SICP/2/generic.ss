@@ -586,7 +586,7 @@
 
 (install-complex-package)
 
-;(add 2 (make-complex-from-real-imag 2 1))
+(add 2 (make-complex-from-real-imag 2 1))
 
 ;ex2.81
 
@@ -1055,8 +1055,9 @@
     (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
                        (- (angle z1) (angle z2))))
 
+  ; 小数に対応するためのdirty hack
   (define (project-number z)
-    (make-rational (round->exact (* (real-part z) 2310)) 2310))
+    (make-rational (round->exact (* (real-part z) 1000000000)) 1000000000))
 
   (define (tag z) (attach-tag 'complex z))
   (put 'add '(complex complex)
@@ -1087,22 +1088,25 @@
 (define (project-number x)
   ((get 'project-number (type-tag x)) x))
 
-
-(project-number (make-rational 1 2))
+(make-complex-from-real-imag 1 2)
 
 (raise-number (project-number (make-rational 1 2)))
 
+(raise-number (project-number (make-complex-from-real-imag 1.5 0)))
 (equ?  (raise-number
     (project-number (make-complex-from-real-imag 1.5 0)))
   (make-complex-from-real-imag 1.5 0))
 
 (define (drop x)
-  (if (= (type-level (type-tag x)) 0) x
+  ; boolean, scheme-number の場合は処理しない
+  (if (not  (pair? x))
+    x
+    (if (= (type-level (type-tag x)) 0) x
       (let ((project-n (project-number x)))
         (let ((raise-n (raise-number project-n)))
           (if (equ? x raise-n)
-              (drop project-n)
-              x)))))
+            (drop project-n)
+            x))))))
 
 (drop 1)
 
@@ -1116,6 +1120,29 @@
 (drop (make-complex-from-real-imag 1.5 0))
 (drop (make-rational 1 1))
 (drop (make-rational 1 2))
+
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (if (= 1 (length args))
+        (let ((proc (get op type-tags)))
+          (if proc
+            (drop (apply proc (map contents args)))
+              (error "No method for these types -- APPLY-GENERIC"
+                     (list op type-tags))))
+        (if (equal-level? type-tags)
+            (let ((proc (get op type-tags)))
+              (if proc
+                (drop (apply proc (map contents args)))
+                  (error "No method for these types -- APPLY-GENERIC"
+                         (list op type-tags))))
+            (let ((max-level (max-type-level type-tags)))
+              (apply apply-generic (cons op
+                                         (map
+                                           (lambda (x) (raise-level max-level x))
+                                           args))))))))
+
+(add (make-rational 1 2) (make-rational 3 2))
+(add (make-complex-from-real-imag 1 2) (make-complex-from-real-imag 3 -2))
 
 ;ex2.86
 ;http://community.schemewiki.org/?sicp-ex-2.86
