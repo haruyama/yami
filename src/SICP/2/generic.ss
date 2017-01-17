@@ -706,14 +706,6 @@
 (try-coercion '(scheme-number scheme-number complex) '(1 2 (complex rectangular 2.0 . 0.0)))
 (try-coercion '(rational complex) '(1 (complex rectangular 2.0 . 0.0)))
 
-(define (get-coercion-list type tags)
-  (filter (lambda (x) (if (eq? #f x) #f #t))
-          (map (lambda (x)
-                 (get-coercion x type)) tags)))
-
-(get-coercion-list 'scheme-number '(scheme-number complex))
-
-
 (define (apply-generic op . args)
 ;  (display "op: ")
 ;  (display op)
