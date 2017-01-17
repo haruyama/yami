@@ -1363,6 +1363,27 @@
 
 (install-complex-package)
 
+; dropなしversion
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (if (= 1 (length args))
+        (let ((proc (get op type-tags)))
+          (if proc
+              (apply proc (map contents args))
+              (error "No method for these types -- APPLY-GENERIC"
+                     (list op type-tags))))
+        (if (equal-level? type-tags)
+            (let ((proc (get op type-tags)))
+              (if proc
+                  (apply proc (map contents args))
+                  (error "No method for these types -- APPLY-GENERIC"
+                         (list op type-tags))))
+            (let ((max-level (max-type-level type-tags)))
+              (apply apply-generic (cons op
+                                         (map
+                                           (lambda (x) (raise-level max-level x))
+                                           args))))))))
+
 
 (add (make-complex-from-real-imag 1 2) (make-complex-from-real-imag 1 3))
 (add (make-complex-from-real-imag (make-rational 1 2) 2) (make-complex-from-real-imag 1 3))
