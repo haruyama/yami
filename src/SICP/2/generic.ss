@@ -267,7 +267,7 @@
 
 
 ;ex2.77
-(magnitude c1)
+;(magnitude c1)
 
 ;(use slib)
 ;(require 'trace)
@@ -284,9 +284,9 @@
 
 ;(magnitude c1)
 
-(untrace apply-generic)
-(untrace magnitude)
-(untrace get)
+;(untrace apply-generic)
+;(untrace magnitude)
+;(untrace get)
 
 ;ex2.78
 (define (type-tag datum)
