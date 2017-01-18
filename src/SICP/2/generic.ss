@@ -860,6 +860,7 @@
 
 (install-complex-package)
 
+;ex2.84
 (define package-types '(scheme-number rational complex))
 
 ;(define (compare-type x y types)
@@ -1147,10 +1148,9 @@
 
 ;ex2.86
 ;http://community.schemewiki.org/?sicp-ex-2.86
-; sine, cosine, arctan, exp を 
 ; scheme-number, ratoinal に sine, cosine, arctan, expo を定義 complex 内の sin, cos, atan はおきかえる
 ; complex 内の +, -, *, / を add, sub, mul, div におきかえる. sqrt は expo で
-(define (sine x) (apply-generic 'sine x)) 
+(define (sine x) (apply-generic 'sine x))
 (define (cosine x) (apply-generic 'cosine x))
 (define (arctan x) (apply-generic 'arctan x))
 (define (expo x y) (apply-generic 'expo x y))
@@ -1263,8 +1263,8 @@
 (expo (make-rational 1 2) 2)
 
 (define (install-rectangular-package)
-  (define (square x) (mul x x)) 
-  (define (sqrt x) (exp x 0.5)) 
+  (define (square x) (mul x x))
+  (define (sqrt x) (expo x 0.5))
   (define (real-part z) (car z))
   (define (imag-part z) (cdr z))
   (define (make-from-real-imag x y) (cons x y))
@@ -1290,8 +1290,8 @@
 (install-rectangular-package)
 
 (define (install-polar-package)
-  (define (square x) (mul x x)) 
-  (define (sqrt x) (exp x 0.5)) 
+  (define (square x) (mul x x))
+  (define (sqrt x) (expo x 0.5))
   (define (magnitude z) (car z))
   (define (angle z) (cdr z))
   (define (make-from-mag-ang x y) (cons x y))
