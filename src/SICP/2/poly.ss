@@ -25,6 +25,9 @@
         (error "Polys not in same var -- MUL-POLY"
                (list p1 p2))))
 
+  ;; 暫定
+  (define (project-number p)
+    (make-complex-from-real-imag 0 0))
 
   (define (tag p) (attach-tag 'polynomial p))
   (put 'add '(polynomial polynomial)
@@ -34,6 +37,10 @@
 
   (put 'make 'polynomial
        (lambda (var terms) (tag (make-poly var terms))))
+
+  (put 'project-number 'polynomial
+       (lambda (x) (project-number x)))
+
   'done)
 
 (install-polynomial-package)
@@ -91,8 +98,3 @@
 
 (define (make-polynomial var terms)
   ((get 'make 'polynomial) var terms))
-
-(make-polynomial 'x
-                 '((1 1))
-                 )
-(make-polynomial 'x '((100 1) (2 2) (0 1)))

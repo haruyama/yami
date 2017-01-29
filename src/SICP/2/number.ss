@@ -66,14 +66,62 @@
 (define get (operation-table 'lookup-proc))
 (define put (operation-table 'insert-proc!))
 
+(define (raise-number x)
+  ((get 'raise-number (type-tag x)) x))
+
+(define (project-number x)
+  ((get 'project-number (type-tag x)) x))
+
+(define package-types '(scheme-number rational complex polynomial))
+
+(define (type-level type)
+  (define (type-level-sub type types level)
+    (cond ((null? types) (error "no type" type))
+          ((eq? type (car types)) level)
+          (else
+            (type-level-sub type (cdr types) (+ level 1)))))
+  (type-level-sub type package-types 0))
+
+(define (max-type-level types)
+  (apply max (map type-level types)))
+
+(define (equal-level? types)
+  (apply = (map type-level types)))
+
+(define (raise-level l arg)
+  (if (= l (type-level (type-tag arg))) arg
+      (raise-level l (raise-number arg))))
+
+(define (drop x)
+  ; boolean, scheme-number の場合は処理しない
+  (if (not  (pair? x))
+    x
+    (if (= (type-level (type-tag x)) 0) x
+      (let ((project-n (project-number x)))
+        (let ((raise-n (raise-number project-n)))
+          (if (equ? x raise-n)
+            (drop project-n)
+            x))))))
 
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
-    (let ((proc (get op type-tags)))
-      (if proc
-          (apply proc (map contents args))
-          (error "No method for these types -- APPLY-GENERIC"
-                 (list op type-tags))))))
+    (if (= 1 (length args))
+        (let ((proc (get op type-tags)))
+          (if proc
+            (drop (apply proc (map contents args)))
+              (error "No method for these types -- APPLY-GENERIC"
+                     (list op type-tags))))
+        (if (equal-level? type-tags)
+            (let ((proc (get op type-tags)))
+              (if proc
+                (drop (apply proc (map contents args)))
+                  (error "No method for these types -- APPLY-GENERIC"
+                         (list op type-tags))))
+            (let ((max-level (max-type-level type-tags)))
+              (apply apply-generic (cons op
+                                         (map
+                                           (lambda (x) (raise-level max-level x))
+                                           args))))))))
 
 (define (add x y) (apply-generic 'add x y))
 (define (sub x y) (apply-generic 'sub x y))
@@ -82,8 +130,11 @@
 (define (negate x) (apply-generic 'negate x))
 
 (define (install-scheme-number-package)
-  (define (tag x)
 
+  (define (raise-number x)
+    (make-rational (contents x) 1))
+
+  (define (tag x)
     (attach-tag 'scheme-number x))
   (put 'add '(scheme-number scheme-number)
        (lambda (x y) (tag (+ x y))))
@@ -99,20 +150,15 @@
 
   (put 'make 'scheme-number
        (lambda (x) (tag x)))
+
+  (put 'raise-number 'scheme-number
+       (lambda (x) (raise-number x)))
   'done)
 
 (define (make-scheme-number n)
   ((get' make 'scheme-number) n))
 
 (install-scheme-number-package)
-
-;(define s1 (make-scheme-number 1))
-;(define s2 (make-scheme-number 2))
-
-;(add s1 s2)
-;(sub s1 s2)
-;(mul s1 s2)
-;(div s1 s2)
 
 (define (gcd a b)
   (if (= b 0)
@@ -138,9 +184,18 @@
   (define (mul-rat x y)
     (make-rat (* (numer x) (numer y))
               (* (denom x) (denom y))))
+
   (define (div-rat x y)
     (make-rat (* (numer x) (denom y))
               (* (denom x) (numer y))))
+
+  (define (raise-number x)
+    (make-complex-from-real-imag
+      (/ (numer (contents x)) (denom (contents x))) 0))
+
+  (define (project-number x)
+    (make-scheme-number
+      (numer (contents x))))
 
   (define (tag x)
     (attach-tag 'rational x))
@@ -157,22 +212,24 @@
   (put 'div '(rational rational)
        (lambda (x y) (tag (div-rat x y))))
 
+  (put 'negate '(rational)
+       (lambda (x) (tag (make-rat (- (numer x)) (denom x)))))
+
   (put 'make 'rational
        (lambda (n d) (tag (make-rat n d))))
+
+  (put 'raise-number 'rational
+       (lambda (x) (raise-number x)))
+
+  (put 'project-number 'rational
+       (lambda (x) (project-number x)))
+
   'done)
 
 (define (make-rational n d)
   ((get 'make 'rational) n d))
 
 (install-rational-package)
-
-;(define r1 (make-rational 1 2))
-;(define r2 (make-rational 3 2))
-
-;(add r1 r2)
-;(sub r1 r2)
-;(mul r1 r2)
-;(div r1 r2)
 
 (define (install-rectangular-package)
   (define (real-part z) (car z))
@@ -228,8 +285,6 @@
 (define (magnitude z) (apply-generic 'magnitude z))
 (define (angle z) (apply-generic 'angle z))
 
-
-
 (define (install-complex-package)
   (define (make-from-real-imag x y)
     ((get 'make-from-real-imag 'rectangular) x y))
@@ -251,6 +306,13 @@
     (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
                        (- (angle z1) (angle z2))))
 
+  (define (raise-number z)
+    (make-polynomial 'x (list (list  0 z))))
+
+  ; 小数に対応するためのdirty hack
+  (define (project-number z)
+    (make-rational (round->exact (* (real-part z) 1000000000)) 1000000000))
+
   (define (tag z) (attach-tag 'complex z))
   (put 'add '(complex complex)
        (lambda (z1 z2) (tag (add-complex z1 z2))))
@@ -264,11 +326,21 @@
   (put 'div '(complex complex)
        (lambda (z1 z2) (tag (div-complex z1 z2))))
 
+  (put 'negate '(complex)
+       (lambda (x) (tag (make-from-real-imag (- (real-part x)) (- (imag-part x))))))
+
   (put 'make-from-real-imag 'complex
        (lambda (x y) (tag (make-from-real-imag x y))))
 
   (put 'make-from-mag-ang 'complex
        (lambda (r a) (tag (make-from-mag-ang r a))))
+
+  (put 'raise-number 'complex
+       (lambda (x) (raise-number x)))
+
+  (put 'project-number 'complex
+       (lambda (x) (project-number x)))
+
   'done)
 
 (define (make-complex-from-real-imag x y)
@@ -277,28 +349,6 @@
   ((get 'make-from-mag-ang 'complex) r a))
 
 (install-complex-package)
-
-;(define c1 (make-complex-from-real-imag 1 0))
-;(define c2 (make-complex-from-mag-ang 1 (/ pi 2)))
-
-
-;(add c1 c2)
-;(sub c1 c2)
-;(mul c1 c2)
-;(div c1 c2)
-
-;(magnitude c1)
-
-;(put 'real-part '(complex) real-part)
-;(put 'imag-part '(complex) imag-part)
-;(put 'magnitude '(complex) magnitude)
-;(put 'angle '(complex) angle)
-
-;(magnitude c1)
-
-;(add 1 2)
-;(add r1 r2)
-;(add c1 c2)
 
 (define (install-equ?-package)
   (put 'equ? '(scheme-number scheme-number)
@@ -355,8 +405,6 @@
            (= (/ (car x) (cdr x)) (real-part y))
            (= 0 (imag-part y)))))
   'done)
-
-
 
 
 (define (equ? x y)

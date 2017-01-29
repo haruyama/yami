@@ -78,6 +78,29 @@
 
 (install-polynomial-package)
 
+(define (equal-terms? L1 L2)
+  (cond ((empty-termlist? L1) (every =zero? (map coeff L2)))
+    ((empty-termlist? L2) (every =zero? (map coeff L1)))
+    (else
+      (let ((t1 (first-term L1)) (t2 (first-term L2)))
+        (cond ((> (order t1) (order t2))
+               (if (=zero? (coeff t1))
+                 (equal-terms? (rest-terms L1) L2)
+                 #f))
+          ((< (order t1) (order t2))
+           (if (=zero? (coeff t2))
+             (equal-terms? L1 (rest-terms L2))
+             #f))
+          ((= (coeff t1) (coeff t2))
+           (equal-terms? (rest-terms L1) (rest-terms L2)))
+          (else #f))))))
+
+(put 'equ? '(polynomial polynomial)
+     (lambda (p1 p2)
+       (and
+         (same-variable? p1 p2)
+         (equal-terms? (term-list p1) (term-list p2)))))
+
 (define (=zero? x)
   (if (eq? (type-tag x) 'polynomial)
     ((get '=zero-poly? '(polynomial)) (contents x))

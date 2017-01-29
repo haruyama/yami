@@ -2,32 +2,25 @@
 
 (load "./poly.ss")
 
-
-(add
-  (make-polynomial 'x
-                   '((1 1)))
-  (make-polynomial 'x
-                   '((1 1)))
-  )
-(mul
-  (make-polynomial 'x
-                   '((1 1)))
-  (make-polynomial 'x
-                   '((1 1)))
-  )
-
 (load "./ex2-87.ss")
 
+(add
+  (make-polynomial 'x '((1 1)))
+  (make-polynomial 'x '((1 1))))
 
-(=zero? (make-polynomial 'x
-                         '((1 1))))
+(add
+  (make-polynomial 'x '((1 (rational 1 . 2))))
+  (make-polynomial 'x '((1 1))))
 
-(=zero? (make-polynomial 'x
-                         '((1 0))))
+(mul
+  (make-polynomial 'x '((1 1)))
+  (make-polynomial 'x '((1 1))))
 
+(=zero? (make-polynomial 'x '((1 1))))
 
-(=zero? (make-polynomial 'x
-                         '()))
+(=zero? (make-polynomial 'x '((1 0))))
+
+(=zero? (make-polynomial 'x '()))
 
 (=zero? (make-polynomial 'x '((5 0) (4 0))))
 
@@ -39,20 +32,18 @@
 
 (=zero? (make-polynomial 'x (list (list 5 c) (list 4 0))))
 
-
 (sub
-  (make-polynomial 'x
-                   '((1 2)))
-  (make-polynomial 'x
-                   '((1 1)))
-  )
+  (make-polynomial 'x '((1 2)))
+  (make-polynomial 'x '((1 1))))
 
 (sub
   (sub  (make-polynomial 'x '((1 1)))
         (make-polynomial 'x '((1 1))))
-  (make-polynomial 'x
-                   '((1 1)))
-  )
+  (make-polynomial 'x '((1 1))))
+
+(sub
+  (make-polynomial 'x '((1 (rational 1 . 2))))
+  (make-polynomial 'x '((1 1))))
 
 (load "./ex2-91.ss")
 
