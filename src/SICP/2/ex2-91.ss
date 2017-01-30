@@ -10,12 +10,12 @@
               (new-o (- (order t1) (order t2))))
           (let ((rest-of-result
                   (div-terms
+                    ; L1 - new-o * L2
                     (add-terms L1
-                               (mul-terms L2 (adjoin-term (make-term new-o (negate new-c)) (the-empty-termlist))))
+                               (mul-terms L2 
+                                          (adjoin-term (make-term new-o (negate new-c)) (the-empty-termlist))))
                     L2)
                   ))
             (cons (adjoin-term (make-term new-o new-c) (car rest-of-result))
                   (cdr rest-of-result))
             ))))))
-
-
