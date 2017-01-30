@@ -26,11 +26,11 @@
 
 (define c (make-polynomial 'y '((5 0) (4 0))))
 
-(=zero? (make-polynomial 'x (list (list 5 c) (list 4 0))))
+(=zero? c)
 
 (define c (make-polynomial 'y '((5 1) (4 0))))
 
-(=zero? (make-polynomial 'x (list (list 5 c) (list 4 0))))
+(=zero? c)
 
 (sub
   (make-polynomial 'x '((1 2)))
