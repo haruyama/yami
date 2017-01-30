@@ -106,22 +106,25 @@
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
     (if (= 1 (length args))
-        (let ((proc (get op type-tags)))
-          (if proc
-            (drop (apply proc (map contents args)))
-              (error "No method for these types -- APPLY-GENERIC"
-                     (list op type-tags))))
-        (if (equal-level? type-tags)
-            (let ((proc (get op type-tags)))
-              (if proc
-                (drop (apply proc (map contents args)))
-                  (error "No method for these types -- APPLY-GENERIC"
-                         (list op type-tags))))
+      (let ((proc (get op type-tags)))
+        (if proc
+          (drop (apply proc (map contents args)))
+          (error "No method for these types -- APPLY-GENERIC"
+                 (list op type-tags))))
+      (let ((proc (get op type-tags)))
+        (if proc
+          (drop (apply proc (map contents args)))
+          (if (equal-level? type-tags)
+            (let ((proc2 (get op type-tags)))
+              (if proc2
+                (drop (apply proc2 (map contents args)))
+                (error "No method for these types -- APPLY-GENERIC"
+                       (list op type-tags))))
             (let ((max-level (max-type-level type-tags)))
               (apply apply-generic (cons op
                                          (map
                                            (lambda (x) (raise-level max-level x))
-                                           args))))))))
+                                           args))))))))))
 
 (define (add x y) (apply-generic 'add x y))
 (define (sub x y) (apply-generic 'sub x y))
