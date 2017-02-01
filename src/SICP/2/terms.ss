@@ -56,6 +56,7 @@
 ;ex 2.93
 
 (load "./ex2-93.ss")
+(define (drop x) x)
 
 (define p1 (make-polynomial 'x '((2 1)(0 1))))
 (define p2 (make-polynomial 'x '((3 1)(0 1))))
