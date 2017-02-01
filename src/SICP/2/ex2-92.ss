@@ -81,3 +81,7 @@
 (add
   (make-polynomial 'y '((1 1)))
   (make-polynomial 'x '((1 1))))
+; まだバグがある
+;(add
+;  (make-polynomial 'y '((1 1) (0 1)))
+;  (make-polynomial 'x '((1 1) (0 1))))
