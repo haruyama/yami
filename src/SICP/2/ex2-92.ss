@@ -8,8 +8,12 @@
 
 (define package-types '(scheme-number rational complex polynomial-x polynomial-y))
 
+(define (my-symbol-append . arg)
+  (string->symbol
+  (apply string-append (map symbol->string arg))))
+
 (define (install-polynomial-package v)
-  (let ((package (symbol-append 'polynomial '- v)))
+  (let ((package (my-symbol-append 'polynomial '- v)))
     (define (make-poly variable term-list)
       (cons variable term-list))
     (define (variable p) (car p))
@@ -65,7 +69,7 @@
 (install-polynomial-package 'y)
 
 (define (make-polynomial var terms)
-  ((get 'make (symbol-append 'polynomial '- var)) var terms))
+  ((get 'make (my-symbol-append 'polynomial '- var)) var terms))
 
 (put 'raise-number 'polynomial-x
      (lambda (x) (make-polynomial 'y (list (list 0 x)))))
