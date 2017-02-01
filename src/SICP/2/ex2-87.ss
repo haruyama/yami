@@ -37,9 +37,14 @@
 
   (define (div-poly p1 p2)
     (if (same-variable? (variable p1) (variable p2))
-      (make-poly (variable p1)
-                 (div-terms (term-list p1)
-                            (term-list p2)))
+      (let ((result (div-terms (term-list p1) (term-list p2))))
+        (cons
+          (make-poly (variable p1)
+                     (car result))
+          (make-poly (variable p1)
+                     (cdr result))
+          )
+        )
       (error "Polys not in same var -- DIV-POLY"
              (list p1 p2))))
 
@@ -67,7 +72,9 @@
        (lambda (p1 p2) (tag (mul-poly p1 p2))))
 
   (put 'div '(polynomial polynomial)
-       (lambda (p1 p2) (tag (div-poly p1 p2))))
+       (lambda (p1 p2)
+         (let ((result (div-poly p1 p2)))
+           (list (tag (car result)) (tag (cdr result))))))
 
   (put 'negate '(polynomial)
        (lambda (p) (tag (negate-poly p))))

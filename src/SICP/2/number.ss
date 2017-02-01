@@ -96,12 +96,14 @@
   ; boolean, scheme-number の場合は処理しない
   (if (not  (pair? x))
     x
-    (if (= (type-level (type-tag x)) 0) x
-      (let ((project-n (project-number x)))
-        (let ((raise-n (raise-number project-n)))
-          (if (equ? x raise-n)
-            (drop project-n)
-            x))))))
+    ; div-poly
+    (if (pair? (type-tag x)) x
+      (if (= (type-level (type-tag x)) 0) x
+        (let ((project-n (project-number x)))
+          (let ((raise-n (raise-number project-n)))
+            (if (equ? x raise-n)
+              (drop project-n)
+              x)))))))
 
 (define (apply-generic op . args)
   (let ((type-tags (map type-tag args)))
