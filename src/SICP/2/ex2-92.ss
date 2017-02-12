@@ -6,7 +6,7 @@
 
 (load "./ex2-91.ss")
 
-(define package-types '(scheme-number rational complex polynomial-x polynomial-y))
+(define package-types '(scheme-number polynomial-x polynomial-y))
 
 (define (my-symbol-append . arg)
   (string->symbol
@@ -21,7 +21,6 @@
     (define (variable? x) (symbol? x))
     (define (same-variable? v1 v2)
       (and (variable? v1) (variable? v2) (eq? v1 v2)))
-
 
     (define (add-poly p1 p2)
       (if (same-variable? (variable p1) (variable p2))
@@ -41,8 +40,7 @@
                (list p1 p2))))
 
     ;; 面倒なので適当
-    (define (project-number p)
-      (make-complex-from-real-imag 0 0))
+    (define (project-number p) 0)
 
     (define (tag p) (attach-tag package p))
     (put 'add (list package package)
@@ -74,6 +72,9 @@
 (put 'raise-number 'polynomial-x
      (lambda (x) (make-polynomial 'y (list (list 0 x)))))
 
+(put 'raise-number 'scheme-number
+     (lambda (n) (make-polynomial 'x (list (list 0 n)))))
+
 (add
   (make-polynomial 'x '((1 1)))
   (make-polynomial 'x '((1 1))))
@@ -81,7 +82,7 @@
 (add
   (make-polynomial 'y '((1 1)))
   (make-polynomial 'x '((1 1))))
-; まだバグがある
-;(add
-;  (make-polynomial 'y '((1 1) (0 1)))
-;  (make-polynomial 'x '((1 1) (0 1))))
+
+(add
+  (make-polynomial 'y '((1 1) (0 1)))
+  (make-polynomial 'x '((1 1) (0 1))))
