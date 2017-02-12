@@ -42,9 +42,7 @@
           (make-poly (variable p1)
                      (car result))
           (make-poly (variable p1)
-                     (cdr result))
-          )
-        )
+                     (cdr result))))
       (error "Polys not in same var -- DIV-POLY"
              (list p1 p2))))
 
