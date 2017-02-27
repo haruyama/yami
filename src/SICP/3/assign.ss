@@ -449,6 +449,19 @@
 
 (+ (f 1) (f 0))
 
+(define f
+  (let ((value 0)
+        (pre 0))
+    (lambda (new)
+      (begin
+        (set! pre value)
+        (if (= 1 value new)
+          (set! value 0)
+          (set! value new))
+        pre))))
+
+(+ (f 0) (f 1))
+(+ (f 1) (f 0))
 
 (define (make-withdraw initial-amount)
   (let ((balance initial-amount))
