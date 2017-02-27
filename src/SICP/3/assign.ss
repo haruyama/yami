@@ -10,7 +10,7 @@
 (withdraw 25)
 (withdraw 60)
 
-(define new-withdraw 
+(define new-withdraw
   (let ((balance 100))
     (lambda (amount)
       (if (>= balance amount)
@@ -65,7 +65,6 @@
 
 
 ;ex3.1
-
 (define (make-accumulator sum)
   (lambda (add)
     (begin (set! sum (+ sum add))
@@ -74,16 +73,6 @@
 (define A (make-accumulator 5))
 (A 10)
 (A 10)
-
-(define (make-accumulator sum)
-  (lambda (add)
-    (begin (set! sum (+ sum add))
-           sum)))
-
-(define A (make-accumulator 5))
-(A 10)
-(A 10)
-
 
 ;ex3.2
 (define (make-monitored f)
@@ -103,10 +92,14 @@
 
 (define s (make-monitored sqrt))
 (s 100)
+(s 100)
 (s 'how-many-calls?)
 (s 'reset-count)
-;ex3.3
+(s 'how-many-calls?)
+(s 100)
+(s 'how-many-calls?)
 
+;ex3.3
 (define (make-account balance password)
   (define (withdraw amount)
     (if (>= balance amount)
@@ -132,6 +125,8 @@
 
 ;ex3.4
 
+(use srfi-23)
+
 (define (make-account balance password)
   (let ((count-of-bad-password 0))
     (define (withdraw amount)
@@ -146,7 +141,7 @@
       (error "tuuhou"))
     (define (dispatch p m)
       (if (eq? p password)
-          (begin 
+          (begin
             (set! count-of-bad-password 0)
             (cond ((eq? m 'withdraw) withdraw)
                   ((eq? m 'deposit) deposit)
@@ -159,8 +154,7 @@
                   (call-the-cops))
                 (lambda (n)
                   "Incorrect passsword")))))
-    dispatch)
-  )
+    dispatch))
 
 
 (define aac (make-account 100 'secret-password))
@@ -181,8 +175,6 @@
 
 
 ;3.1.2
-
-
 (define random-init 1)
 
 (define (rand-update x)
@@ -212,6 +204,11 @@
             (iter (- trails-remaining 1) trails-passed))))
   (iter trails 0))
 
+(estimate-pi 100)
+
+(define (estimate-pi2 trails inital-x)
+  (sqrt (/ 6 (random-gcd-test trails inital-x))))
+
 (define (random-gcd-test trails inital-x)
   (define (iter trails-remaining trails-passed x)
     (let ((x1 (rand-update x)))
@@ -222,16 +219,13 @@
                (iter (- trails-remaining 1)
                      (+ trails-passed 1)
                      x2))
-              (else 
+              (else
                 (iter (- trails-remaining 1)
                       trails-passed
                       x2))))))
   (iter trails 0 inital-x))
 
-(define (estimate-pi2 trails inital-x)
-  (sqrt (/ 6 (random-gcd-test trails inital-x))))
-
-(estimate-pi 100)
+(estimate-pi2 100 10)
 
 ;ex3.5
 ;(use math.mt-random)
@@ -247,12 +241,11 @@
 
 ;(define (random-in-range low high)
 ;  (let ((range (- high low)))
-;	(+ low (* range (mt-random-real m)))))
+;   (+ low (* range (mt-random-real m)))))
 
 (define (random-in-range low high)
   (let ((range (- high low)))
     (+ low (* range (random)))))
-
 
 (define (estimate-integral P x1 x2 y1 y2 trails)
   (if (not (= (- x2 x1) (- y2 y1))) (error "not square")
@@ -271,14 +264,12 @@
       (>= (square r)
           (+ (square (- x cx))
              (square (- y cy))))))
-  circle-experiment
-  )
+  circle-experiment)
 
 
 ;(* 1.0 (estimate-integral circle-P 2 8 4 10 100))
 (* 1.0 (estimate-integral circle-P -1 1 -1 1 10000))
 ;(* 1.0 (estimate-integral circle-P 1 -1 1 -1 10000))
-
 
 ;ex3.6
 (define random-init 1)
@@ -299,6 +290,7 @@
             (else (error "Error method: " m))))
     dispatch))
 
+(rand 'generate)
 (rand 'generate)
 ((rand 'reset) 1)
 (rand 'generate)
@@ -391,7 +383,7 @@
     (define (iter)
       (if (> counter n)
           product
-          (begin 
+          (begin
             (set! counter (+ counter 1))
             (set! product (* counter product))
             (iter))))
