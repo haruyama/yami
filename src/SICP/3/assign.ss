@@ -445,6 +445,9 @@
 
 (+ (f 0) (f 1))
 
+(f 0) ; reset
+
+(+ (f 1) (f 0))
 
 
 (define (make-withdraw initial-amount)
@@ -463,4 +466,3 @@
                   balance)
            "Insufficient funds")))
    initial-amount))
-
