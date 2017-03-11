@@ -232,6 +232,7 @@
   (sqrt (/ 6 (random-gcd-test trails inital-x))))
 
 (estimate-pi 100)
+(estimate-pi2 100 1)
 
 ;ex3.5
 ;(use math.mt-random)
@@ -275,7 +276,7 @@
   )
 
 
-;(* 1.0 (estimate-integral circle-P 2 8 4 10 100))
+(* 1.0 (estimate-integral circle-P 2 8 4 10 10000))
 (* 1.0 (estimate-integral circle-P -1 1 -1 1 10000))
 ;(* 1.0 (estimate-integral circle-P 1 -1 1 -1 10000))
 
