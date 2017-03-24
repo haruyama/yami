@@ -24,6 +24,7 @@
   x)
 
 (define z (make-cycle (list 'a 'b 'c)))
+z
 
 (define (mystery x)
   (define (loop x y)
@@ -39,6 +40,7 @@
 v
 w
 
+;ex3.15
 (define x (list 'a 'b))
 
 (define z1 (cons x x))
@@ -157,10 +159,12 @@ x
   (rotate-list-aux? x))
 
 (rotate-list? (list 'a 'b 'c))
+(define z (make-cycle (list 'a 'b 'c)))
 (rotate-list? z)
 (define y (list a b))
 (define z (cons 'c y))
 (set-cdr! y z)
+y
 (rotate-list? y)
 
 ;ex3.19
@@ -175,9 +179,10 @@ x
       #f))
 
 (loop-check? (list 'a 'b 'c))
+(define z (make-cycle (list 'a 'b 'c)))
 (loop-check? z)
 
-
+;変更は単なる代入
 (define (mycons1 x y)
   (define (dispatch m)
     (cond ((eq? m 'car) x)
