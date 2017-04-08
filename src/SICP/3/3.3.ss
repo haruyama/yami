@@ -13,19 +13,24 @@
 (define x (list 'a 'b))
 (define y (list 'c 'd))
 (define z (append x y))
+z
 (cdr x)
 
 (define w (my-append! x y))
+w
 
 (cdr x)
 
+;ex3.13
 (define (make-cycle x)
   (set-cdr! (my-last-pair x) x)
   x)
 
 (define z (make-cycle (list 'a 'b 'c)))
 z
+;(last-pair z)
 
+;ex3.14
 (define (mystery x)
   (define (loop x y)
     (if (null? x)
@@ -69,61 +74,28 @@ w
 (count-pairs z1)
 (count-pairs z2)
 
-
 (define x3 (cons (cons 'a 'b) (cons 'a 'b)))
+x3
 (count-pairs x3)
 
 (define ab (cons 'a 'b))
-
-(define z (cons 'b 'c))
-(define y (cons z z))
-(define x (cons 'a y))
-x
-(count-pairs x)
-
 (define x4 (cons ab (cons 'c ab)))
+x4
 (count-pairs x4)
 
 (define ab2 (cons ab ab))
-
 (define x7 (cons ab2 ab2))
+x7
 (count-pairs x7)
 
-(define c (list 'c ))
+(define c (cons 'c '()))
 (define cc (cons 'foo (cons 'foo c)))
 (set-car! c cc)
 (define x-inf c)
+x-inf
+;(count-pairs c)
+
 ;ex3.17
-;(count-pairs cc)
-
-(define ab (cons 'a 'b))
-(define abc (append (list ab) (list 'c)))
-(define cab (list 'c))
-(append! cab (list ab))
-(display abc)
-(display bc)
-(memq ab abc)
-(memq ab cab)
-
-
-
-(define (count-pairs2 x)
-  (let ((memo '()))
-    (define (iter x)
-      ;      (display x)
-      ;      (newline)
-      (cond ((or (not (pair? x)) (memq x memo))
-             0)
-            (else
-              (if (null? memo)
-                  (set! memo (list x))
-                  ; (append! memo (list x)))
-                  (set! memo (cons x memo)))
-              (+ (iter (car x))
-                 (iter (cdr x))
-                 1))))
-    (iter x)))
-
 (define (count-pairs2 x)
   (let ((memo '()))
     (define (iter x)
@@ -145,13 +117,11 @@ x
 (count-pairs2 x7)
 (count-pairs2 x-inf)
 
-
 ;ex3.18
 (define (rotate-list? x)
   (define tracelist '())
   (define (rotate-list-aux? x)
     (cond ((null? x) #f)
-          ;          ((null? (cdr x)) #f)
           ((memq x tracelist) #t)
           (else
             (set! tracelist (cons x tracelist))
@@ -161,11 +131,6 @@ x
 (rotate-list? (list 'a 'b 'c))
 (define z (make-cycle (list 'a 'b 'c)))
 (rotate-list? z)
-(define y (list a b))
-(define z (cons 'c y))
-(set-cdr! y z)
-y
-(rotate-list? y)
 
 ;ex3.19
 (define (loop-check? x)
@@ -224,10 +189,17 @@ y
 (mycar x)
 (mycdr x)
 
+;ex3.20
 (define x (mycons2 1 2))
 (define z (mycons2 x x))
 (myset-car! (mycdr z) 17)
 (mycar x)
+
+(define x (cons 1 2))
+(define z (cons x x))
+(set-car! (cdr z) 17)
+
+(car x)
 
 ;queue
 
