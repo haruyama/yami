@@ -201,7 +201,7 @@ x-inf
 
 (car x)
 
-;queue
+;3.3.2 queue
 
 (define (front-ptr queue) (car queue))
 (define (rear-ptr queue) (cdr queue))
@@ -594,7 +594,7 @@ x-inf
 ((t324 'insert-proc!) 6 1000)
 ((t324 'lookup-proc) 5)
 ((t324 'lookup-proc) 6)
-((t324 'lookup-proc) 7)
+((t324 'lookup-proc) 7) ; 5 のエントリを上書きするので 7 ではヒットしない
 
 ;ex3.25
 (define (lookup-m keys table)
