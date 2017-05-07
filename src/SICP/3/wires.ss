@@ -72,11 +72,30 @@
         (else (error "Invalid signal" s1 s2))))
 
 ;ex3.29
+;(define (or-gate a1 a2 output)
+;  (let ((c1 (make-wire))
+;        (c2 (make-wire))
+;        (c3 (make-wire)))
+;    (inverter a1 c1)
+;    (inverter a2 c2)
+;    (and-gate c1 c2 c3)
+;    (inverter c3 output)))
+
 ;2* invert-delay + and-gate-delay
 
 ;ex3.30
-;half-adder-delay(s) = max(and-delay, or-delay+and-delay, and-delay+invert-delay+and-delay) = max(or-delay+and-delay, and-delay+invert-delay+and-delay)
-;full-adder-delay(sum) = half-adder-delay + and-gate-delay + or-gate-delay
+; http://d.hatena.ne.jp/tmurata/20100122/1264117816
+; http://www.serendip.ws/archives/1373
+ (define (ripple-carry-adder ak bk sk c)
+   (if (not (null? ak))
+     (let ((c-out (make-wire)))
+       (full-adder (car ak) (car bk) c (car sk) c-out)
+       (ripple-carry-adder (cdr ak) (cdr bk) (cdr sk) c-out))
+     'ok))
+
+;half-adder-delay(s) = max(and-delay, or-delay+and-delay, and-delay+invert-delay+and-delay) = max(or-delay+and-delay, and-delay+invert-delay+and-delay) (多くの場合で and*2+invert だろう)
+;full-adder-delay(sum) = half-adder-delay *2
+;ripple-carry-adder 関わる full の数 の deplay
 
 (define (make-wire)
   (let ((signal-value 0) (action-procedures '()))
@@ -462,8 +481,48 @@
 (propagate)
 
 
-;;test
+; ex3.30
+; http://www.serendip.ws/archives/1373
 
+;;test
+(define the-agenda (make-agenda))
+(define inverter-delay 2)
+(define and-gate-delay 3)
+(define or-gate-delay 5)
+
+(define a1 (make-wire))
+(define a2 (make-wire))
+(define a3 (make-wire))
+(define a4 (make-wire))
+
+(define b1 (make-wire))
+(define b2 (make-wire))
+(define b3 (make-wire))
+(define b4 (make-wire))
+
+(define s1 (make-wire))
+(define s2 (make-wire))
+(define s3 (make-wire))
+(define s4 (make-wire))
+
+(define a (list a1 a2 a3 a4))
+(define b (list b1 b2 b3 b4))
+(define s (list s1 s2 s3 s4))
+(define c (make-wire))
+
+(probe 's1 s1)
+(probe 's2 s2)
+(probe 's3 s3)
+(probe 's4 s4)
+(probe 'c c)
+
+(ripple-carry-adder a b s c)
+(set-signal! a1 1)
+(propagate)
+(set-signal! b1 1)
+(propagate)
+(set-signal! a2 1)
+(propagate)
 
 (define (make-wire-verbose)
   (let ((signal-value 0) (action-procedures '()))
