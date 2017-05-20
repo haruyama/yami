@@ -95,7 +95,7 @@
 
 ;half-adder-delay(s) = max(and-delay, or-delay+and-delay, and-delay+invert-delay+and-delay) = max(or-delay+and-delay, and-delay+invert-delay+and-delay) (多くの場合で and*2+invert だろう)
 ;full-adder-delay(sum) = half-adder-delay *2
-;ripple-carry-adder 関わる full の数 の deplay
+;ripple-carry-adder 関わる full の数 の delay
 
 (define (make-wire)
   (let ((signal-value 0) (action-procedures '()))
@@ -416,6 +416,9 @@
 (propagate)
 
 ;(5 (10 (#<closure (or-gate or-action-procedure #f)>) #<closure (or-gate or-action-procedure #f)>))
+
+;ex3.32
+;http://community.schemewiki.org/?sicp-ex-3.32
 
 ;ex3.30
 
