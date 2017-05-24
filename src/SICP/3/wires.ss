@@ -86,12 +86,18 @@
 ;ex3.30
 ; http://d.hatena.ne.jp/tmurata/20100122/1264117816
 ; http://www.serendip.ws/archives/1373
- (define (ripple-carry-adder ak bk sk c)
-   (if (not (null? ak))
-     (let ((c-out (make-wire)))
-       (full-adder (car ak) (car bk) c (car sk) c-out)
-       (ripple-carry-adder (cdr ak) (cdr bk) (cdr sk) c-out))
-     'ok))
+(define (ripple-carry-adder as bs ss c)
+  (define (iter as bs ss ck-1)
+    (if (not (null? as))
+      (let ((ak (car as))
+            (bk (car bs))
+            (sk (car ss))
+            (ck (make-wire)))
+        (full-adder ak bk ck sk ck-1)
+        (iter (cdr as) (cdr bs) (cdr ss) ck))))
+  (let ((c-in (make-wire)))
+    (full-adder (car as) (car bs) c-in (car ss) c)
+    (iter (cdr as) (cdr bs) (cdr ss) c-in)))
 
 ;half-adder-delay(s) = max(and-delay, or-delay+and-delay, and-delay+invert-delay+and-delay) = max(or-delay+and-delay, and-delay+invert-delay+and-delay) (多くの場合で and*2+invert だろう)
 ;full-adder-delay(sum) = half-adder-delay *2
@@ -262,9 +268,8 @@
 
 (define input-1 (make-wire))
 (define input-2 (make-wire))
-;(define sum (make-wire))
-(define carry (make-wire))
 (define sum (make-wire))
+(define carry (make-wire))
 
 (probe 'sum sum)
 (probe 'carry carry)
@@ -370,7 +375,7 @@
 (probe 'carry carry)
 
 (half-adder input-1 input-2 sum carry)
-
+(display the-agenda)
 
 (set-signal! input-1 1)
 
@@ -421,22 +426,6 @@
 ;http://community.schemewiki.org/?sicp-ex-3.32
 
 ;ex3.30
-
-(define (ripple-carry-adder a-list b-list s-list c-output)
-  (define (iter as bs ss cn-1)
-    (cond ((null? as)
-           'ok)
-          (else
-           (let ((an (car as))
-                 (bn (car bs))
-                 (sn (car ss))
-                 (cn (make-wire)))
-             (if (null? (cdr as))
-                 (full-adder an bn cn-1 sn c-output)
-                 (full-adder an bn cn-1 sn cn))
-             (iter (cdr as) (cdr bs) (cdr ss) cn)))))
-  (iter a-list b-list s-list (make-wire)))
-
 (define the-agenda (make-agenda))
 (define inverter-delay 2)
 (define and-gate-delay 3)
@@ -470,19 +459,11 @@
 
 (ripple-carry-adder a b s c)
 
-(set-signal! a0 1)
-(propagate)
-
-(set-signal! b0 1)
-(propagate)
-(set-signal! a1 1)
-(propagate)
-
-(set-signal! b3 1)
-(propagate)
 (set-signal! a3 1)
+(set-signal! b3 1)
+(set-signal! a2 1)
+(set-signal! b2 1)
 (propagate)
-
 
 ; ex3.30
 ; http://www.serendip.ws/archives/1373
@@ -520,11 +501,11 @@
 (probe 'c c)
 
 (ripple-carry-adder a b s c)
-(set-signal! a1 1)
-(propagate)
-(set-signal! b1 1)
-(propagate)
-(set-signal! a2 1)
+(set-signal! a4 1)
+(set-signal! b4 1)
+;(propagate)
+(set-signal! a3 1)
+(set-signal! b3 1)
 (propagate)
 
 (define (make-wire-verbose)
