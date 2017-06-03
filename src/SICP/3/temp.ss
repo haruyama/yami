@@ -1,5 +1,6 @@
 (define false #f)
 (define true #t)
+(use srfi-23)
 
 (define (has-value? connector)
   (connector 'has-value?))
@@ -260,7 +261,20 @@
 (forget-value! B 'user)
 (set-value! C 20 'user)
 
+;ex3.34
+(define (squarer a b)
+  (multiplier a a b))
+(define A (make-connector))
+(define B (make-connector))
+(squarer A B)
+(probe "A" A)
+(probe "B" B)
+(set-value! A 5 'user)
+(forget-value! A 'user)
+(set-value! B 10 'user)
+; not work
 
+;ex3.35
 (define (squarer a b)
   (define (process-new-value)
     (if (has-value? b)
@@ -300,7 +314,10 @@
 (forget-value! A 'user)
 (set-value! B 20 'user)
 
+;ex3.36
+;https://github.com/kana/sicp/blob/master/ex-3.36.md
 
+;ex3.37
 (define (c+ x y)
   (let ((z (make-connector)))
     (adder x y z)
