@@ -138,10 +138,9 @@
 (define x 10)
 (define s (make-serializer))
 (parallel-execute (lambda () (set! x ((s (lambda () (* x x))))))
-                  (s (lambda () (set! x (+ x 1))))
-                  )
+                  (s (lambda () (set! x (+ x 1)))))
 (display x)
-; 100 101 121
+; 11 100 101 121
 
 ;ex3.40
 ;(* 100 100 100) = 1000000
