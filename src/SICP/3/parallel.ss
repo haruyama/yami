@@ -152,6 +152,12 @@
 ;(* 10 10)       = 100
 ;(* 10 1000)     = 10000
 
+;ex3.41
+; 意味はない
+
+;ex3.42
+; 安全で違いはない (この問題の版のほうが効率がよい)
+
 (define (exchange account1 account2)
   (let ((difference (- (account1 'balance)
                        (account2 'balance))))
@@ -231,7 +237,7 @@
                    true)
                  (begin
                    (mutex 'release)
-                   false)
+                   (dispatch 'acquire))
                  ))
             ((eq? m 'release)
              (mutex 'acquire)
@@ -250,7 +256,7 @@
 
 (semaphore 'acquire)
 (semaphore 'acquire)
-(semaphore 'acquire)
+;(semaphore 'acquire)
 
 (semaphore 'release)
 (semaphore 'release)
@@ -274,7 +280,7 @@
                        true)
                      (begin
                        (clear! cell)
-                       false)
+                       (dispatch 'acquire))
                      )))
             ((eq? m 'release)
              (if (test-and-set! cell)
@@ -296,7 +302,7 @@
 
 (semaphore2 'acquire)
 (semaphore2 'acquire)
-(semaphore2 'acquire)
+;(semaphore2 'acquire)
 
 (semaphore2 'release)
 (semaphore2 'release)
