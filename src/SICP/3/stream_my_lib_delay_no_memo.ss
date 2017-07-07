@@ -2,19 +2,23 @@
 (define false #f)
 (define nil `())
 
-(define (memo-proc proc)
-  (let ((already-run? #f) (result #f))
-    (lambda ()
-      (if (not already-run?)
-          (begin (set! result (proc))
-                 (set! already-run? #t)
-                 result)
-          result))))
-
-;; define delay
 (define-syntax delay
   (syntax-rules ()
-    ((_ exp) (memo-proc (lambda () exp)))))
+    ((_ exp) (lambda () exp))))
+
+;(define (memo-proc proc)
+;  (let ((already-run? #f) (result #f))
+;    (lambda ()
+;      (if (not already-run?)
+;          (begin (set! result (proc))
+;                 (set! already-run? #t)
+;                 result)
+;          result))))
+
+;; define delay
+;(define-syntax delay
+;  (syntax-rules ()
+;    ((_ exp) (memo-proc (lambda () exp)))))
 
 (define (force delayed-object)
   (delayed-object))

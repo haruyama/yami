@@ -1,112 +1,30 @@
-(define true #t)
-(define false #f)
+(load "./stream_my_lib.ss")
+;(load "./stream_my_lib_delay_no_memo.ss")
 
-;(define-syntax delay
-;  (syntax-rules ()
-;    ((_ exp) (lambda () exp))))
+(define (sum-primes a b)
+  (define (iter count accum)
+    (cond ((> count b) accum)
+          ((prime? count) (iter (+ count 1) (+ count accum)))
+          (else (iter (+ count 1) accum))))
+  (iter a 0))
 
-(define (memo-proc proc)
-  (let ((already-run? #f) (result #f))
-    (lambda ()
-      (if (not already-run?)
-          (begin (set! result (proc))
-                 (set! already-run? #t)
-                 result)
-          result))))
+(sum-primes 10 100)
 
-;; define delay
-(define-syntax delay
-  (syntax-rules ()
-    ((_ exp) (memo-proc (lambda () exp)))))
+(define (sum-primes a b)
+  (accumulate +
+              0
+              (filter prime? (enumerate-interval a b))))
 
-(define (force delayed-object)
-  (delayed-object))
+(sum-primes 10 100)
 
-(define the-empty-system '())
-
-(define (stream-null? s) (null? s))
-
-;; cons-stream
-(define-syntax cons-stream
-  (syntax-rules ()
-    ((_ a b) (cons a (delay b)))))
-
-(define (stream-car s) (car s))
-
-(define (stream-cdr s) (force (cdr s)))
-
-(define (stream-ref s n)
-  (if (= n 0)
-      (stream-car s)
-      (stream-ref (stream-cdr s) (- n 1))))
-
-(define (stream-map proc . argstreams)
-  (if (stream-null? (car argstreams))
-      (apply proc (map stream-car argstreams))
-      (apply stream-map
-             (cons proc (map stream-cdr argstreams)))))
-
-(define (stream-for-each proc s)
-  (if (stream-null? s)
-      'done
-      (begin (proc (stream-car s))
-             (stream-for-each proc (stream-cdr s)))))
-
-(define (stream-filter pred s)
-  (cond ((stream-null? s) the-empty-system)
-        ((pred (stream-car s))
-         (cons-stream (stream-car s)
-                      (stream-filter pred (stream-cdr s))))
-        (else (stream-filter pred (stream-cdr s)))))
-
-(define (display-stream s)
-  (stream-for-each display-line s))
-
-(define (display-line s)
-  (newline)
-  (display s))
-
-(define (square n) (* n n))
-(define (smallest-divisor n)
-  (find-divisor n 2))
-
-(define (find-divisor n test-divisor)
-  (cond ((> (square test-divisor) n )n)
-        ((divides? test-divisor n ) test-divisor)
-        (else (find-divisor n (+ test-divisor 1)))))
-
-(define (divides? a b)
-  (= (remainder b a) 0))
-
-(define (prime? n)
-  (= n (smallest-divisor n)))
-
-
-(define (stream-enumerate-interval low high)
-  (if (> low high)
-      the-empty-system
-      (cons-stream
-        low
-        (stream-enumerate-interval (+ low 1) high))))
-
-;; (define (stream-filter pred stream)
-;;   (cond ((stream-null? stream) the-empty-system)
-;;         ((pred (stream-car stream))
-;;          (cons-stream (stream-car stream)
-;;                       (stream-filter pred
-;;                                      (stream-cdr stream))))
-;;         (else
-;;          (stream-filter pred (stream-cdr stream)))))
-
-
+;(car (cdr (filter prime?
+;                  (enumerate-interval 10000 1000000))))
 
 (stream-car
-  (stream-cdr
-    (stream-filter prime?
-                   (stream-enumerate-interval 10000 1000000))))
+ (stream-cdr
+  (stream-filter prime?
+                 (stream-enumerate-interval 10000 1000000))))
 
-;; (define (force delayed-object)
-;;   (delayed-object))
 ;ex3.50
 (define (stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
@@ -115,7 +33,6 @@
         (apply proc (map stream-car argstreams))
         (apply stream-map
                (cons proc (map stream-cdr argstreams))))))
-
 
 (define s1  (cons-stream 1 the-empty-system))
 (define s11  (cons-stream 11 the-empty-system))
@@ -159,6 +76,10 @@
 (display sum)
 
 (display-stream seq)
+
+(define-syntax delay
+  (syntax-rules ()
+    ((_ exp) (lambda () exp))))
 ; 3.3.2
 (define (stream-take s n)
   (define (iter s i)
@@ -339,6 +260,7 @@
   (stream-map / s integers))
 
 (stream-take (integrate-series ones) 10)
+(stream-take (integrate-series integers) 10)
 
 (define exp-series
   (cons-stream 1 (integrate-series exp-series)))
@@ -372,8 +294,8 @@
           (cons-stream 1 (stream-map - (mul-series (stream-cdr s) x))))
     x))
 
-;(define (invert-unit-series s)
-;  (cons-stream 1 (stream-map - (mul-series (stream-cdr s) (invert-unit-series s)))))
+(define (invert-unit-series s)
+  (cons-stream 1 (stream-map - (mul-series (stream-cdr s) (invert-unit-series s)))))
 
 (stream-take (invert-unit-series exp-series) 10)
 
@@ -393,6 +315,7 @@
 ;      (error "divine by zero")
 ;      (mul-series n (invert-unit-series d))))
 
+; invert-unit-series は 定数項が 1 であることを要求している
 (define (div-series n d)
   (let ((d0 (stream-car d)))
   (if (= d0 0)
