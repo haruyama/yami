@@ -378,7 +378,7 @@
               (make-tableau transform s)))
 
 (stream-take (accelerated-sequence euler-transform
-                                   pi-stream) 5)
+                                   pi-stream) 10)
 
 ;ex3.63
 ;ex3.64
@@ -413,6 +413,7 @@
 (stream-take (accelerated-sequence euler-transform
                                    ln2-stream) 10)
 
+; 対の無限のストリーム
 (define (interleave s1 s2)
   (if (stream-null? s1)
       s2
@@ -515,7 +516,8 @@
 (stream-take (pairs2 integers integers) 100)
 
 
-
+; ex3.68
+; http://d.hatena.ne.jp/tmurata/20100302/1267531867
 
 ;; (define (triples s t u)
 ;;   (cons-stream
@@ -565,6 +567,7 @@
 ;  3)
 
 
+; ex3.70
 (define (merge-weighted s1 s2 weight)
   (cond ((stream-null? s1) s2)
         ((stream-null? s2) s1)
@@ -597,8 +600,7 @@
 ;;         weight))))
 
 
-(stream-take (pairs integers integers) 10)
-
+(stream-take (pairs integers integers) 100)
 (stream-take (weighted-pairs integers integers (lambda (x) (apply + x))) 100)
 
 (define (check370 x)
@@ -638,7 +640,7 @@
          (j (cadr x)))
      (+ (* 2 i) (* 3 j) (* 5 i j))))
  '(7 11))
-;3.71
+;ex3.71
 (define (cube n) (* n n n))
 (define (ramanujan-weight pair)
   (+ (cube (car pair))
@@ -681,7 +683,7 @@
 (stream-take numbers-372 10)
 
 
-;;
+;;信号としてのストリーム
 (define (integral integrand initial-value dt)
   (define int
     (cons-stream initial-value
