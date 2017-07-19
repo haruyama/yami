@@ -23,7 +23,7 @@
 (define (force delayed-object)
   (delayed-object))
 
-(define the-empty-system '())
+(define the-empty-stream '())
 
 (define (stream-null? s) (null? s))
 
@@ -54,7 +54,7 @@
              (stream-for-each proc (stream-cdr s)))))
 
 (define (stream-filter pred s)
-  (cond ((stream-null? s) the-empty-system)
+  (cond ((stream-null? s) the-empty-stream)
         ((pred (stream-car s))
          (cons-stream (stream-car s)
                       (stream-filter pred (stream-cdr s))))
@@ -82,7 +82,7 @@
 
 (define (stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
-      the-empty-system
+      the-empty-stream
       (cons-stream
         (apply proc (map stream-car argstreams))
         (apply stream-map
@@ -95,11 +95,11 @@
   (if (pair? l)
       (cons-stream (car l)
                    (list->stream (cdr l)))
-      the-empty-system))
+      the-empty-stream))
 
 (define (stream-enumerate-interval low high)
   (if (> low high)
-    the-empty-system
+    the-empty-stream
     (cons-stream
       low
       (stream-enumerate-interval (+ low 1) high))))

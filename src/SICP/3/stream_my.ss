@@ -1,6 +1,21 @@
 (load "./stream_my_lib.ss")
 ;(load "./stream_my_lib_delay_no_memo.ss")
 
+(define (square n) (* n n))
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n )n)
+                ((divides? test-divisor n ) test-divisor)
+                (else (find-divisor n (+ test-divisor 1)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
 (define (sum-primes a b)
   (define (iter count accum)
     (cond ((> count b) accum)
@@ -28,20 +43,22 @@
 ;ex3.50
 (define (stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
-      the-empty-system
+      the-empty-stream
       (cons-stream
         (apply proc (map stream-car argstreams))
         (apply stream-map
                (cons proc (map stream-cdr argstreams))))))
 
-(define s1  (cons-stream 1 the-empty-system))
-(define s11  (cons-stream 11 the-empty-system))
-(define s2  (cons-stream 22 (cons-stream 2 the-empty-system)))
-(define s33  (cons-stream 33 (cons-stream 3 the-empty-system)))
+(define s1  (cons-stream 1 the-empty-stream))
+(define s11  (cons-stream 11 the-empty-stream))
+(define s2  (cons-stream 22 (cons-stream 2 the-empty-stream)))
+(define s33  (cons-stream 33 (cons-stream 3 the-empty-stream)))
 
 (apply +  '(1 22))
 (stream-car (stream-map + s1 s11))
 (stream-car (stream-cdr (stream-map + s2 s2 s33)))
+(stream-car (stream-map + s2 s2 s33))
+(display-stream (stream-map + s2 s2 s33))
 
 ;ex3.51
 (define (show x)
@@ -58,20 +75,25 @@
 (define sum 0)
 
 (define (accum x)
-  (display-line x)
+;  (display-line x)
   (set! sum (+ x sum))
   sum)
 
 (define seq (stream-map accum (stream-enumerate-interval 1 20)))
-
+sum
 
 (define y (stream-filter even? seq))
+sum
+
 (define z (stream-filter (lambda (x) (= (remainder x 5) 0))
                          seq))
+sum
 
 (stream-ref y 7)
+sum
 
 (display-stream z)
+sum
 
 (display sum)
 
@@ -289,7 +311,7 @@
 
 ;ex3.61
 (define (invert-unit-series s)
-  (let ((x the-empty-system))
+  (let ((x the-empty-stream))
     (set! x
           (cons-stream 1 (stream-map - (mul-series (stream-cdr s) x))))
     x))
@@ -696,7 +718,7 @@
   (if (pair? l)
       (cons-stream (car l)
                    (list->stream (cdr l)))
-      the-empty-system))
+      the-empty-stream))
 
 (display-stream (list->stream '(1 2 3)))
 
@@ -806,7 +828,7 @@
 (define (integral integrand initial-value dt)
   (cons-stream initial-value
                (if (stream-null? integrand)
-                   the-empty-system
+                   the-empty-stream
                    (integral (stream-cdr integrand)
                              (+ (* dt (stream-car integrand))
                                 initial-value)
@@ -816,7 +838,7 @@
 (define (integral delayed-integrand initial-value dt)
   (cons-stream initial-value
                (if (stream-null? delayed-integrand)
-                   the-empty-system
+                   the-empty-stream
                    (let ((integrand (force delayed-integrand)))
                      (integral (delay (stream-cdr integrand))
                                (+ (* dt (stream-car integrand))
@@ -923,7 +945,7 @@
 ;ex3.81
 (define (rand-3-81 request-stream random-init)
   (if (stream-null? request-stream)
-      the-empty-system
+      the-empty-stream
       (cond ((eq? 'generate (stream-car request-stream))
              (let ((new-number (rand-update random-init)))
                (cons-stream new-number
@@ -945,7 +967,7 @@
                                                                   (cons-stream 'generate
                                                                                (cons-stream '100
                                                                                             (cons-stream 'generate
-                                                                                                         the-empty-system))))))))
+                                                                                                         the-empty-stream))))))))
 
 (define rs2 (list->stream '(generate generate 1 generate generate 100 generate)))
 (display-stream (rand-3-81 rs 1))

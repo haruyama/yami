@@ -50,7 +50,7 @@
 ;ex3.81
 (define (rand-3-81 request-stream random-init)
   (if (stream-null? request-stream)
-      the-empty-system
+      the-empty-stream
       (cond ((eq? 'generate (stream-car request-stream))
              (let ((new-number (rand-update random-init)))
                (cons-stream new-number
@@ -72,7 +72,7 @@
                                                                   (cons-stream 'generate
                                                                                (cons-stream '100
                                                                                             (cons-stream 'generate
-                                                                                                         the-empty-system))))))))
+                                                                                                         the-empty-stream))))))))
 
 (define rs2 (list->stream '(generate generate 1 generate generate 100 generate)))
 (display-stream (rand-3-81 rs 1))

@@ -10,7 +10,7 @@
 
 ;; (define (stream-map proc s)
 ;;   (if (stream-null? s)
-;; 	  the-empty-system
+;; 	  the-empty-stream
 ;; 	  (cons-stream (proc (stream-car s))
 ;; 				   (stream-map proc (stream-cdr s)))))
 
@@ -36,7 +36,7 @@
 ;(stream-cdr (stream-cons 2  (stream-cons 1 stream-null)))
 ;(define cons-stream stream-cons)
 
-(define the-empty-system '())
+(define the-empty-stream '())
 
 (define (square n) (* n n))
 (define (smallest-divisor n)
@@ -56,13 +56,13 @@
 
 (define (stream-enumerate-interval low high)
   (if (> low high)
-	  the-empty-system
+	  the-empty-stream
 	  (cons-stream
 	   low
 	   (stream-enumerate-interval (+ low 1) high))))
 
 ;; (define (stream-filter pred stream)
-;;   (cond ((stream-null? stream) the-empty-system)
+;;   (cond ((stream-null? stream) the-empty-stream)
 ;; 		((pred (stream-car stream))
 ;; 		 (cons-stream (stream-car stream)
 ;; 					  (stream-filter pred
@@ -82,17 +82,17 @@
 ;ex3.50
 (define (my-stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
-	  the-empty-system
+	  the-empty-stream
 	  (cons-stream
 	   (apply proc (map stream-car argstreams))
 	   (apply my-stream-map
 			  (cons proc (map stream-cdr argstreams))))))
 
 
-(define s1  (cons-stream 1 the-empty-system))
-(define s11  (cons-stream 11 the-empty-system))
-(define s2  (cons-stream 22 (cons-stream 2 the-empty-system)))
-(define s33  (cons-stream 33 (cons-stream 3 the-empty-system)))
+(define s1  (cons-stream 1 the-empty-stream))
+(define s11  (cons-stream 11 the-empty-stream))
+(define s2  (cons-stream 22 (cons-stream 2 the-empty-stream)))
+(define s33  (cons-stream 33 (cons-stream 3 the-empty-stream)))
 
 (apply +  '(1 22))
 (stream-car (my-stream-map + s1 s11))
