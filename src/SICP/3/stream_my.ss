@@ -99,11 +99,8 @@ sum
 
 (display-stream seq)
 
-(define-syntax delay
-  (syntax-rules ()
-    ((_ exp) (lambda () exp))))
 ; 3.3.2
-(define (stream-take s n)
+(define (display-stream-take s n)
   (define (iter s i)
     (if (>= i n)
         'done
@@ -119,7 +116,7 @@ sum
 
 (define integers (integers-starting-from 1))
 
-(stream-take integers 10)
+(display-stream-take integers 10)
 
 (define (divisible? x y) (= (remainder x y) 0))
 
@@ -134,7 +131,7 @@ sum
 
 (define fibs (fibgen 0 1))
 
-(stream-take fibs 10)
+(display-stream-take fibs 10)
 
 (define (sieve stream)
   (cons-stream
@@ -158,7 +155,7 @@ sum
                (cons-stream 1
                             (add-streams (stream-cdr fibs)
                                          fibs))))
-(stream-take fibs 10)
+(display-stream-take fibs 10)
 (stream-ref fibs 8)
 (stream-ref fibs 9)
 (stream-ref fibs 10)
@@ -168,8 +165,7 @@ sum
 
 (define double (cons-stream 1 (scale-stream double 2)))
 
-
-(stream-take double 10)
+(display-stream-take double 10)
 
 (define (prime? n)
   (define (iter ps)
@@ -183,23 +179,23 @@ sum
     2
     (stream-filter prime? (integers-starting-from 3))))
 
-(stream-take primes 10)
+(display-stream-take primes 10)
 
 ;ex3.53
 (define s (cons-stream 1 (add-streams s s)))
-(stream-take s 10)
+(display-stream-take s 10)
 
 ;ex3.54
 (define (mul-streams s1 s2)
   (stream-map * s1 s2))
 
-(stream-take (mul-streams integers integers) 10)
+(display-stream-take (mul-streams integers integers) 10)
 
 (define factorials (cons-stream 1
                                 (mul-streams factorials
                                              integers)))
 
-(stream-take factorials 10)
+(display-stream-take factorials 10)
 
 
 ;ex3.55
@@ -215,7 +211,7 @@ sum
                  (add-streams (stream-cdr s) sum)))
   sum)
 
-(stream-take (partial-sums integers) 10)
+(display-stream-take (partial-sums integers) 10)
 
 ;ex3.56
 (define (merge s1 s2)
@@ -238,10 +234,10 @@ sum
                                  (merge (stream-cdr s1)
                                         (stream-cdr s2)))))))))
 
-(stream-take fibs 10)
-(stream-take primes 10)
+(display-stream-take fibs 10)
+(display-stream-take primes 10)
 
-(stream-take (merge primes fibs) 10)
+(display-stream-take (merge primes fibs) 10)
 
 ;; ;1 2 3 4 5 6 8 9 10 12....
 (define S (cons-stream 1 (merge (scale-stream S 2)
@@ -253,9 +249,9 @@ sum
 ;;                   (merge (scale-stream (stream-cons 0 (stream-cons 0 S)) 3)
 ;;                          (scale-stream (stream-cons 0 (stream-cons 0 S)) 5)))))
 
-(stream-take S 100)
-(stream-take (scale-stream S 2) 10)
-;(stream-take (stream-filter (lambda (x) (not (= x 0))) S ) 10)
+(display-stream-take S 100)
+(display-stream-take (scale-stream S 2) 10)
+;(display-stream-take (stream-filter (lambda (x) (not (= x 0))) S ) 10)
 ;ex3.57
 ;memo化しているなら 1 1 2 3 ... に対して 0 1 2 3 4 回
 ;指定ないと 一章と一緒 φ^n
@@ -266,11 +262,11 @@ sum
     (expand (remainder (* num radix) den) den radix)))
 
 (/ 1.0 7)
-(stream-take (expand 1 7 10) 10)
+(display-stream-take (expand 1 7 10) 10)
 (/ 3.0 8)
-(stream-take (expand 3 8 10) 10)
+(display-stream-take (expand 3 8 10) 10)
 
-(stream-take (expand 2 3 16) 10)
+(display-stream-take (expand 2 3 16) 10)
 ;ex3.59
 (define (integrate-series ss)
   (define (iter s n)
@@ -281,13 +277,13 @@ sum
 (define (integrate-series s)
   (stream-map / s integers))
 
-(stream-take (integrate-series ones) 10)
-(stream-take (integrate-series integers) 10)
+(display-stream-take (integrate-series ones) 10)
+(display-stream-take (integrate-series integers) 10)
 
 (define exp-series
   (cons-stream 1 (integrate-series exp-series)))
 
-(stream-take exp-series 10)
+(display-stream-take exp-series 10)
 
 (define cosine-series
   (cons-stream 1 (stream-map - (integrate-series sine-series))))
@@ -295,18 +291,18 @@ sum
 (define sine-series
   (cons-stream 0 (integrate-series cosine-series)))
 
-(stream-take cosine-series 10)
-(stream-take sine-series 10)
+(display-stream-take cosine-series 10)
+(display-stream-take sine-series 10)
 ;ex3.60
 (define (mul-series s1 s2)
   (cons-stream (* (stream-car s1) (stream-car s2))
                (add-streams (mul-series s1 (stream-cdr s2))
                             (scale-stream (stream-cdr s1) (stream-car s2)))))
 
-(stream-take (mul-series cosine-series cosine-series) 10)
-(stream-take (mul-series sine-series sine-series) 10)
+(display-stream-take (mul-series cosine-series cosine-series) 10)
+(display-stream-take (mul-series sine-series sine-series) 10)
 
-(stream-take (add-streams (mul-series cosine-series cosine-series)
+(display-stream-take (add-streams (mul-series cosine-series cosine-series)
                           (mul-series sine-series sine-series)) 10)
 
 ;ex3.61
@@ -319,15 +315,15 @@ sum
 (define (invert-unit-series s)
   (cons-stream 1 (stream-map - (mul-series (stream-cdr s) (invert-unit-series s)))))
 
-(stream-take (invert-unit-series exp-series) 10)
+(display-stream-take (invert-unit-series exp-series) 10)
 
-(stream-take integers 10)
-(stream-take (invert-unit-series integers) 100)
-(stream-take (mul-series integers (invert-unit-series integers)) 10)
+(display-stream-take integers 10)
+(display-stream-take (invert-unit-series integers) 100)
+(display-stream-take (mul-series integers (invert-unit-series integers)) 10)
 
-(stream-take (mul-series exp-series (invert-unit-series exp-series)) 10)
+(display-stream-take (mul-series exp-series (invert-unit-series exp-series)) 10)
 
-(stream-take (mul-series cosine-series (invert-unit-series cosine-series)) 10)
+(display-stream-take (mul-series cosine-series (invert-unit-series cosine-series)) 10)
 
 ;ex3.62
 ;
@@ -346,11 +342,11 @@ sum
 
 (define tan-series (div-series sine-series cosine-series))
 
-(stream-take tan-series 10)
+(display-stream-take tan-series 10)
 
 (define tan-2-series (div-series sine-series (scale-stream cosine-series (/ 1 2))))
 
-(stream-take tan-2-series 10)
+(display-stream-take tan-2-series 10)
 ;3.5.3
 (define (average x y)
   (/ (+ x y) 2))
@@ -365,7 +361,7 @@ sum
                              guesses)))
   guesses)
 
-(stream-take (sqrt-stream 2) 10)
+(display-stream-take (sqrt-stream 2) 10)
 
 (define (pi-summands n)
   (cons-stream (/ 1.0 n)
@@ -374,7 +370,7 @@ sum
 (define pi-stream
   (scale-stream (partial-sums (pi-summands 1)) 4))
 
-(stream-take pi-stream 10)
+(display-stream-take pi-stream 10)
 
 ;s2s0 - 2s2s1 + s2s2 - s2s2 + 2s2s1 -s1s1
 ; s2s0 - s1s1
@@ -388,7 +384,7 @@ sum
                           (+ s0 (* -2 s1) s2)))
                  (euler-transform (stream-cdr s)))))
 
-(stream-take (euler-transform pi-stream) 10)
+(display-stream-take (euler-transform pi-stream) 10)
 
 (define (make-tableau transform s)
   (cons-stream s
@@ -399,7 +395,7 @@ sum
   (stream-map stream-car
               (make-tableau transform s)))
 
-(stream-take (accelerated-sequence euler-transform
+(display-stream-take (accelerated-sequence euler-transform
                                    pi-stream) 10)
 
 ;ex3.63
@@ -430,9 +426,9 @@ sum
 (define ln2-stream
   (partial-sums (ln2-summands 1)))
 
-(stream-take ln2-stream 10)
-(stream-take (euler-transform ln2-stream) 10)
-(stream-take (accelerated-sequence euler-transform
+(display-stream-take ln2-stream 10)
+(display-stream-take (euler-transform ln2-stream) 10)
+(display-stream-take (accelerated-sequence euler-transform
                                    ln2-stream) 10)
 
 ; 対の無限のストリーム
@@ -450,14 +446,14 @@ sum
                   (stream-cdr t))
       (pairs (stream-cdr s) (stream-cdr t)))))
 
-(stream-take (pairs integers integers) 100)
+(display-stream-take (pairs integers integers) 100)
 
 
 (define int-pairs (pairs integers integers))
 
-(stream-take int-pairs 100)
+(display-stream-take int-pairs 100)
 
-(stream-take
+(display-stream-take
   (stream-filter (lambda (pair)
                    (prime? (+ (car pair) (cadr pair))))
                  int-pairs)
@@ -535,7 +531,7 @@ sum
         (pairs2 (stream-cdr s) (stream-cdr t))))))
 
 
-(stream-take (pairs2 integers integers) 100)
+(display-stream-take (pairs2 integers integers) 100)
 
 
 ; ex3.68
@@ -561,7 +557,7 @@ sum
       (triples (stream-cdr s) (stream-cdr t) (stream-cdr u)))))
 
 
-(stream-take (triples integers integers integers) 100)
+(display-stream-take (triples integers integers integers) 100)
 
 (stream-find (triples integers integers integers) '(1 2 3))
 (stream-find (triples integers integers integers) '(1 2 5))
@@ -569,7 +565,7 @@ sum
 ;(stream-find (triples integers integers integers) '(5 12 13))
 ;(stream-find (triples integers integers integers) '(6 8 10))
 
-(stream-take
+(display-stream-take
   (stream-filter
     (lambda (triple)
       (let ((i (car triple))
@@ -578,7 +574,7 @@ sum
         (= (square k) (+ (square i) (square j)))))
     (triples integers integers integers))
   1)
-;(stream-take
+;(display-stream-take
 ;  (stream-filter
 ;    (lambda (triple)
 ;      (let ((i (car triple))
@@ -622,8 +618,8 @@ sum
 ;;         weight))))
 
 
-(stream-take (pairs integers integers) 100)
-(stream-take (weighted-pairs integers integers (lambda (x) (apply + x))) 100)
+(display-stream-take (pairs integers integers) 100)
+(display-stream-take (weighted-pairs integers integers (lambda (x) (apply + x))) 100)
 
 (define (check370 x)
   (cond ((= (remainder x 2) 0) #f)
@@ -637,7 +633,7 @@ sum
 (check370 3)
 (check370 7)
 
-(stream-take
+(display-stream-take
   (stream-filter
     (lambda (x)
       (let ((i (car x))
@@ -670,7 +666,7 @@ sum
 (define ramanujan-pairs
   (weighted-pairs integers integers ramanujan-weight))
 
-(stream-take ramanujan-pairs 10)
+(display-stream-take ramanujan-pairs 10)
 (define (ramanujans-iter s w)
   (let ((neww (ramanujan-weight (stream-car s))))
     (if (= w neww)
@@ -680,7 +676,7 @@ sum
 
 (define ramanujans (ramanujans-iter ramanujan-pairs 0))
 
-(stream-take ramanujans 10)
+(display-stream-take ramanujans 10)
 
 ; 3.72
 (define (weight-372 pair)
@@ -702,7 +698,7 @@ sum
 
 (define numbers-372 (numbers-372-iter pairs-372 0 0))
 
-(stream-take numbers-372 10)
+(display-stream-take numbers-372 10)
 
 
 ;;信号としてのストリーム
@@ -732,8 +728,8 @@ sum
 
 (define RC1 (RC 5 1 0.5))
 
-(stream-take (RC1 ones 0) 10)
-(stream-take (RC1 integers 0) 10)
+(display-stream-take (RC1 ones 0) 10)
+(display-stream-take (RC1 integers 0) 10)
 
 (display-stream (RC1 (list->stream '(1.0 0.9 0.81 0.729 0.6561)) 0))
 
@@ -867,7 +863,7 @@ sum
   (define ddy (stream-map f dy y))
   y)
 
-(stream-take (solve-2nd-2 (lambda (dy y) (+ (* 1 dy) (* 2 y) )) 0.001 1 0) 10)
+(display-stream-take (solve-2nd-2 (lambda (dy y) (+ (* 1 dy) (* 2 y) )) 0.001 1 0) 10)
 (stream-ref (solve-2nd-2 (lambda (dy y) (+ (* 4 dy) (* -4 y))) 0.001 1 2) 1000)
 
 (define (RLC R L C dt)
@@ -884,12 +880,12 @@ sum
     ;(stream-map cons vC iL)
     ))
 
-(stream-take
+(display-stream-take
   (car
     ((RLC 1 1 0.2 0.1) 10 0))
   50)
 
-(stream-take
+(display-stream-take
   (cdr
     ((RLC 1 1 0.2 0.1) 10 0))
   50)
@@ -912,7 +908,7 @@ sum
   (cons-stream random-init
                (stream-map rand-update random-numbers)))
 
-(stream-take random-numbers 10)
+(display-stream-take random-numbers 10)
 
 (define (map-succesive-pairs f s)
   (cons-stream
@@ -924,7 +920,7 @@ sum
                        random-numbers))
 
 
-(stream-take cesaro-stream 10)
+(display-stream-take cesaro-stream 10)
 
 (define (monte-carlo experiment-stream passed failed)
   (define (next passed failed)
@@ -940,7 +936,7 @@ sum
   (stream-map (lambda (p) (sqrt (/ 6 p)))
               (monte-carlo cesaro-stream 0 0)))
 
-(stream-take pi 100)
+(display-stream-take pi 100)
 
 ;ex3.81
 (define (rand-3-81 request-stream random-init)
@@ -991,7 +987,7 @@ sum
     (random-in-range a b)
     (random-stream-in-range a b)))
 
-(stream-take (random-stream-in-range 0 10) 10)
+(display-stream-take (random-stream-in-range 0 10) 10)
 
 
 
@@ -1009,8 +1005,8 @@ sum
     (circle-experiment)
     (circle-P-stream x1 x2 y1 y2)))
 
-(stream-take (circle-P-stream 2 8 4 10) 100)
-(stream-take
+(display-stream-take (circle-P-stream 2 8 4 10) 100)
+(display-stream-take
   (monte-carlo (circle-P-stream 2 8 4 10) 0 0) 100)
 
 (define (estimate-integral P x1 x2 y1 y2)
@@ -1020,13 +1016,13 @@ sum
         (* 1.0 (- x2 x1)  (- y2 y1)))))
 
 
-(stream-take (estimate-integral circle-P-stream 2 8 4 10) 100)
-(stream-take (estimate-integral circle-P-stream -1 1 -1 1) 100)
-;(stream-take (estimate-integral circle-P-stream -1 1 -1 1) 1000)
+(display-stream-take (estimate-integral circle-P-stream 2 8 4 10) 100)
+(display-stream-take (estimate-integral circle-P-stream -1 1 -1 1) 100)
+;(display-stream-take (estimate-integral circle-P-stream -1 1 -1 1) 1000)
 
 
 (define nyo
   (stream-map cons random-numbers
               random-numbers))
 
-(stream-take nyo 10)
+(display-stream-take nyo 10)
