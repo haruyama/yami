@@ -99,7 +99,7 @@ sum
 
 (display-stream seq)
 
-; 3.3.2
+; 3.5.2
 (define (display-stream-take s n)
   (define (iter s i)
     (if (>= i n)
@@ -125,6 +125,7 @@ sum
                  integers))
 
 (stream-ref no-sevens 100)
+(display-stream-take no-sevens 10)
 
 (define (fibgen a b)
   (cons-stream a (fibgen b (+ a b))))
@@ -143,8 +144,10 @@ sum
 
 (define primes (sieve (integers-starting-from 2)))
 (stream-ref primes 50)
+(display-stream-take primes 50)
 
 (define ones (cons-stream 1 ones))
+(display-stream-take ones 50)
 
 (define (add-streams s1 s2)
   (stream-map + s1 s2))
@@ -191,12 +194,13 @@ sum
 
 (display-stream-take (mul-streams integers integers) 10)
 
-(define factorials (cons-stream 1
-                                (mul-streams factorials
-                                             integers)))
+(define factorials (cons-stream 1 (mul-streams factorials integers)))
 
 (display-stream-take factorials 10)
 
+(define factorials (cons-stream 1 (mul-streams factorials (stream-cdr integers))))
+
+(display-stream-take factorials 10)
 
 ;ex3.55
 (define (partial-sums s)
@@ -213,6 +217,10 @@ sum
 
 (display-stream-take (partial-sums integers) 10)
 
+(define (partial-sums s)
+  (cons-stream (stream-car s)
+               (add-streams (stream-cdr s) (partial-sums s))))
+(display-stream-take (partial-sums integers) 10)
 ;ex3.56
 (define (merge s1 s2)
   (cond ((stream-null? s1) s2)
@@ -254,7 +262,7 @@ sum
 ;(display-stream-take (stream-filter (lambda (x) (not (= x 0))) S ) 10)
 ;ex3.57
 ;memo化しているなら 1 1 2 3 ... に対して 0 1 2 3 4 回
-;指定ないと 一章と一緒 φ^n
+;指定ないと 一章と一緒 φ^ (n - 1)'
 ;ex3.58
 (define (expand num den radix)
   (cons-stream
@@ -267,6 +275,8 @@ sum
 (display-stream-take (expand 3 8 10) 10)
 
 (display-stream-take (expand 2 3 16) 10)
+(display-stream-take (expand 2 3 10) 10)
+(display-stream-take (expand 2 3 15) 10)
 ;ex3.59
 (define (integrate-series ss)
   (define (iter s n)
