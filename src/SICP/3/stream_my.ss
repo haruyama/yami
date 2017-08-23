@@ -409,8 +409,23 @@ sum
                                    pi-stream) 10)
 
 ;ex3.63
+(define (sqrt-stream x)
+  (define guesses
+    (cons-stream 1.0
+                 (stream-map (lambda (guess)
+                               (sqrt-improve guess x))
+                             guesses)))
+  guesses)
+
+(define (sqrt-stream x)
+    (cons-stream 1.0
+                 (stream-map (lambda (guess)
+                               (sqrt-improve guess x))
+                             (sqrt-stream x)))) ; ここで冗長な計算をする
+; http://www.serendip.ws/archives/1621
+
 ;ex3.64
-;有限ストリームに対応してない
+;有限ストリームで許容誤差以下にならない場合には対応してない
 (define (stream-limit s tolerance)
   (let ((s0 (stream-ref s 0))
         (s1 (stream-ref s 1)))
@@ -583,7 +598,7 @@ sum
             (k (caddr triple)))
         (= (square k) (+ (square i) (square j)))))
     (triples integers integers integers))
-  1)
+  3)
 ;(display-stream-take
 ;  (stream-filter
 ;    (lambda (triple)
@@ -592,7 +607,7 @@ sum
 ;            (k (caddr triple)))
 ;        (= (square k) (+ (square i) (square j)))))
 ;    (triples integers integers integers))
-;  3)
+;  5)
 
 
 ; ex3.70
