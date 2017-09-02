@@ -515,15 +515,20 @@ sum
 (stream-find int-pairs '(9 10)) ; 766
 (stream-find int-pairs '(10 11)) ; 1534
 
+; 2^(n-1) + 2^(n-2) - 2
+
 (stream-find int-pairs '(8 8)) ; 254
 (stream-find int-pairs '(8 9)) ; 254
 (stream-find int-pairs '(9 9)) ; 510
 (stream-find int-pairs '(10 10)) ; 1022
 (stream-find int-pairs '(11 11)) ; 2046
 
+; 2^n - 2
+
 (stream-find int-pairs '(8 10)) ; 638
 
 ;http://d.hatena.ne.jp/tmurata/20100302/1267486013
+;stream-find の結果とは 1 ずれている
 (define  (index-pairs x y)
   (cond  ((> x y)  (error "error x larger than y" x y))
          ((and  (= x 0)  (= y 0))
@@ -542,6 +547,10 @@ sum
 (index-pairs 2 4)
 (index-pairs 3 4)
 (index-pairs 8 8)
+(index-pairs 1 10)
+(index-pairs 1 100)
+(index-pairs 99 100)
+(index-pairs 100 100)
 
 ;ex3.67
 (define (pairs2 s t)
@@ -562,17 +571,18 @@ sum
 ; ex3.68
 ; http://d.hatena.ne.jp/tmurata/20100302/1267531867
 
-;; (define (triples s t u)
-;;   (cons-stream
-;;    (list (stream-car s) (stream-car t) (stream-car u))
-;;    (interleave
-;;     (stream-map (lambda (y) (list (stream-car s) (stream-car t) y))
-;;                         (stream-cdr u))
-;;     (interleave
-;;      (stream-map (lambda (pair) (cons (stream-car s) pair))
-;;                  (pairs (stream-cdr t) (stream-cdr u)))
-;;      (triples (stream-cdr s) (stream-cdr t) (stream-cdr u))))))
 ;ex3.69
+;(define (triples s t u)
+;  (cons-stream
+;    (list (stream-car s) (stream-car t) (stream-car u))
+;    (interleave
+;      (stream-map (lambda (y) (list (stream-car s) (stream-car t) y))
+;                  (stream-cdr u))
+;      (interleave
+;        (stream-map (lambda (pair) (cons (stream-car s) pair))
+;                    (pairs (stream-cdr t) (stream-cdr u)))
+;        (triples (stream-cdr s) (stream-cdr t) (stream-cdr u))))))
+
 (define (triples s t u)
   (cons-stream
     (list (stream-car s) (stream-car t) (stream-car u))
@@ -590,25 +600,17 @@ sum
 ;(stream-find (triples integers integers integers) '(5 12 13))
 ;(stream-find (triples integers integers integers) '(6 8 10))
 
-(display-stream-take
+(define pythagoras
   (stream-filter
     (lambda (triple)
       (let ((i (car triple))
             (j (cadr triple))
             (k (caddr triple)))
         (= (square k) (+ (square i) (square j)))))
-    (triples integers integers integers))
-  3)
-;(display-stream-take
-;  (stream-filter
-;    (lambda (triple)
-;      (let ((i (car triple))
-;            (j (cadr triple))
-;            (k (caddr triple)))
-;        (= (square k) (+ (square i) (square j)))))
-;    (triples integers integers integers))
-;  5)
+    (triples integers integers integers)))
 
+(display-stream-take pythagoras 3)
+;(display-stream-take pythagoras 5)
 
 ; ex3.70
 (define (merge-weighted s1 s2 weight)
@@ -644,32 +646,34 @@ sum
 
 
 (display-stream-take (pairs integers integers) 100)
-(display-stream-take (weighted-pairs integers integers (lambda (x) (apply + x))) 100)
 
-(define (check370 x)
+(define stream370a
+  (weighted-pairs integers integers (lambda (x) (apply + x))))
+(display-stream-take stream370a 100)
+
+(define (check370b x)
   (cond ((= (remainder x 2) 0) #f)
         ((= (remainder x 3) 0) #f)
         ((= (remainder x 5) 0) #f)
         (else #t)))
 
 
-(check370 1)
-(check370 2)
-(check370 3)
-(check370 7)
+(check370b 1)
+(check370b 2)
+(check370b 3)
+(check370b 7)
 
-(display-stream-take
+(define stream370b
   (stream-filter
     (lambda (x)
-      (let ((i (car x))
-            (j (cadr x)))
-        (and (check370 i) (check370 j))))
+      (and (check370b (car x)) (check370b (cadr x))))
     (weighted-pairs integers integers
                     (lambda (x)
                       (let ((i (car x))
                             (j (cadr x)))
-                        (+ (* 2 i) (* 3 j) (* 5 i j)))))
-    )
+                        (+ (* 2 i) (* 3 j) (* 5 i j))))))) 
+(display-stream-take
+  stream370b
   100)
 
 ((lambda (x)
@@ -683,6 +687,7 @@ sum
          (j (cadr x)))
      (+ (* 2 i) (* 3 j) (* 5 i j))))
  '(7 11))
+
 ;ex3.71
 (define (cube n) (* n n n))
 (define (ramanujan-weight pair)
@@ -692,16 +697,48 @@ sum
   (weighted-pairs integers integers ramanujan-weight))
 
 (display-stream-take ramanujan-pairs 10)
-(define (ramanujans-iter s w)
-  (let ((neww (ramanujan-weight (stream-car s))))
-    (if (= w neww)
-        (cons-stream neww
-                     (ramanujans-iter (stream-cdr s) 0))
-        (ramanujans-iter (stream-cdr s) neww))))
 
-(define ramanujans (ramanujans-iter ramanujan-pairs 0))
+;(define (ramanujans-iter s w)
+;  (let ((neww (ramanujan-weight (stream-car s))))
+;    (if (= w neww)
+;        (cons-stream neww
+;                     (ramanujans-iter (stream-cdr s) 0))
+;        (ramanujans-iter (stream-cdr s) neww))))
 
+;(define ramanujans (ramanujans-iter ramanujan-pairs 0))
+;(display-stream-take ramanujans 10)
+
+;(define (ramanujans-iter2 s i)
+;  (let ((p (stream-car s)))
+;    (let ((neww (ramanujan-weight p)))
+;      (if (= (cdr i) neww)
+;        (cons-stream (cons (list (car i) p) neww)
+;                     (ramanujans-iter2 (stream-cdr s) (cons 0 0)))
+;        (ramanujans-iter2 (stream-cdr s) (cons p neww))))))
+
+;(define ramanujans2 (ramanujans-iter2 ramanujan-pairs (cons 0 0)))
+
+;(display-stream-take ramanujans2 10)
+
+(define (ramanujans-iter s)
+  (let ((i (stream-car s))
+        (j (stream-car (stream-cdr s))))
+    (if (= (ramanujan-weight i) (ramanujan-weight j))
+        (cons-stream (ramanujan-weight i) (ramanujans-iter (stream-cdr s)))
+        (ramanujans-iter (stream-cdr s)))))
+
+(define ramanujans (ramanujans-iter ramanujan-pairs))
 (display-stream-take ramanujans 10)
+
+(define (ramanujans-iter2 s)
+  (let ((i (stream-car s))
+        (j (stream-car (stream-cdr s))))
+    (if (= (ramanujan-weight i) (ramanujan-weight j))
+        (cons-stream (cons (list i j) (ramanujan-weight i)) (ramanujans-iter2 (stream-cdr s)))
+        (ramanujans-iter2 (stream-cdr s)))))
+
+(define ramanujans2 (ramanujans-iter2 ramanujan-pairs))
+(display-stream-take ramanujans2 10)
 
 ; 3.72
 (define (weight-372 pair)
@@ -711,20 +748,43 @@ sum
 (define pairs-372
   (weighted-pairs integers integers weight-372))
 
-(define (numbers-372-iter s w n)
-  (let ((neww (weight-372 (stream-car s))))
-    (if (= w neww)
-        (if (= n 1)
-            (cons-stream neww
-                         (numbers-372-iter (stream-cdr s) 0 0))
-            (numbers-372-iter (stream-cdr s) neww 1))
-        (numbers-372-iter (stream-cdr s) neww 0))))
+;(define (numbers-372-iter s w n)
+;  (let ((neww (weight-372 (stream-car s))))
+;    (if (= w neww)
+;        (if (= n 1)
+;            (cons-stream neww
+;                         (numbers-372-iter (stream-cdr s) 0 0))
+;            (numbers-372-iter (stream-cdr s) neww 1))
+;        (numbers-372-iter (stream-cdr s) neww 0))))
 
 
-(define numbers-372 (numbers-372-iter pairs-372 0 0))
+;(define numbers-372 (numbers-372-iter pairs-372 0 0))
+
+;(display-stream-take numbers-372 10)
+
+(define (numbers-372-iter s)
+  (let ((i (stream-car s))
+        (j (stream-car (stream-cdr s)))
+        (k (stream-car (stream-cdr (stream-cdr s)))))
+    (if (= (weight-372 i) (weight-372 j) (weight-372 k))
+      (cons-stream (weight-372 i) (numbers-372-iter (stream-cdr s)))
+      (numbers-372-iter (stream-cdr s)))))
+
+(define numbers-372 (numbers-372-iter pairs-372))
 
 (display-stream-take numbers-372 10)
 
+(define (numbers-372-iter2 s)
+  (let ((i (stream-car s))
+        (j (stream-car (stream-cdr s)))
+        (k (stream-car (stream-cdr (stream-cdr s)))))
+    (if (= (weight-372 i) (weight-372 j) (weight-372 k))
+      (cons-stream (cons (list i j k) (weight-372 i)) (numbers-372-iter2 (stream-cdr s)))
+      (numbers-372-iter2 (stream-cdr s)))))
+
+(define numbers-372-2 (numbers-372-iter2 pairs-372))
+
+(display-stream-take numbers-372-2 11)
 
 ;;信号としてのストリーム
 (define (integral integrand initial-value dt)
