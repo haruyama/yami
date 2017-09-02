@@ -323,6 +323,11 @@ sum
     x))
 
 (define (invert-unit-series s)
+  (define x
+    (cons-stream 1 (stream-map - (mul-series (stream-cdr s) x))))
+  x)
+
+(define (invert-unit-series s)
   (cons-stream 1 (stream-map - (mul-series (stream-cdr s) (invert-unit-series s)))))
 
 (display-stream-take (invert-unit-series exp-series) 10)
