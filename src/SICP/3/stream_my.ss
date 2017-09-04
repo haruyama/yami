@@ -852,6 +852,7 @@ sum
 
 (display-stream zero-crossings)
 
+;ex3.75
 (define (make-zero-crossings2 input-stream last-value last-avpt)
   (let ((avpt (/ (+ (stream-car input-stream) last-value) 2)))
     (cons-stream (sign-change-detector avpt last-avpt)
@@ -861,6 +862,7 @@ sum
 
 (define zero-crossings2 (make-zero-crossings2 sense-data 0 0))
 (display-stream zero-crossings2)
+
 ;ex3.76
 (define (smooth s)
   (cons-stream
