@@ -523,7 +523,6 @@ sum
 ; 2^(n-1) + 2^(n-2) - 2
 
 (stream-find int-pairs '(8 8)) ; 254
-(stream-find int-pairs '(8 9)) ; 254
 (stream-find int-pairs '(9 9)) ; 510
 (stream-find int-pairs '(10 10)) ; 1022
 (stream-find int-pairs '(11 11)) ; 2046
@@ -572,6 +571,16 @@ sum
 
 (display-stream-take (pairs2 integers integers) 100)
 
+(define (pairs3 s t)
+  (cons-stream
+    (list (stream-car s) (stream-car t))
+    (interleave
+      (stream-map (lambda (x) (list x (stream-car t)))
+                  (stream-cdr s))
+      (pairs3 s (stream-cdr t)))))
+
+
+(display-stream-take (pairs3 integers integers) 100)
 
 ; ex3.68
 ; http://d.hatena.ne.jp/tmurata/20100302/1267531867
@@ -650,11 +659,11 @@ sum
 ;;         weight))))
 
 
-(display-stream-take (pairs integers integers) 100)
+(display-stream-take (pairs integers integers) 20)
 
 (define stream370a
   (weighted-pairs integers integers (lambda (x) (apply + x))))
-(display-stream-take stream370a 100)
+(display-stream-take stream370a 20)
 
 (define (check370b x)
   (cond ((= (remainder x 2) 0) #f)
@@ -676,7 +685,7 @@ sum
                     (lambda (x)
                       (let ((i (car x))
                             (j (cadr x)))
-                        (+ (* 2 i) (* 3 j) (* 5 i j))))))) 
+                        (+ (* 2 i) (* 3 j) (* 5 i j)))))))
 (display-stream-take
   stream370b
   100)
@@ -809,6 +818,7 @@ sum
 (display-stream (list->stream '(1 2 3)))
 
 (display-stream (integral (list->stream '(1 2 3)) 0 1))
+(display-stream (integral (list->stream '(1 2 3)) 0 0.5))
 ;ex3.73
 (define (RC R C dt)
   (lambda (i v0)
@@ -904,10 +914,10 @@ sum
   y)
 
 ;; gauche で動作するように修正した solve 手続き
-(define (solve f y0 dt)
-  (define y (integral (delay dy) y0 dt))
-  (define dy (stream-map f y))
-  y)
+;(define (solve f y0 dt)
+;  (define y (integral (delay dy) y0 dt))
+;  (define dy (stream-map f y))
+;  y)
 
 
 (stream-ref (solve (lambda (y) y) 1 0.001) 1000)
@@ -934,7 +944,7 @@ sum
                                dt)))))
 (stream-ref (solve (lambda (y) y) 1 0.001) 1000)
 
-
+; ex3.78
 (define (solve-2nd a b dt y0 dy0)
   (define y (integral (delay dy) y0 dt))
   (define dy (integral (delay ddy) dy0 dt))
