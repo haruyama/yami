@@ -959,6 +959,7 @@ sum
 (stream-ref (solve-2nd 1 6 0.001 3 -1) 1000)
 (stream-ref (solve-2nd 0 1 0.001 1 1) 1000)
 
+;ex3.79
 (define (solve-2nd-2 f dt y0 dy0)
   (define y (integral (delay dy) y0 dt))
   (define dy (integral (delay ddy) dy0 dt))
@@ -993,6 +994,7 @@ sum
   50)
 
 
+;3.5.5 関数的プログラムの部品化度とオブジェクトの部品化度
 (define random-init 1)
 
 (define (rand-update x)
