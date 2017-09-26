@@ -83,7 +83,7 @@
         (if (null? conds)
             true
             (let ((value (eval (car conds) env)))
-                 (if (true?  value) 
+                 (if (true?  value)
                      (if (null? (cdr conds))
                          value
                          (eval-and-conds (cdr conds) env))
@@ -111,7 +111,7 @@
         (if (null? conds)
             false
             (let ((value (eval (car conds) env)))
-                 (if (true?  value) 
+                 (if (true?  value)
                      value
                      (eval-or-conds (cdr conds) env)))))
 
@@ -197,6 +197,8 @@ end
       (else false))
 (display x)
 
+(cond (true (display 10)))
+
 (+ 1 2)
 (cond ((assoc 'b '((a 1) (b 2))) true)
       (else false))
@@ -205,6 +207,9 @@ end
       (else false))
 
 (cond ((assoc 'b '((a 1) (b 2))) => (lambda (x) (+ 3 (cadr x))))
+      (else false))
+
+(cond ((assoc 'c '((a 1) (b 2))) => (lambda (x) (+ 3 (cadr x))))
       (else false))
 end
 
