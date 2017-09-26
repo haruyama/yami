@@ -986,6 +986,7 @@ sum
   (cdr
     ((RLC 1 1 0.2 0.1) 10 0))
   50)
+; http://www.wakariyasui.sakura.ne.jp/p/elec/koukairo/rlctyoku.html
 
 
 ;3.5.5 関数的プログラムの部品化度とオブジェクトの部品化度
@@ -1000,6 +1001,8 @@ sum
     (lambda ()
       (set! x (rand-update x))
       x)))
+(rand)
+(rand)
 (rand)
 
 (define random-numbers
@@ -1067,7 +1070,7 @@ sum
 (display-stream (rand-3-81 rs 1))
 (display-stream (rand-3-81 rs2 1))
 
-
+;ex3.82
 (define (random)
   (let ((a (rand))
         (b (rand)))
