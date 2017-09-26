@@ -913,13 +913,6 @@ sum
   (define dy (stream-map f y))
   y)
 
-;; gauche で動作するように修正した solve 手続き
-;(define (solve f y0 dt)
-;  (define y (integral (delay dy) y0 dt))
-;  (define dy (stream-map f y))
-;  y)
-
-
 (stream-ref (solve (lambda (y) y) 1 0.001) 1000)
 
 ;ex3.77
@@ -969,6 +962,7 @@ sum
 (display-stream-take (solve-2nd-2 (lambda (dy y) (+ (* 1 dy) (* 2 y) )) 0.001 1 0) 10)
 (stream-ref (solve-2nd-2 (lambda (dy y) (+ (* 4 dy) (* -4 y))) 0.001 1 2) 1000)
 
+;ex3.80
 (define (RLC R L C dt)
   (lambda (vC0 iL0)
 
