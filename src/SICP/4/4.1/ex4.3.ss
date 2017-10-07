@@ -67,3 +67,27 @@
 (eval '(display x) the-global-environment)
 (eval '(set! x 3) the-global-environment)
 (eval '(display x) the-global-environment)
+
+;ex4.10
+(define (eval-and exp env)
+        (eval-and-conds (cdr exp) env))
+
+(define (eval-and-conds conds env)
+        (if (null? conds)
+            true
+            (let ((value (eval (car conds) env)))
+                 (if (true?  value)
+                     (if (null? (cdr conds))
+                         value
+                         (eval-and-conds (cdr conds) env))
+                     false))))
+
+(put 'eval 'and eval-and)
+(define the-global-environment (setup-environment))
+(eval '(and true true) the-global-environment)
+(eval '(and false true) the-global-environment)
+(eval '(and true false) the-global-environment)
+(eval '(and true true false) the-global-environment)
+(eval '(and true false true) the-global-environment)
+(eval '(and true) the-global-environment)
+(eval '(and 1) the-global-environment)
