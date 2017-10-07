@@ -137,31 +137,31 @@
       (else false))
 
 ;これだと 副作用のある式が<test>にあると2回評価してしまう
-(define (expand-clauses clauses)
-        (if (null? clauses)
-            'false
-            (let ((first (car clauses))
-                  (rest (cdr clauses)))
-                 (cond ((cond-else-clauses? first)
-                        (if (null? rest)
-                            (sequence->exp (cond-actions first))
-                            (error "ELSE clause isn't last -- COND->IF"
-                                   clauses)))
-                       ((eq? (cadr first) '=>)
-                        (make-if (cond-predicate first)
-                                 (list (caddr first) (cond-predicate first))
-                                 (expand-clauses rest)))
-                       (else
-                         (make-if (cond-predicate first)
-                                  (sequence->exp (cond-actions first))
-                                  (expand-clauses rest)))))))
+;(define (expand-clauses clauses)
+;        (if (null? clauses)
+;            'false
+;            (let ((first (car clauses))
+;                  (rest (cdr clauses)))
+;                 (cond ((cond-else-clauses? first)
+;                        (if (null? rest)
+;                            (sequence->exp (cond-actions first))
+;                            (error "ELSE clause isn't last -- COND->IF"
+;                                   clauses)))
+;                       ((eq? (cadr first) '=>)
+;                        (make-if (cond-predicate first)
+;                                 (list (caddr first) (cond-predicate first))
+;                                 (expand-clauses rest)))
+;                       (else
+;                         (make-if (cond-predicate first)
+;                                  (sequence->exp (cond-actions first))
+;                                  (expand-clauses rest)))))))
 
-(driver-loop)
-(define x 1)
-(cond ((set! x (+ x 1)) => display)
-      (else false))
-(display x)
-end
+;(driver-loop)
+;(define x 1)
+;(cond ((set! x (+ x 1)) => display)
+;      (else false))
+;(display x)
+;end
 
 (define (cond-recipient-clause? clause)
         (eq? (cadr clause) '=>))
@@ -193,10 +193,13 @@ end
                                   (expand-clauses rest)))))))
 (driver-loop)
 (define x 1)
+(cond ((= x 1) 1)
+      (else 0))
+(cond ((= x 2) 2)
+      (else 0))
 (cond ((set! x (+ x 1)) => display)
       (else false))
 (display x)
-
 (cond (true (display 10)))
 
 (+ 1 2)
