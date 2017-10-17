@@ -134,6 +134,108 @@
 (eval '(begin (display x) (newline)) the-global-environment)
 
 ;derived
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+    ((variable? exp) (lookup-variable-value exp env))
+    ((quoted? exp) (text-of-quotation exp))
+    ((assignment? exp) (eval-assignment exp env))
+    ((definition? exp) (eval-definition exp env))
+    ((if? exp) (eval-if exp env))
+    ((lambda? exp)
+     (make-procedure (lambda-parameters exp)
+                     (lambda-body exp)
+                     env))
+    ((begin? exp)
+     (eval-sequence (begin-actions exp) env))
+    ((cond? exp) (eval (cond->if exp) env))
+    ((and? exp) (eval (and->if exp) env))
+    ((or? exp) (eval (or->if exp) env))
+    ((application? exp)
+     (apply (eval (operator exp) env)
+            (list-of-values (operands exp) env)))
+    (else
+      (error "Unknown expression type -- EVAL" exp))))
+
+(define (and-operands exp) (cdr exp))
+(define (and->if exp)
+  (and-expand (and-operands exp)))
+
+(define (and-last-operand? operands) (null? (cdr operands)))
+
+(define (and-expand operands)
+  (cond
+    ((null? operands) 'true)
+    ((and-last-operand? operands) (car operands))
+    (else
+      (let ((first (car operands))
+            (rest (cdr operands)))
+        (list
+          (make-lambda
+            '(<test>)
+            (list
+              (make-if '<test> (and-expand rest) 'false)))
+          first)))))
+(and->if '(and))
+(and->if '(and 1))
+(and->if '(and 1 1))
+(and->if '(and false true))
+(and->if '(and (set! x 1) 1))
+(and->if '(and (set! x 1) (set! y 2)))
+
+(define (or-operands exp) (cdr exp))
+(define (or->if exp)
+  (or-expand (or-operands exp)))
+
+(define (or-last-operand? operands) (null? (cdr operands)))
+
+(define (or-expand operands)
+  (cond
+    ((null? operands) 'false)
+    ((or-last-operand? operands) (car operands))
+    (else
+      (let ((first (car operands))
+            (rest (cdr operands)))
+        (list
+          (make-lambda
+            '(<test>)
+            (list
+              (make-if '<test> '<test> (or-expand rest))))
+          first)))))
+
+(or->if '(or))
+(or->if '(or 1))
+(or->if '(or 11))
+(or->if '(or false 1))
+(or->if '(or (set! x #f) (set! y 2)))
+
+(define the-global-environment (setup-environment))
+(eval '(and true true) the-global-environment)
+(eval '(and false true) the-global-environment)
+(eval '(and true false) the-global-environment)
+(eval '(and true true false) the-global-environment)
+(eval '(and true false true) the-global-environment)
+(eval '(and true) the-global-environment)
+(eval '(and 1) the-global-environment)
+(eval '(and true 1) the-global-environment)
+(eval '(and false) the-global-environment)
+(eval '(and) the-global-environment)
+
+(eval '(or true true) the-global-environment)
+(eval '(or 1 true) the-global-environment)
+(eval '(or true 1) the-global-environment)
+(eval '(or false true) the-global-environment)
+(eval '(or true false) the-global-environment)
+(eval '(or true true false) the-global-environment)
+(eval '(or true false true) the-global-environment)
+(eval '(or false) the-global-environment)
+(eval '(or false false) the-global-environment)
+(eval '(or) the-global-environment)
+
+(eval '(define x 1) the-global-environment)
+(eval '(and (set! x (+ x 1))) the-global-environment)
+(eval '(begin (display x) (newline)) the-global-environment)
+(eval '(or (set! x (+ x 1))) the-global-environment)
+(eval '(begin (display x) (newline)) the-global-environment)
 
 ;ex4.5
 
