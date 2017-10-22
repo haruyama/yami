@@ -13,7 +13,8 @@
    ((lambda (fib)
       (fib fib n))
     (lambda (fb k)
-      (cond ((= k 0) 0)
+      (cond
+        ((= k 0) 0)
         ((= k 1) 1)
         (else
           (+ (fb fb (- k 1)) (fb fb (- k 2))))))))
