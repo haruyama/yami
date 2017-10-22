@@ -374,13 +374,11 @@ end
 
 (let->combination
   '(let ((a 3) (b 2))
-     (+ a b))
-  )
+     (+ a b)))
 
 (let->combination
   '(let ()
-     (+ 1 2))
-  )
+     (+ 1 2)))
 
 
 (driver-loop)
@@ -577,16 +575,10 @@ end
 
 (define (while? exp) (tagged-list? exp 'while))
 
-(define (sequence->exp seq)
-  (cond ((null? seq) seq)
-    ((last-exp? seq) (first-exp seq))
-    (else (make-begin seq))))
-
-
 (define (while->if exp)
   (make-if (cadr exp)
            (sequence->exp (append (cddr exp) (list exp)))
-           'ok))
+           'true))
 
 (while->if
   '(while (< i 10)
