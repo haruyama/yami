@@ -23,6 +23,8 @@ end
 (define (scan-out-defines body)
   (let ((defs (take-while definition? body))
         (rest (drop-while definition? body)))
+    (if (not (null? (filter definition? rest)))
+      (error "syntax error: no toplevel definition"))
     (if (null? defs)
       body
       (let ((vars (map definition-variable defs))
