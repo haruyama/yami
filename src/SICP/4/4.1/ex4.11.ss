@@ -24,7 +24,6 @@
 (frame-variables f)
 (frame-values f)
 
-
 (define f (make-frame '() '()))
 (add-binding-to-frame! 'c 4 f)
 (display f)
@@ -69,10 +68,6 @@
         (else (scan (cdr l)))))
     (scan (car frame))))
 
-
-(define-variable! 'true true (extend-environment '(a)
-                                                 '(1)
-                                                 the-empty-environment))
 
 (define (setup-environment2)
   (let ((initial-env

@@ -121,7 +121,15 @@ end
           eq-func
           )))
 
+(driver-loop)
+(define i 0)
+(while (< i 10)
+       (display i)
+       (newline)
+       (set! i (+ i 1)))
+end
 
+;別解
 (define (scan var vars vals)
   (cond ((null? vars) '())
     ((eq? var (car vars)) vals)
@@ -165,4 +173,3 @@ end
        (newline)
        (set! i (+ i 1)))
 end
-
