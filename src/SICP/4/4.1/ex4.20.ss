@@ -82,7 +82,6 @@
 ;                   (even? (- n 1))))))
 ;      (even? x))))
 
-
 (define (letrec->let exp)
   (let ((vars (map car (cadr exp)))
         (exps (map cdr (cadr exp)))
@@ -90,6 +89,18 @@
     (cons 'let
           (cons (map (lambda (x) (list x ''*unassigned*)) vars)
                 (append (map (lambda (x y) (cons 'set! (cons x y))) vars exps)
+                        body)))))
+
+(define (make-assignment var val)
+  (list 'set! var val))
+
+(define (letrec->let exp)
+  (let ((vars (map car (cadr exp)))
+        (exps (map cadr (cadr exp)))
+        (body (cddr exp)))
+    (cons 'let
+          (cons (map (lambda (x) (list x ''*unassigned*)) vars)
+                (append (map (lambda (x y) (make-assignment x y)) vars exps)
                         body)))))
 
 (letrec->let
