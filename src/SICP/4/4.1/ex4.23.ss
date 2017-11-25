@@ -36,8 +36,7 @@
         ((lambda? exp) (analyze-lambda exp))
         ((let? exp)
          (analyze (let->combination exp)))
-        ((begin? exp) 
-         (analyze-sequence (begin-actions exp))
+        ((begin? exp)
          (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
         ((application? exp) (analyze-application exp))
@@ -58,6 +57,9 @@
         (error "Empty sequence -- ANALYZE"))
     (loop (car procs) (cdr procs))))
 
+(analyze-sequence '((+ 1 1)))
+(analyze-sequence '((+ 1 1)(+ 2 2)))
+(analyze-sequence '((+ 1 1)(+ 2 2)(+ 3 3)))
 
 (driver-loop)
 (begin
@@ -78,6 +80,9 @@ end
         (error "Empty sequence -- ANALYZE"))
     (lambda (env) (execute-sequence procs env))))
 
+(analyze-sequence '((+ 1 1)))
+(analyze-sequence '((+ 1 1)(+ 2 2)))
+(analyze-sequence '((+ 1 1)(+ 2 2)(+ 3 3)))
 
 (driver-loop)
 (begin
@@ -86,4 +91,3 @@ end
   (+ 1 1)
   (+ 2 2))
 end
-
