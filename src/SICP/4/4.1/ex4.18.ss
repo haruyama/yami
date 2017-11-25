@@ -32,4 +32,4 @@
 ;     (set! dy b))
 ;   y))
 ;
-; (set! y a) で 2回目の delay が呼ばれて dy の準備がまだできてない
+;         (b (stream-map f y))) で y の準備ができてない
