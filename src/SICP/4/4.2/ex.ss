@@ -1,5 +1,8 @@
 (load "./4.2.ss")
 
+;ex4.25
+;無限ループ
+
 (driver-loop)
 (define (try a b)
   (if (= a 0) 1 b))
@@ -130,14 +133,12 @@ end
   x)
 (define (p2 x)
   (define (p e)
-    e 
+    e
     x)
   (p (set! x (cons x '(2)))))
 (p1 1)
 (p2 1)
 end
-
-;2009/10/05
 
 ;ex4.32
 ;この定義ではconsのcarの部分も遅延評価する
@@ -171,7 +172,7 @@ end
         ((variable? exp) (lookup-variable-value exp env))
         ((quoted? exp) (text-of-quotation exp env))
         ((assignment? exp) (eval-assignment exp env))
-        ((definition? exp) 
+        ((definition? exp)
          (eval-definition exp env))
         ((if? exp) (eval-if exp env))
         ((lambda? exp)
@@ -207,7 +208,7 @@ end
       '()
       (let ((first-list (car l))
             (rest-list (cdr l)))
-        (list 'cons (list 'quote first-list) 
+        (list 'cons (list 'quote first-list)
               (make-quotation-list rest-list)))))
 
 (driver-loop)
@@ -234,7 +235,7 @@ end
 
 (car '((b c)))
 (car (car '((b c))))
-(car (car (cdr '(a 
+(car (car (cdr '(a
                   (b c)
                   )
                )))

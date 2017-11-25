@@ -12,7 +12,7 @@
         ((lambda? exp) (analyze-lambda exp))
         ((let? exp)
          (analyze (let->combination exp)))
-        ((begin? exp) 
+        ((begin? exp)
          (display 		 (analyze-sequence (begin-actions exp)))
          (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
@@ -73,10 +73,10 @@
            (unless-alternative exp)
            (unless-consequent exp)))
 
-(unless->if 
+(unless->if
   '(unless (= n 1)
            (* n (factorial (- n 1)))
-           1) 
+           1)
   )
 
 (driver-loop)
@@ -87,4 +87,3 @@
 
 (factorial 5)
 end
-
