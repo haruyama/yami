@@ -10,7 +10,6 @@
 (define (rest-parameters params) (cdr params))
 
 (define (parameter-type param)
-  (display param)
   (if (pair? param)
     (let ((type (cadr param)))
       (cond
@@ -79,12 +78,38 @@
 (define x 1)
 (define (p e) e x)
 (p (set! x (cons x '(2))))
-x
+end
+
+(driver-loop)
+(define x 1)
+(define (p (e lazy)) e x)
+(p (set! x (cons x '(2))))
 end
 
 (driver-loop)
 (define x 1)
 (define (p (e lazy-memo)) e x)
 (p (set! x (cons x '(2))))
-x
+end
+
+(driver-loop)
+(define count 0)
+(define (square (x lazy))
+  (* x x))
+(define (id x)
+  (set! count (+ count 1))
+  x)
+(square (id 10))
+count
+end
+
+(driver-loop)
+(define count 0)
+(define (square (x lazy-memo))
+  (* x x))
+(define (id x)
+  (set! count (+ count 1))
+  x)
+(square (id 10))
+count
 end
