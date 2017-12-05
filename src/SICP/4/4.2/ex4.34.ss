@@ -98,40 +98,27 @@
 (define (display-cons obj)
   (define (iter obj depth)
     (let ((user-car (lambda (z)
-                      (let ((val (lookup-variable-value 'x (procedure-environment (cdr z)))))
-                        (if (null? (thunk-exp val))
-                          '()
-                          (force-it val)))))
+                      (force-it (lookup-variable-value 'x (procedure-environment (cdr z))))))
           (user-cdr (lambda (z)
-                      (let ((val (lookup-variable-value 'y (procedure-environment (cdr z)))))
-                        (if (null? (thunk-exp val))
-                          '()
-                          (force-it val))))))
+                      (force-it (lookup-variable-value 'y (procedure-environment (cdr z)))))))
       (cond
         ((>= depth 10)
          (display "...)"))
-        ((null? obj)
-         (display ""))
         (else
           (if (= 0 depth)
             (display "("))
           (let ((car-value (user-car obj))
                 (cdr-value (user-cdr obj)))
-            (if (null? car-value)
-              (display ")")
-              (begin
-                (user-print (user-car obj)))
-                (if (tagged-list? cdr-value 'cons)
-                  (begin
-                    (display " ")
-                    (iter cdr-value (+ depth 1)))
-                  (begin
-                    (if (null? cdr-value)
-                      (display ")")
-                      (begin
-                        (display " . ")
-                        (user-print cdr-value))))))
-            )))))
+            (user-print (user-car obj))
+            (cond
+              ((tagged-list? cdr-value 'cons)
+                   (display " ")
+                   (iter cdr-value (+ depth 1)))
+              ((null? cdr-value)
+               (display ")"))
+              (else
+                (display " . ")
+                (user-print cdr-value))))))))
   (iter obj 0))
 
 ;(cons 'cons (lambda (m) (m x y))))
