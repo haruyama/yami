@@ -13,7 +13,7 @@
         ((let? exp)
          (analyze (let->combination exp)))
         ((begin? exp)
-         (display 		 (analyze-sequence (begin-actions exp)))
+         (display (analyze-sequence (begin-actions exp)))
          (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
         ((application? exp) (analyze-application exp))
@@ -34,9 +34,6 @@
         (error "Empty sequence -- ANALYZE"))
     (loop (car procs) (cdr procs))))
 
-
-
-
 (define (analyze-sequence exps)
   (define (execute-sequence procs env)
     (cond ((null? (cdr procs)) ((car procs) env))
@@ -53,8 +50,6 @@
   (cons (make-lambda
           (map car (cadr exp)) (cddr exp))
         (map cadr (cadr exp))))
-
-
 
 
 (define (unless? exp) (tagged-list? exp 'unless))

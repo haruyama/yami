@@ -43,6 +43,7 @@ end
   (f 1))
 (hoge foo)
 end
+
 ;ex4.29
 (define (force-it obj)
   (if (thunk? obj)
@@ -157,7 +158,7 @@ end
 
 (driver-loop)
 (define (cons x y)
-  (lambda(m) (m x y)))
+  (lambda (m) (m x y)))
 (define (car z)
   (z (lambda (p q) p)))
 (define (cdr z)
@@ -213,7 +214,7 @@ end
 
 (driver-loop)
 (define (cons x y)
-  (lambda(m) (m x y)))
+  (lambda (m) (m x y)))
 (define (car z)
   (z (lambda (p q) p)))
 (define (cdr z)
@@ -226,7 +227,7 @@ end
 
 (driver-loop)
 (define (cons x y)
-  (lambda(m) (m x y)))
+  (lambda (m) (m x y)))
 (define (car z)
   (z (lambda (p q) p)))
 (define (cdr z)
