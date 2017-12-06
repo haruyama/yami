@@ -12,8 +12,8 @@
 
 (define (apply procedure arguments env)
   (cond ((primitive-procedure? procedure)
-         (apply-primitive-procedure 
-           procedure 
+         (apply-primitive-procedure
+           procedure
            (list-of-arg-values arguments env)))
         ((compound-procedure? procedure)
          (eval-sequence
@@ -290,7 +290,7 @@
         ))
 
 (define (primitive-procedure-names)
-  (map car 
+  (map car
        primitive-procedures))
 
 (define (primitive-procedure-objects)
@@ -298,7 +298,7 @@
        primitive-procedures))
 
 (define (apply-primitive-procedure proc args)
-  (apply-in-underlying-scheme 
+  (apply-in-underlying-scheme
     (primitive-implementation proc) args))
 
 
@@ -327,11 +327,6 @@
                      (procedure-body object)
                      '<procedure-env>))
       (display object)))
-
-
-
-
-
 
 (define (and? exp)
   (tagged-list? exp 'and))
@@ -376,7 +371,7 @@
                (make-if (cond-predicate first)
                         (list (caddr first) (cond-predicate first))
                         (expand-clauses rest)))
-              (else 
+              (else
                 (make-if (cond-predicate first)
                          (sequence->exp (cond-actions first))
                          (expand-clauses rest)))))))
@@ -397,7 +392,7 @@
 
 ;(define (expand-let-clauses clauses)
 ;  (cons (make-lambda (map car (let-bindings clauses)) (let-body clauses))
-; 		(map cadr (let-bindings clauses)))))
+;   (map cadr (let-bindings clauses)))))
 
 (define (let->combination exp)
   (cons (make-lambda
@@ -531,7 +526,7 @@
 ;2
 (define (make-procedure parameters body env)
   (list 'procedure parameters body env))
-(define (procedure-body p) 
+(define (procedure-body p)
   (scan-out-defines (caddr p)))
 
 
@@ -560,7 +555,7 @@
         ((variable? exp) (lookup-variable-value exp env))
         ((quoted? exp) (text-of-quotation exp))
         ((assignment? exp) (eval-assignment exp env))
-        ((definition? exp) 
+        ((definition? exp)
          (eval-definition exp env))
         ((if? exp) (eval-if exp env))
         ((lambda? exp)
@@ -589,8 +584,7 @@
 (define (driver-loop)
   (prompt-for-input input-prompt)
   (let ((input (read)))
-    ;	(display input)
-    (let ((output 
+    (let ((output
             (actual-value input the-global-environment)))
       (announce-output output-prompt)
       (user-print output)))

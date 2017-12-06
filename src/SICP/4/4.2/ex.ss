@@ -4,6 +4,16 @@
 ;無限ループ
 
 (driver-loop)
+
+(define (unless condition usual-value exceptional-value)
+  (if condition exceptional-value usual-value))
+
+(define (factorial n)
+  (unless (= n 1)
+    (* n (factorial (- n 1)))
+    1))
+(display (factorial 5))
+
 (define (try a b)
   (if (= a 0) 1 b))
 (try 0 (/ 1 0))
@@ -35,7 +45,6 @@ count
 end
 
 ;ex4.28
-
 (driver-loop)
 (define (foo x)
   (+ 1 x))
@@ -93,6 +102,11 @@ end
 (define (eval-sequence exps env)
   (cond ((last-exp? exps) (eval (first-exp exps) env))
         (else (actual-value (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
               (eval-sequence (rest-exps exps) env))))
 
 (driver-loop)
