@@ -161,6 +161,64 @@ end
 ;x が未定義の場合に (cons-stream x <b>)はできない.
 
 (driver-loop)
+(define (cons x y)
+  (lambda (m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
+(define (list-ref items n)
+  (if (= n 0)
+    (car items)
+    (list-ref (cdr items) (- n 1))))
+
+(define (map proc items)
+  (if (null? items)
+    '()
+    (cons (proc (car items))
+          (map proc (cdr items)))))
+
+(define (scale-list items factor)
+  (map (lambda (x) (* x factor))
+       items))
+
+(define (add-lists list1 list2)
+  (cond ((null? list1) list2)
+    ((null? list2) list1)
+    (else (cons (+ (car list1) (car list2))
+                (add-lists (cdr list1) (cdr list2))))))
+
+(define ones (cons 1 ones))
+
+(define integers (cons 1 (add-lists ones integers)))
+
+(list-ref integers 17)
+
+(define (integral integrand initial-value dt)
+  (define int
+    (cons initial-value
+          (add-lists (scale-list integrand dt)
+                     int)))
+  int)
+
+
+(define (solve f y0 dt)
+  (define y (integral dy y0 dt))
+  (define dy (map f y))
+  y)
+
+(list-ref (solve (lambda (x) x) 1 0.001) 1000)
+end
+
+(driver-loop)
+
+(driver-loop)
+(define (cons x y)
+  (lambda (m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+(define (cdr z)
+  (z (lambda (p q) q)))
 (define y (cons z (* x x)))
 (define x 2)
 (define z 3)
@@ -180,7 +238,6 @@ end
 
 (car '(a b c))
 end
-
 
 (define (eval exp env)
   (cond ((self-evaluating? exp) exp)
@@ -214,17 +271,19 @@ end
           (error "Unknown expression type -- EVAL" exp))))
 
 (define (text-of-quotation exp env)
-  (if (list? (cadr exp))
+  (if (pair? (cadr exp))
       (eval (make-quotation-list (cadr exp)) env)
-      (cadr exp)))
+      (list 'quote (cadr exp))))
 
 (define (make-quotation-list l)
-  (if (null? l)
-      '()
-      (let ((first-list (car l))
-            (rest-list (cdr l)))
-        (list 'cons (list 'quote first-list)
-              (make-quotation-list rest-list)))))
+  (cond ((null? l) '())
+    ((pair? l)
+         (list 'cons (list 'quote (car l))
+                 (make-quotation-list (cdr l))))
+        (else (list 'quote l))))
+
+(make-quotation-list '(1 2 3))
+(make-quotation-list '(1 . 2))
 
 (driver-loop)
 (define (cons x y)
@@ -237,6 +296,10 @@ end
 
 (car '(a b c))
 (cdr '(a b c))
+(car '(a . b ))
+(cdr '(a . b ))
+'a
+'1
 end
 
 (driver-loop)

@@ -5,6 +5,7 @@
 
 (procedure-parameters '(a (b c d)))
 (procedure-parameters '(a (b (c lazy) (d lazy-memo))))
+(procedure-parameters-with-type '(a (b (c lazy) (d lazy-memo))))
 
 (define (first-parameter params) (car params))
 (define (rest-parameters params) (cdr params))
