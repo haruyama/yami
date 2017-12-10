@@ -2,15 +2,15 @@
 (define false #f)
 
 (define-macro (define-once name . body)
-                            `(unless (global-variable-bound? (current-module) ',name)
-                                                            (define ,name ,@body)))
+              `(unless (global-variable-bound? (current-module) ',name)
+                       (define ,name ,@body)))
 
 (define-once apply-in-underlying-scheme apply)
 
 (define (self-evaluating? exp)
   (cond ((number? exp) true)
-        ((string? exp) true)
-        (else false)))
+    ((string? exp) true)
+    (else false)))
 
 (define (variable? exp) (symbol? exp))
 
@@ -21,8 +21,8 @@
 
 (define (tagged-list? exp tag)
   (if (pair? exp)
-      (eq? (car exp) tag)
-      false))
+    (eq? (car exp) tag)
+    false))
 
 
 (define (assignment? exp)
@@ -36,14 +36,14 @@
 
 (define (definition-variable exp)
   (if (symbol? (cadr exp))
-      (cadr exp)
-      (caadr exp)))
+    (cadr exp)
+    (caadr exp)))
 
 (define (definition-value exp)
   (if (symbol? (cadr exp))
-      (caddr exp)
-      (make-lambda (cdadr exp)
-                   (cddr exp))))
+    (caddr exp)
+    (make-lambda (cdadr exp)
+                 (cddr exp))))
 
 
 (define (lookup-variable-value var env)
@@ -51,14 +51,14 @@
     (define (scan vars vals)
       (cond ((null? vars)
              (env-loop (enclosing-environment env)))
-            ((eq? var (car vars))
-             (car vals))
-            (else (scan (cdr vars) (cdr vals)))))
+        ((eq? var (car vars))
+         (car vals))
+        (else (scan (cdr vars) (cdr vals)))))
     (if (eq? env the-empty-environment)
-        (error "Unbound variable" var)
-        (let ((frame (first-frame env)))
-          (scan (frame-variables frame)
-                (frame-values frame)))))
+      (error "Unbound variable" var)
+      (let ((frame (first-frame env)))
+        (scan (frame-variables frame)
+              (frame-values frame)))))
   (env-loop env))
 
 (define (set-variable-value! var val env)
@@ -66,14 +66,14 @@
     (define (scan vars vals)
       (cond ((null? vars)
              (env-loop (enclosing-environment env)))
-            ((eq? var (car vars))
-             (set-car! vals val))
-            (else (scan (cdr vars) (cdr vals)))))
+        ((eq? var (car vars))
+         (set-car! vals val))
+        (else (scan (cdr vars) (cdr vals)))))
     (if (eq? env the-empty-environment)
-        (error "Unbound variable -- SET!" var)
-        (let ((frame (first-frame env)))
-          (scan (frame-variables frame)
-                (frame-values frame)))))
+      (error "Unbound variable -- SET!" var)
+      (let ((frame (first-frame env)))
+        (scan (frame-variables frame)
+              (frame-values frame)))))
   (env-loop env))
 
 (define (define-variable! var val env)
@@ -81,9 +81,9 @@
     (define (scan vars vals)
       (cond ((null? vars)
              (add-binding-to-frame! var val frame))
-            ((eq? var (car vars))
-             (set-car! vals val))
-            (else (scan (cdr vars) (cdr vals)))))
+        ((eq? var (car vars))
+         (set-car! vals val))
+        (else (scan (cdr vars) (cdr vals)))))
     (scan (frame-variables frame)
           (frame-values frame))))
 
@@ -103,8 +103,8 @@
 
 (define (if-alternative exp)
   (if (not (null? (cdddr exp)))
-      (cadddr exp)
-      'false))
+    (cadddr exp)
+    'false))
 
 (define (make-if predicate consequent alternative)
   (list 'if predicate consequent alternative))
@@ -118,8 +118,8 @@
 
 (define (sequence->exp seq)
   (cond ((null? seq) seq)
-        ((last-exp? seq) (first-exp seq))
-        (else (make-begin seq))))
+    ((last-exp? seq) (first-exp seq))
+    (else (make-begin seq))))
 
 (define (make-begin seq)
   (cons 'begin seq))
@@ -152,10 +152,10 @@
 
 (define (extend-environment vars vals base-env)
   (if (= (length vars) (length vals))
-      (cons (make-frame vars vals) base-env)
-      (if (< (length vars) (length vals))
-          (error "Too many arguments supplied" vars vals)
-          (error "Too few arguments supplied" vars vals))))
+    (cons (make-frame vars vals) base-env)
+    (if (< (length vars) (length vals))
+      (error "Too many arguments supplied" vars vals)
+      (error "Too few arguments supplied" vars vals))))
 
 (define (primitive-procedure? proc)
   (tagged-list? proc 'primitive))
@@ -254,17 +254,17 @@
 
 (define (expand-clauses clauses)
   (if (null? clauses)
-      'false
-      (let ((first (car clauses))
-            (rest (cdr clauses)))
-        (if (cond-else-clauses? first)
-            (if (null? rest)
-                (sequence->exp (cond-actions first))
-                (error "ELSE clause isn't last -- COND->IF"
-                       clauses))
-            (make-if (cond-predicate first)
-                     (sequence->exp (cond-actions first))
-                     (expand-clauses rest))))))
+    'false
+    (let ((first (car clauses))
+          (rest (cdr clauses)))
+      (if (cond-else-clauses? first)
+        (if (null? rest)
+          (sequence->exp (cond-actions first))
+          (error "ELSE clause isn't last -- COND->IF"
+                 clauses))
+        (make-if (cond-predicate first)
+                 (sequence->exp (cond-actions first))
+                 (expand-clauses rest))))))
 
 (define (true? x)
   (not (eq? x false)))
@@ -290,14 +290,14 @@
 
 (define (analyze-and-conds conds env succeed fail)
   (if (null? conds)
-      (succeed true fail)
-      (let ((cond-proc (analyze (car conds))))
-        (cond-proc env
-                   (lambda (cond-value fail2)
-                     (if (true? cond-value)
-                         (analyze-and-conds (cdr conds) env succeed fail2)
-                         (succeed false fail)))
-                   fail))))
+    (succeed true fail)
+    (let ((cond-proc (analyze (car conds))))
+      (cond-proc env
+                 (lambda (cond-value fail2)
+                   (if (true? cond-value)
+                     (analyze-and-conds (cdr conds) env succeed fail2)
+                     (succeed false fail)))
+                 fail))))
 
 
 
@@ -311,37 +311,37 @@
 
 (define (analyze-or-conds conds env succeed fail)
   (if (null? conds)
-      (succeed false fail)
-      (let ((cond-proc (analyze (car conds))))
-        (cond-proc env
-                   (lambda (cond-value fail2)
-                     (if (true? cond-value)
-                         (succeed true fail)
-                         (analyze-and-conds (cdr conds) env succeed fail2)))
-                   fail))))
+    (succeed false fail)
+    (let ((cond-proc (analyze (car conds))))
+      (cond-proc env
+                 (lambda (cond-value fail2)
+                   (if (true? cond-value)
+                     (succeed true fail)
+                     (analyze-and-conds (cdr conds) env succeed fail2)))
+                 fail))))
 
 
 
 (define (analyze exp)
   (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
-        ((quoted? exp) (analyze-quoted exp))
-        ((variable? exp) (analyze-variable exp))
-        ((assignment? exp) (analyze-assignment exp))
-        ((definition? exp) (analyze-definition exp))
-        ((if? exp) (analyze-if exp))
-        ((lambda? exp) (analyze-lambda exp))
-        ((let? exp)
-         (analyze (let->combination exp)))
-        ((begin? exp)
-         (analyze-sequence (begin-actions exp)))
-        ((cond? exp) (analyze (cond->if exp)))
-        ((amb? exp) (analyze-amb exp))
-        ((and? exp) (analyze-and exp))
-        ((or? exp) (analyze-or exp))
-        ((application? exp) (analyze-application exp))
-        (else
-          (error "Unknown expression type -- ANALYZE" exp))))
+    ((quoted? exp) (analyze-quoted exp))
+    ((variable? exp) (analyze-variable exp))
+    ((assignment? exp) (analyze-assignment exp))
+    ((definition? exp) (analyze-definition exp))
+    ((if? exp) (analyze-if exp))
+    ((lambda? exp) (analyze-lambda exp))
+    ((let? exp)
+     (analyze (let->combination exp)))
+    ((begin? exp)
+     (analyze-sequence (begin-actions exp)))
+    ((cond? exp) (analyze (cond->if exp)))
+    ((amb? exp) (analyze-amb exp))
+    ((and? exp) (analyze-and exp))
+    ((or? exp) (analyze-or exp))
+    ((application? exp) (analyze-application exp))
+    (else
+      (error "Unknown expression type -- ANALYZE" exp))))
 
 (define (prompt-for-input string)
   (newline) (newline) (display string) (newline))
@@ -351,11 +351,11 @@
 
 (define (user-print object)
   (if (compound-procedure? object)
-      (display (list 'compound-procedure
-                     (procedure-parameters object)
-                     (procedure-body object)
-                     '<procedure-env>))
-      (display object)))
+    (display (list 'compound-procedure
+                   (procedure-parameters object)
+                   (procedure-body object)
+                   '<procedure-env>))
+    (display object)))
 
 ;;;;
 (define (amb? exp) (tagged-list? exp 'amb))
@@ -395,8 +395,8 @@
       (pproc env
              (lambda (pred-value fail2)
                (if (true? pred-value)
-                   (cproc env succeed fail2)
-                   (aproc env succeed fail2)))
+                 (cproc env succeed fail2)
+                 (aproc env succeed fail2)))
              fail))))
 
 
@@ -409,12 +409,12 @@
          fail)))
   (define (loop first-proc rest-procs)
     (if (null? rest-procs)
-        first-proc
-        (loop (sequentially first-proc (car rest-procs))
-              (cdr rest-procs))))
+      first-proc
+      (loop (sequentially first-proc (car rest-procs))
+            (cdr rest-procs))))
   (let ((procs (map analyze exps)))
     (if (null? procs)
-        (error "Empty sequence -- ANALYZE"))
+      (error "Empty sequence -- ANALYZE"))
     (loop (car procs) (cdr procs))))
 
 (define (analyze-definition exp)
@@ -461,16 +461,16 @@
 
 (define (get-args aprocs env succeed fail)
   (if (null? aprocs)
-      (succeed '() fail)
-      ((car aprocs) env
-                    (lambda (arg fail2)
-                      (get-args (cdr aprocs)
-                                env
-                                (lambda (args fail3)
-                                  (succeed (cons arg args)
-                                           fail3))
-                                fail2))
-                    fail)))
+    (succeed '() fail)
+    ((car aprocs) env
+                  (lambda (arg fail2)
+                    (get-args (cdr aprocs)
+                              env
+                              (lambda (args fail3)
+                                (succeed (cons arg args)
+                                         fail3))
+                              fail2))
+                  fail)))
 
 
 
@@ -478,28 +478,28 @@
   (cond ((primitive-procedure? proc)
          (succeed (apply-primitive-procedure proc args)
                   fail))
-        ((compound-procedure? proc)
-         ((procedure-body proc)
-          (extend-environment (procedure-parameters proc)
-                              args
-                              (procedure-environment proc))
-          succeed
-          fail))
-        (else
-          (error
-            "Unknown procedure type -- EXECUTE-APPLICATION"
-            proc))))
+    ((compound-procedure? proc)
+     ((procedure-body proc)
+      (extend-environment (procedure-parameters proc)
+                          args
+                          (procedure-environment proc))
+      succeed
+      fail))
+    (else
+      (error
+        "Unknown procedure type -- EXECUTE-APPLICATION"
+        proc))))
 
 (define (analyze-amb exp)
   (let ((cprocs (map analyze (amb-choices exp))))
     (lambda (env succeed fail)
       (define (try-next choices)
         (if (null? choices)
-            (fail)
-            ((car choices) env
-                           succeed
-                           (lambda ()
-                             (try-next (cdr choices))))))
+          (fail)
+          ((car choices) env
+                         succeed
+                         (lambda ()
+                           (try-next (cdr choices))))))
       (try-next cprocs))))
 
 
@@ -511,21 +511,21 @@
     (prompt-for-input input-prompt)
     (let ((input (read)))
       (if (eq? input 'try-again)
-          (try-again)
-          (begin
-            (newline)
-            (display ";;; Starting a new problem ")
-            (ambeval input
-                     the-global-environment
-                     (lambda (val next-alternative)
-                       (announce-output output-prompt)
-                       (user-print val)
-                       (internal-loop next-alternative))
-                     (lambda ()
-                       (announce-output
-                         ";;; There are no more value of")
-                       (user-print input)
-                       (driver-loop)))))))
+        (try-again)
+        (begin
+          (newline)
+          (display ";;; Starting a new problem ")
+          (ambeval input
+                   the-global-environment
+                   (lambda (val next-alternative)
+                     (announce-output output-prompt)
+                     (user-print val)
+                     (internal-loop next-alternative))
+                   (lambda ()
+                     (announce-output
+                       ";;; There are no more value of")
+                     (user-print input)
+                     (driver-loop)))))))
   (internal-loop
     (lambda()
       (newline)

@@ -19,8 +19,8 @@ end
 
 (define (find-divisor n test-divisor)
   (cond ((> (square test-divisor) n) n)
-        ((divides? test-divisor n) test-divisor)
-        (else (find-divisor n (+ test-divisor 1)))))
+    ((divides? test-divisor n) test-divisor)
+    (else (find-divisor n (+ test-divisor 1)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
@@ -118,9 +118,9 @@ end
 
 (define (distinct? items)
   (cond ((null? items) true)
-        ((null? (cdr items)) true)
-        ((member (car items) (cdr items)) false)
-        (else (distinct? (cdr items)))))
+    ((null? (cdr items)) true)
+    ((member (car items) (cdr items)) false)
+    (else (distinct? (cdr items)))))
 
 (define (multiple-dwelling)
   (let ((baker (amb 1 2 3 4 5))
@@ -214,9 +214,9 @@ end
 
 (define (distinct? items)
   (cond ((null? items) true)
-        ((null? (cdr items)) true)
-        ((member (car items) (cdr items)) false)
-        (else (distinct? (cdr items)))))
+    ((null? (cdr items)) true)
+    ((member (car items) (cdr items)) false)
+    (else (distinct? (cdr items)))))
 
 
 (define (multiple-dwelling4-condition items)
@@ -226,19 +226,19 @@ end
         (miller (cadddr items))
         (smith  (car (cddddr items))))
     (cond ((= fletcher 5) false)
-          ((= fletcher 1) false)
-          ((= cooper 1) false)
-          ((= (abs (- fletcher cooper)) 1) false)
-          ((= baker 5) false)
-          ((< miller cooper) false)
-          ((= (abs (- smith fletcher)) 1) false)
-          ;          ((not (distinct? items)) false)
-          (else true))))
+      ((= fletcher 1) false)
+      ((= cooper 1) false)
+      ((= (abs (- fletcher cooper)) 1) false)
+      ((= baker 5) false)
+      ((< miller cooper) false)
+      ((= (abs (- smith fletcher)) 1) false)
+      ;          ((not (distinct? items)) false)
+      (else true))))
 
 (define (accumulate op initial sequence)
   (if (null? sequence) initial
-      (op (car sequence)
-          (accumulate op initial (cdr sequence)))))
+    (op (car sequence)
+        (accumulate op initial (cdr sequence)))))
 
 
 (define (flatmap proc seq)
@@ -247,17 +247,17 @@ end
 
 (define (permutations s)
   (if (null? s) (list '())
-      (flatmap (lambda (x)
-                 (map (lambda (p) (cons x p))
-                      (permutations (remove x s))))
-               s)))
+    (flatmap (lambda (x)
+               (map (lambda (p) (cons x p))
+                    (permutations (remove x s))))
+             s)))
 
 (define (filter predicate sequence)
   (cond ((null? sequence) '())
-        ((predicate (car sequence))
-         (cons (car sequence)
-               (filter predicate (cdr sequence))))
-        (else  (filter predicate (cdr sequence)))))
+    ((predicate (car sequence))
+     (cons (car sequence)
+           (filter predicate (cdr sequence))))
+    (else  (filter predicate (cdr sequence)))))
 
 
 
@@ -316,16 +316,16 @@ end
 
 (define (filter pred lst)
   (if (null? lst)
-      '()
-      (if (pred (car lst))
-          (cons (car lst) (filter pred (cdr lst)))
-          (filter pred (cdr lst)))))
+    '()
+    (if (pred (car lst))
+      (cons (car lst) (filter pred (cdr lst)))
+      (filter pred (cdr lst)))))
 
 (define (map proc items)
   (if (null? items)
-      '()
-      (cons (proc (car items))
-            (map proc (cdr items)))))
+    '()
+    (cons (proc (car items))
+          (map proc (cdr items)))))
 end
 
 (driver-loop)
@@ -385,21 +385,21 @@ end
 
 (define (eight-queen-diag row1 rest-rows)
   (if (null? rest-rows) true
-      (if
-        (= (abs (- (car row1) (caar rest-rows)))
-           (abs (- (cdr row1) (cdar rest-rows))))
-        false
-        (eight-queen-diag row1 (cdr rest-rows)))))
+    (if
+      (= (abs (- (car row1) (caar rest-rows)))
+         (abs (- (cdr row1) (cdar rest-rows))))
+      false
+      (eight-queen-diag row1 (cdr rest-rows)))))
 
 
 (define (eight-queen-sub rows)
   (if (null? rows) true
-      (let ((first-row (car rows))
-            (rest-rows (cdr rows)))
-        (if
-          (eight-queen-diag first-row rest-rows)
-          (eight-queen-sub rest-rows)
-          false))))
+    (let ((first-row (car rows))
+          (rest-rows (cdr rows)))
+      (if
+        (eight-queen-diag first-row rest-rows)
+        (eight-queen-sub rest-rows)
+        false))))
 
 
 
@@ -429,27 +429,27 @@ end
 
 (define (eight-queen-diag first-row rest-rows)
   (if (null? rest-rows) true
-      (if
-        (= (abs (- (car first-row) (caar rest-rows)))
-           (abs (- (cdr first-row) (cdar rest-rows))))
-        false
-        (eight-queen-diag first-row (cdr rest-rows)))))
+    (if
+      (= (abs (- (car first-row) (caar rest-rows)))
+         (abs (- (cdr first-row) (cdar rest-rows))))
+      false
+      (eight-queen-diag first-row (cdr rest-rows)))))
 
 
 (define (eight-queen-sub rows)
   (if (null? rows) true
-      (let ((first-row (car rows))
-            (rest-rows (cdr rows)))
-        (if
-          (eight-queen-diag first-row rest-rows)
-          (eight-queen-sub rest-rows)
-          false))))
+    (let ((first-row (car rows))
+          (rest-rows (cdr rows)))
+      (if
+        (eight-queen-diag first-row rest-rows)
+        (eight-queen-sub rest-rows)
+        false))))
 
 
 (define (n-queens n)
   (define (generate-positions k l)
     (if (> k n) l
-        (generate-positions (+ k 1)  (cons (cons k (an-integer-between 1 n)) l))))
+      (generate-positions (+ k 1)  (cons (cons k (an-integer-between 1 n)) l))))
   (let ((rows (generate-positions 1 '())))
     (require
       (distinct? (map cdr rows)))
@@ -652,24 +652,24 @@ end
 (define (analyze exp)
   (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
-        ((quoted? exp) (analyze-quoted exp))
-        ((variable? exp) (analyze-variable exp))
-        ((assignment? exp) (analyze-assignment exp))
-        ((definition? exp) (analyze-definition exp))
-        ((if? exp) (analyze-if exp))
-        ((lambda? exp) (analyze-lambda exp))
-        ((let? exp)
-         (analyze (let->combination exp)))
-        ((begin? exp)
-         (analyze-sequence (begin-actions exp)))
-        ((cond? exp) (analyze (cond->if exp)))
-        ((amb? exp) (analyze-amb exp))
-        ((ramb? exp) (analyze-ramb exp))
-        ((and? exp) (analyze-and exp))
-        ((or? exp) (analyze-or exp))
-        ((application? exp) (analyze-application exp))
-        (else
-          (error "Unknown expression type -- ANALYZE" exp))))
+    ((quoted? exp) (analyze-quoted exp))
+    ((variable? exp) (analyze-variable exp))
+    ((assignment? exp) (analyze-assignment exp))
+    ((definition? exp) (analyze-definition exp))
+    ((if? exp) (analyze-if exp))
+    ((lambda? exp) (analyze-lambda exp))
+    ((let? exp)
+     (analyze (let->combination exp)))
+    ((begin? exp)
+     (analyze-sequence (begin-actions exp)))
+    ((cond? exp) (analyze (cond->if exp)))
+    ((amb? exp) (analyze-amb exp))
+    ((ramb? exp) (analyze-ramb exp))
+    ((and? exp) (analyze-and exp))
+    ((or? exp) (analyze-or exp))
+    ((application? exp) (analyze-application exp))
+    (else
+      (error "Unknown expression type -- ANALYZE" exp))))
 
 
 (define (ramb? exp) (tagged-list? exp 'ramb))
@@ -690,13 +690,13 @@ end
     (lambda (env succeed fail)
       (define (try-next choices)
         (if (null? choices)
-            (fail)
-            (let ((i (random (length choices))))
-              ((list-ref choices i) env
-                                    succeed
-                                    (lambda ()
-                                      (try-next (append (take choices i) (drop choices (+ i 1)))
-                                                ))))))
+          (fail)
+          (let ((i (random (length choices))))
+            ((list-ref choices i) env
+                                  succeed
+                                  (lambda ()
+                                    (try-next (append (take choices i) (drop choices (+ i 1)))
+                                              ))))))
       (try-next cprocs))))
 
 (driver-loop)
@@ -767,25 +767,25 @@ end
 (define (analyze exp)
   (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
-        ((quoted? exp) (analyze-quoted exp))
-        ((variable? exp) (analyze-variable exp))
-        ((assignment? exp) (analyze-assignment exp))
-        ((permanent-set? exp) (analyze-permanent-set exp))
-        ((definition? exp) (analyze-definition exp))
-        ((if? exp) (analyze-if exp))
-        ((lambda? exp) (analyze-lambda exp))
-        ((let? exp)
-         (analyze (let->combination exp)))
-        ((begin? exp)
-         (analyze-sequence (begin-actions exp)))
-        ((cond? exp) (analyze (cond->if exp)))
-        ((amb? exp) (analyze-amb exp))
-        ((ramb? exp) (analyze-ramb exp))
-        ((and? exp) (analyze-and exp))
-        ((or? exp) (analyze-or exp))
-        ((application? exp) (analyze-application exp))
-        (else
-          (error "Unknown expression type -- ANALYZE" exp))))
+    ((quoted? exp) (analyze-quoted exp))
+    ((variable? exp) (analyze-variable exp))
+    ((assignment? exp) (analyze-assignment exp))
+    ((permanent-set? exp) (analyze-permanent-set exp))
+    ((definition? exp) (analyze-definition exp))
+    ((if? exp) (analyze-if exp))
+    ((lambda? exp) (analyze-lambda exp))
+    ((let? exp)
+     (analyze (let->combination exp)))
+    ((begin? exp)
+     (analyze-sequence (begin-actions exp)))
+    ((cond? exp) (analyze (cond->if exp)))
+    ((amb? exp) (analyze-amb exp))
+    ((ramb? exp) (analyze-ramb exp))
+    ((and? exp) (analyze-and exp))
+    ((or? exp) (analyze-or exp))
+    ((application? exp) (analyze-application exp))
+    (else
+      (error "Unknown expression type -- ANALYZE" exp))))
 
 (driver-loop)
 (define count 0)
@@ -827,26 +827,26 @@ end
 (define (analyze exp)
   (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
-        ((quoted? exp) (analyze-quoted exp))
-        ((variable? exp) (analyze-variable exp))
-        ((assignment? exp) (analyze-assignment exp))
-        ((permanent-set? exp) (analyze-permanent-set exp))
-        ((definition? exp) (analyze-definition exp))
-        ((if? exp) (analyze-if exp))
-        ((if-fail? exp) (analyze-if-fail exp))
-        ((lambda? exp) (analyze-lambda exp))
-        ((let? exp)
-         (analyze (let->combination exp)))
-        ((begin? exp)
-         (analyze-sequence (begin-actions exp)))
-        ((cond? exp) (analyze (cond->if exp)))
-        ((amb? exp) (analyze-amb exp))
-        ((ramb? exp) (analyze-ramb exp))
-        ((and? exp) (analyze-and exp))
-        ((or? exp) (analyze-or exp))
-        ((application? exp) (analyze-application exp))
-        (else
-          (error "Unknown expression type -- ANALYZE" exp))))
+    ((quoted? exp) (analyze-quoted exp))
+    ((variable? exp) (analyze-variable exp))
+    ((assignment? exp) (analyze-assignment exp))
+    ((permanent-set? exp) (analyze-permanent-set exp))
+    ((definition? exp) (analyze-definition exp))
+    ((if? exp) (analyze-if exp))
+    ((if-fail? exp) (analyze-if-fail exp))
+    ((lambda? exp) (analyze-lambda exp))
+    ((let? exp)
+     (analyze (let->combination exp)))
+    ((begin? exp)
+     (analyze-sequence (begin-actions exp)))
+    ((cond? exp) (analyze (cond->if exp)))
+    ((amb? exp) (analyze-amb exp))
+    ((ramb? exp) (analyze-ramb exp))
+    ((and? exp) (analyze-and exp))
+    ((or? exp) (analyze-or exp))
+    ((application? exp) (analyze-application exp))
+    (else
+      (error "Unknown expression type -- ANALYZE" exp))))
 
 (driver-loop)
 (if-fail (let ((x (an-element-of '(1 3 5))))
@@ -877,27 +877,27 @@ end
 (define (analyze exp)
   (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
-        ((quoted? exp) (analyze-quoted exp))
-        ((variable? exp) (analyze-variable exp))
-        ((assignment? exp) (analyze-assignment exp))
-        ((permanent-set? exp) (analyze-permanent-set exp))
-        ((definition? exp) (analyze-definition exp))
-        ((require? exp) (analyze-require exp))
-        ((if? exp) (analyze-if exp))
-        ((if-fail? exp) (analyze-if-fail exp))
-        ((lambda? exp) (analyze-lambda exp))
-        ((let? exp)
-         (analyze (let->combination exp)))
-        ((begin? exp)
-         (analyze-sequence (begin-actions exp)))
-        ((cond? exp) (analyze (cond->if exp)))
-        ((amb? exp) (analyze-amb exp))
-        ((ramb? exp) (analyze-ramb exp))
-        ((and? exp) (analyze-and exp))
-        ((or? exp) (analyze-or exp))
-        ((application? exp) (analyze-application exp))
-        (else
-          (error "Unknown expression type -- ANALYZE" exp))))
+    ((quoted? exp) (analyze-quoted exp))
+    ((variable? exp) (analyze-variable exp))
+    ((assignment? exp) (analyze-assignment exp))
+    ((permanent-set? exp) (analyze-permanent-set exp))
+    ((definition? exp) (analyze-definition exp))
+    ((require? exp) (analyze-require exp))
+    ((if? exp) (analyze-if exp))
+    ((if-fail? exp) (analyze-if-fail exp))
+    ((lambda? exp) (analyze-lambda exp))
+    ((let? exp)
+     (analyze (let->combination exp)))
+    ((begin? exp)
+     (analyze-sequence (begin-actions exp)))
+    ((cond? exp) (analyze (cond->if exp)))
+    ((amb? exp) (analyze-amb exp))
+    ((ramb? exp) (analyze-ramb exp))
+    ((and? exp) (analyze-and exp))
+    ((or? exp) (analyze-or exp))
+    ((application? exp) (analyze-application exp))
+    (else
+      (error "Unknown expression type -- ANALYZE" exp))))
 
 (define (analyze-require exp)
   (let ((pproc (analyze (require-predicate exp))))
@@ -905,8 +905,8 @@ end
       (pproc env
              (lambda (pred-value fail2)
                (if (false? pred-value)
-                   (fail2)
-                   (succeed 'ok fail2)))
+                 (fail2)
+                 (succeed 'ok fail2)))
              fail))))
 
 (driver-loop)
