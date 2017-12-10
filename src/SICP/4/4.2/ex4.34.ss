@@ -62,17 +62,18 @@
         (else false)))
 
 (define (text-of-quotation exp env)
-  (if (list? (cadr exp))
+  (if (pair? (cadr exp))
       (eval (make-quotation-list (cadr exp)) env)
-      (cadr exp)))
+      (list 'quote (cadr exp))))
 
 (define (make-quotation-list l)
-  (if (null? l)
-      '()
-      (let ((first-list (car l))
-            (rest-list (cdr l)))
-        (list 'cons (list 'quote first-list)
-              (make-quotation-list rest-list)))))
+  (cond 
+    ((null? l) '())
+    ((pair? l)
+     (list 'cons (list 'quote (car l))
+           (make-quotation-list (cdr l))))
+    (else (list 'quote l))))
+
 
 (actual-value
   '(begin
@@ -91,7 +92,7 @@
             (procedure-parameters object)
             (procedure-body object)
             '<procedure-env>))
-    (if (tagged-list? object 'cons)
+    (if (tagged-list? object ''cons)
       (display-cons object)
       (display object))))
 
@@ -121,19 +122,6 @@
                 (user-print cdr-value))))))))
   (iter obj 0))
 
-;(cons 'cons (lambda (m) (m x y))))
-;(define (cons-test x y)
-;  (cons 'cons (lambda (m) (m x y))))
-;(cons-test 1 2)
-;((cdr (cons-test 1 2)) (lambda (p q) q))
-;(make-quotation-list '(a b c))
-(eval '(car '(1 (2 3))) the-global-environment)
-
-(car '(a (b c)))
-(car '(a (b . c)))
-(cdr '(a (b . c)))
-(cdr (cdr '(a (b . c))))
-
 (driver-loop)
 '()
 '(a b c)
@@ -144,6 +132,8 @@
 (cdr '(a (b c)))
 (car '(a (b . c)))
 (cdr '(a (b . c)))
+(car  (cdr '(a (b . c))))
+(car  (car  (cdr '(a (b . c)))))
 (car  (cdr '(a (b . c))))
 (cdr  (cdr '(a (b . c))))
 end
