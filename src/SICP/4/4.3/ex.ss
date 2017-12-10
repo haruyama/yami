@@ -11,6 +11,14 @@ try-again
 try-again
 end
 
+(driver-loop)
+(define (an-integer-starting-from n)
+  (amb n (an-integer-starting-from (+ n 1))))
+(an-integer-starting-from 2)
+try-again
+try-again
+try-again
+end
 
 (driver-loop)
 (define (square n) (* n n))
@@ -20,7 +28,7 @@ end
 (define (find-divisor n test-divisor)
   (cond ((> (square test-divisor) n) n)
     ((divides? test-divisor n) test-divisor)
-    (else (find-divisor n (+ test-divisor 1)))))
+    else (find-divisor n (+ test-divisor 1)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
@@ -64,7 +72,6 @@ end
   a)
 try-again
 try-again
-
 end
 
 
@@ -85,13 +92,6 @@ end
 try-again
 try-again
 try-again
-try-again
-
-
-try-again
-try-again
-try-again
-
 
 (define (a-pythagorean-triple)
   (let ((k (an-integer-starting-from 5)))
@@ -147,7 +147,7 @@ end
 try-again
 end
 
-
+;ex4.38
 (driver-loop)
 (define (multiple-dwelling2)
   (let ((baker (amb 1 2 3 4 5))
@@ -179,7 +179,8 @@ try-again
 
 end
 
-
+;ex4.39
+;https://wizardbook.wordpress.com/2011/01/12/exercise-4-39/
 
 ;ex4.40
 (driver-loop)
@@ -260,7 +261,6 @@ end
     (else  (filter predicate (cdr sequence)))))
 
 
-
 (define (remove item sequence)
   (filter (lambda (x) (not (= x item)))
           sequence))
@@ -283,7 +283,7 @@ end
 (or false false)
 end
 
-
+;ex4.42
 (driver-loop)
 
 (define (xor a b)
@@ -314,6 +314,15 @@ end
 
 (driver-loop)
 
+(define (distinct? items)
+  (cond ((null? items) true)
+    ((null? (cdr items)) true)
+    ((member (car items) (cdr items)) false)
+    (else (distinct? (cdr items)))))
+
+(define (require p)
+  (if (not p) (amb)))
+
 (define (filter pred lst)
   (if (null? lst)
     '()
@@ -326,26 +335,21 @@ end
     '()
     (cons (proc (car items))
           (map proc (cdr items)))))
-end
 
-(driver-loop)
 (define (ex4-43)
-  (let (
-        (moore (cons 'lorna 'mary-ann))
-        (downing (cons 'melissa (amb 'lorna 'rosalind 'gabrielle)))
-        (hall (cons 'rosalind (amb 'lorna 'gabrielle)))
+  (let ((moore (cons 'lorna 'mary-ann))
         (barnacle (cons 'gabrielle 'melissa))
         (parker (cons 'mary-ann (amb 'lorna 'rosalind 'gabrielle)))
+        (downing (cons 'melissa (amb 'lorna 'rosalind 'gabrielle)))
+        (hall (cons 'rosalind (amb 'lorna 'gabrielle)))
         )
     (let ((fathers
             (list moore downing hall barnacle parker)))
-      ;      (require
-      ;       (distinct? (map car fathers)))
-      (require
-        (distinct? (map cdr fathers)))
       (require
         (eq? (cdr parker)
              (car (car (filter (lambda (x) (eq? (cdr x) 'gabrielle)) fathers)))))
+      (require
+        (distinct? (map cdr fathers)))
       (list 'moore moore 'downing downing 'hall hall 'barnacle barnacle 'parker parker))))
 
 
@@ -355,6 +359,28 @@ end
 
 
 (driver-loop)
+
+(define (distinct? items)
+  (cond ((null? items) true)
+    ((null? (cdr items)) true)
+    ((member (car items) (cdr items)) false)
+    (else (distinct? (cdr items)))))
+
+(define (require p)
+  (if (not p) (amb)))
+
+(define (filter pred lst)
+  (if (null? lst)
+    '()
+    (if (pred (car lst))
+      (cons (car lst) (filter pred (cdr lst)))
+      (filter pred (cdr lst)))))
+
+(define (map proc items)
+  (if (null? items)
+    '()
+    (cons (proc (car items))
+          (map proc (cdr items)))))
 (define (ex4-43-2)
   (let (
         (moore (cons 'lorna (amb 'rosalind 'gabrielle 'mary-ann)))
