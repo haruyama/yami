@@ -85,6 +85,7 @@
        ((cdr-primitive z) (lambda (p q) q))))
   the-global-environment)
 
+;; user-pring 側でも loop 回数を制御するのがいいかも
 (define (user-print object)
   (if (compound-procedure? object)
     (display
