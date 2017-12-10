@@ -312,6 +312,7 @@ end
 try-again
 end
 
+;ex4.43
 (driver-loop)
 
 (define (distinct? items)
@@ -337,23 +338,88 @@ end
           (map proc (cdr items)))))
 
 (define (ex4-43)
-  (let ((moore (cons 'lorna 'mary-ann))
+  (let (
+        (moore (cons 'lorna 'mary-ann))
+        (downing (cons 'melissa (amb 'lorna 'rosalind 'gabrielle 'mary-ann)))
+        (hall (cons 'rosalind (amb 'lorna 'gabrielle 'mary-ann)))
         (barnacle (cons 'gabrielle 'melissa))
         (parker (cons 'mary-ann (amb 'lorna 'rosalind 'gabrielle)))
-        (downing (cons 'melissa (amb 'lorna 'rosalind 'gabrielle)))
-        (hall (cons 'rosalind (amb 'lorna 'gabrielle)))
         )
     (let ((fathers
             (list moore downing hall barnacle parker)))
+      ;      (require
+      ;       (distinct? (map car fathers)))
+      (require
+        (distinct? (map cdr fathers)))
       (require
         (eq? (cdr parker)
              (car (car (filter (lambda (x) (eq? (cdr x) 'gabrielle)) fathers)))))
-      (require
-        (distinct? (map cdr fathers)))
       (list 'moore moore 'downing downing 'hall hall 'barnacle barnacle 'parker parker))))
 
 
 (ex4-43)
+try-again
+
+end
+
+(driver-loop)
+
+(define (distinct? items)
+  (cond ((null? items) true)
+    ((null? (cdr items)) true)
+    ((member (car items) (cdr items)) false)
+    (else (distinct? (cdr items)))))
+
+(define (require p)
+  (if (not p) (amb)))
+
+(define (filter pred lst)
+  (if (null? lst)
+    '()
+    (if (pred (car lst))
+      (cons (car lst) (filter pred (cdr lst)))
+      (filter pred (cdr lst)))))
+
+(define (map proc items)
+  (if (null? items)
+    '()
+    (cons (proc (car items))
+          (map proc (cdr items)))))
+
+(define (yacht f) (car f))
+(define (daughter f) (cdr f))
+
+(define (ex4-43-raw)
+  (let ((moore (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+    (require (eq? (yacht moore) 'lorna))
+    (require (eq? (daughter moore) 'mary-ann))
+    (let ((barnacle (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+      (require (eq? (yacht barnacle) 'gabrielle))
+      (require (eq? (daughter barnacle) 'melissa))
+      (let ((downing (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+        (require (eq? (yacht downing) 'melissa))
+        (require (not (member (daughter downing) '(melissa mary-ann))))
+        (let ((hall (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+          (require (eq? (yacht hall) 'rosalind))
+          (require (not (member (daughter hall) '(melissa mary-ann rosalind))))
+          (let ((parker (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+            (require (not (member (yacht parker) '(lorna gabrielle melissa rosalind))))
+            (require (not (member (daughter parker) '(melissa mary-ann))))
+            (let ((fathers-without-parker
+                    (list moore downing hall barnacle))
+                  (fathers
+                    (list moore downing hall barnacle parker)))
+              (let ((gabrielle-fathers (filter (lambda (x) (eq? (daughter x) 'gabrielle)) fathers-without-parker)))
+                (require (not (null? gabrielle-fathers)))
+                (require (null? (cdr  gabrielle-fathers)))
+                (require
+                  (eq? (daughter parker)
+                       (yacht (car gabrielle-fathers))))
+                (require
+                  (distinct? (map daughter fathers)))
+                (list 'moore moore 'downing downing 'hall hall 'barnacle barnacle 'parker parker)))))))))
+
+(ex4-43-raw)
 try-again
 end
 
