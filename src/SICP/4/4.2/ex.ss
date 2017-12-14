@@ -273,14 +273,14 @@ end
 (define (text-of-quotation exp env)
   (if (pair? (cadr exp))
       (eval (make-quotation-list (cadr exp)) env)
-      (list 'quote (cadr exp))))
+      (cadr exp)))
 
 (define (make-quotation-list l)
   (cond ((null? l) '())
     ((pair? l)
-         (list 'cons (list 'quote (car l))
-                 (make-quotation-list (cdr l))))
-        (else (list 'quote l))))
+     (list 'cons (list 'quote (car l))
+           (make-quotation-list (cdr l))))
+    (else (list 'quote l))))
 
 (make-quotation-list '(1 2 3))
 (make-quotation-list '(1 . 2))
@@ -296,8 +296,8 @@ end
 
 (car '(a b c))
 (cdr '(a b c))
-(car '(a . b ))
-(cdr '(a . b ))
+(car '(a . b))
+(cdr '(a . b))
 'a
 '1
 end
