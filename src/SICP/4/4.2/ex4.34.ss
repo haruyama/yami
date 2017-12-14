@@ -19,6 +19,7 @@
         (list 'equal? equal?)
         (list 'list list)
         (list 'map map)
+        (list 'string->symbol string->symbol)
         ;...
         ))
 
@@ -64,7 +65,7 @@
 (define (text-of-quotation exp env)
   (if (pair? (cadr exp))
       (eval (make-quotation-list (cadr exp)) env)
-      (list 'quote (cadr exp))))
+      (cadr exp)))
 
 (define (make-quotation-list l)
   (cond 
@@ -78,7 +79,7 @@
 (actual-value
   '(begin
      (define (cons x y)
-       (cons-primitive 'cons (lambda (m) (m x y))))
+       (cons-primitive (string->symbol "cons") (lambda (m) (m x y))))
      (define (car z)
        ((cdr-primitive z) (lambda (p q) p)))
      (define (cdr z)
@@ -93,7 +94,7 @@
             (procedure-parameters object)
             (procedure-body object)
             '<procedure-env>))
-    (if (tagged-list? object ''cons)
+    (if (tagged-list? object 'cons)
       (display-cons object)
       (display object))))
 
@@ -120,7 +121,9 @@
                (display ")"))
               (else
                 (display " . ")
-                (user-print cdr-value))))))))
+                (user-print cdr-value)
+                (display ")"))
+                )))))))
   (iter obj 0))
 
 (driver-loop)
