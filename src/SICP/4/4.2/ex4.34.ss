@@ -115,15 +115,15 @@
             (user-print (user-car obj))
             (cond
               ((tagged-list? cdr-value 'cons)
-                   (display " ")
-                   (iter cdr-value (+ depth 1)))
+               (display " ")
+               (iter cdr-value (+ depth 1)))
               ((null? cdr-value)
                (display ")"))
               (else
                 (display " . ")
                 (user-print cdr-value)
                 (display ")"))
-                )))))))
+              ))))))
   (iter obj 0))
 
 (driver-loop)
