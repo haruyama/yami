@@ -79,7 +79,7 @@
 (actual-value
   '(begin
      (define (cons x y)
-       (cons-primitive (string->symbol "cons") (lambda (m) (m x y))))
+       (cons-primitive 'cons (lambda (m) (m x y))))
      (define (car z)
        ((cdr-primitive z) (lambda (p q) p)))
      (define (cdr z)
