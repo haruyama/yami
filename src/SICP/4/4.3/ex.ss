@@ -603,14 +603,10 @@ end
     (set! *unparsed* (cdr *unparsed*))
     (list (car word-list) found-word)))
 
-end
-
-(driver-loop)
 (define *unparsed* '())
 (define (parse input)
   (set! *unparsed* input)
   (let ((sent (parse-sentence)))
-    ;    (newline) (display "unparsed: " )(display *unparsed*) (newline)
     (require (null? *unparsed*))
     sent))
 (parse '(the cat eats))
@@ -628,8 +624,6 @@ end
         (parse-verb-phrase)))
 (define (parse-verb-phrase)
   (define (maybe-extend verb-phrase)
-    ;    (newline) (display "verb-maybe-extend: ")
-    ;    (display verb-phrase) (newline)
     (amb verb-phrase
          (maybe-extend (list 'verb-phrase
                              verb-phrase
@@ -641,8 +635,6 @@ end
         (parse-word nouns)))
 (define (parse-noun-phrase)
   (define (maybe-extend noun-phrase)
-    ;    (newline) (display "noun-maybe-extend: ")
-    ;    (display noun-phrase) (newline)
     (amb noun-phrase
          (maybe-extend (list 'noun-phrase
                              noun-phrase
@@ -654,13 +646,6 @@ end
 try-again
 try-again
 end
-
-(driver-loop)
-(parse '(the professor lectures to the student with the cat))
-try-again
-try-again
-end
-
 
 (driver-loop)
 (parse '(the professor lectures to the student in the class with the cat))
@@ -676,7 +661,30 @@ end
 ;先に動詞句をパースしちゃうから
 
 ;ex4.47
-;http://www.serendip.ws/archives/2540
+;http://wat-aro.hatenablog.com/entry/2016/01/13/011023
+
+(parse '(the student with the cat sleeps in the class))
+
+(define (parse-verb-phrase)
+  (amb (parse-word verbs)
+       (list 'verb-phrase
+             (parse-verb-phrase) ; ここで無限ループが起きる
+             (parse-prepositional-phrase))))
+
+
+(parse '(the student with the cat sleeps in the class))
+
+
+(driver-loop)
+(define (parse-verb-phrase)
+  (define (maybe-extend verb-phrase)
+    (amb verb-phrase
+         (maybe-extend (list 'verb-phrase
+                             verb-phrase
+                             (parse-prepositional-phrase)))))
+  (maybe-extend (parse-word verbs)))
+
+(parse '(the student with the cat sleeps in the class))
 
 ;; (driver-loop)
 ;; (define (parse-word word-list)
@@ -704,6 +712,33 @@ end
 ;; try-again
 ;; end
 
+;ex4.48
+; http://www.serendip.ws/archives/2545
+(driver-loop)
+(define conjunctions '(conjunction and or then if))
+
+(define (parse-complex-sentence-with-conjuction)
+  (list 'conjunction-sentence
+        (parse-word conjunctions)
+        (parse-complex-sentence)))
+
+(define (parse-complex-sentence)
+  (define (maybe-extend sentence)
+    (amb sentence
+         (maybe-extend (list 'complex-sentence
+                             sentence
+                             (parse-complex-sentence-with-conjuction)))))
+  (maybe-extend (parse-sentence)))
+
+(define (parse input)
+  (set! *unparsed* input)
+  (let ((sent (parse-complex-sentence)))
+    (require (null? *unparsed*))
+    sent))
+(parse '(the cat eats))
+
+(parse '(the cat eats and the cat sleeps))
+end
 
 
 ;ex4.49
@@ -728,7 +763,6 @@ try-again
 try-again
 end
 
-(parse '(the professor lectures to the student in the class with the cat))
 ;ex4.50
 (define (analyze exp)
   (cond ((self-evaluating? exp)
