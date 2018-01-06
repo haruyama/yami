@@ -564,70 +564,22 @@ end
       false
       (eight-queen-diag first-row (cdr rest-rows)))))
 
-
-(define (eight-queen-sub rows)
-  (if (null? rows) true
-    (let ((first-row (car rows))
-          (rest-rows (cdr rows)))
-      (if
-        (eight-queen-diag first-row rest-rows)
-        (eight-queen-sub rest-rows)
-        false))))
-
-
 (define (n-queens n)
-  (define (generate-positions k l)
-    (if (> k n) l
-      (generate-positions (+ k 1)  (cons (cons k (an-integer-between 1 n)) l))))
-  (let ((rows (generate-positions 1 '())))
-    (require
-      (distinct? (map cdr rows)))
-    (require
-      (eight-queen-sub rows))
-    rows))
+  (define (iter k rows)
+    (if (> k n) rows
+      (let ((new-row (cons k (an-integer-between 1 n))))
+        (require (distinct? (map cdr (cons new-row rows))))
+        (require (eight-queen-diag new-row rows))
+        (iter (+ k 1) (cons new-row rows)))))
+  (iter 1 '()))
+
 (n-queens 4)
 try-again
 try-again
-;(n-queens 6)
+(n-queens 6)
+(n-queens 8)
 end
 
-;; (driver-loop)
-;; (define (eight-queen)
-;;   (let (
-;;         (row1 (cons 1 (amb 1 2 3 4 5 6 7 8)))
-;;         (row2 (cons 2 (amb 1 2 3 4 5 6 7 8)))
-;;         (row3 (cons 3 (amb 1 2 3 4 5 6 7 8)))
-;;         (row4 (cons 4 (amb 1 2 3 4 5 6 7 8)))
-;;         (row5 (cons 5 (amb 1 2 3 4 5 6 7 8)))
-;;         (row6 (cons 6 (amb 1 2 3 4 5 6 7 8)))
-;;         )
-;;     (let ((rows-a (list row1 row2 row3 row4 row5 row6)))
-;;       (require
-;;        (distinct? (map cdr rows-a)))
-;;       (require
-;;        (eight-queen-sub rows-a))
-;;       (let
-;;           (
-;;            (row7 (cons 7 (amb 1 2 3 4 5 6 7 8)))
-;;            )
-;;         (let ((rows-b (list row1 row2 row3 row4 row5 row6 row7)))
-;;           (require
-;;            (distinct? (map cdr rows-b)))
-;;           (require
-;;            (eight-queen-sub rows-b))
-
-;;           (let (
-;;                 (row8 (cons 8 (amb 1 2 3 4 5 6 7 8)))
-;;                 )
-;;             (let ((rows (list row1 row2 row3 row4 row5 row6 row7 row8)))
-;;               (require
-;;                (distinct? (map cdr rows)))
-;;               (require
-;;                (eight-queen-sub rows))
-;;               rows)))))))
-
-
-;; (eight-queen)
 
 (driver-loop)
 (define nouns '(noun student professor cat class))
