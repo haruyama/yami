@@ -81,6 +81,10 @@ end
   (require (<= low high))
   (amb low (an-integer-between (+ low 1) high)))
 
+(an-integer-between 5 10)
+try-again
+(an-element-of '(5 6 7))
+
 (define (a-pythagorean-triple-between low high)
   (let ((i (an-integer-between low high)))
     (let ((j (an-integer-between i high)))
@@ -88,15 +92,25 @@ end
         (require (= (+ (* i i) (* j j)) (* k k)))
         (list i j k)))))
 
+
 (a-pythagorean-triple-between 3 13)
 try-again
 try-again
 try-again
 
+;(define (a-pythagorean-triple-bad low)
+;  (let ((i (an-integer-starting-from low)))
+;    (let ((j (an-integer-starting-from i)))
+;      (let ((k (an-integer-starting-from j)))
+;        (require (= (+ (* i i) (* j j)) (* k k)))
+;        (list i j k)))))
+
+;(a-pythagorean-triple-bad 3)
+
 (define (a-pythagorean-triple)
   (let ((k (an-integer-starting-from 5)))
-    (let ((i (an-integer-between 1 k)))
-      (let ((j (an-integer-between 1 k)))
+    (let ((j (an-integer-between 1 (- k 1))))
+      (let ((i (an-integer-between 1 j)))
         (require (= (+ (* i i) (* j j)) (* k k)))
         (list i j k)))))
 
@@ -115,6 +129,9 @@ end
 ;kについて探索しないでよい
 
 (driver-loop)
+
+(define (require p)
+  (if (not p) (amb)))
 
 (define (distinct? items)
   (cond ((null? items) true)
@@ -181,10 +198,36 @@ end
 
 ;ex4.39
 ;https://wizardbook.wordpress.com/2011/01/12/exercise-4-39/
+(driver-loop)
+(define (multiple-dwelling3)
+  (let ((baker (amb 1 2 3 4 5))
+        (cooper (amb 1 2 3 4 5))
+        (fletcher (amb 1 2 3 4 5))
+        (miller (amb 1 2 3 4 5))
+        (smith (amb 1 2 3 4 5)))
+    (require (not (= fletcher 5)))
+    (require (not (= fletcher 1)))
+    (require (not (= (abs (- smith fletcher)) 1)))
+    (require (not (= (abs (- fletcher cooper)) 1)))
+    (require (> miller cooper))
+    (require (not (= cooper 1)))
+    (require (not (= baker 5)))
+    (require
+      (distinct? (list baker cooper fletcher miller smith)))
+    (list (list 'baker baker)
+          (list 'cooper cooper)
+          (list 'fletcher fletcher)
+          (list 'miller miller)
+          (list 'smith smith))))
+
+(multiple-dwelling3)
+try-again
+
+end
 
 ;ex4.40
 (driver-loop)
-(define (multiple-dwelling3)
+(define (multiple-dwelling4)
   (let ((fletcher (amb 1 2 3 4 5)))
     (require (not (= fletcher 5)))
     (require (not (= fletcher 1)))
@@ -206,7 +249,7 @@ end
                   (list 'miller miller)
                   (list 'smith smith))))))))
 
-(multiple-dwelling3)
+(multiple-dwelling4)
 try-again
 
 end
@@ -220,7 +263,7 @@ end
     (else (distinct? (cdr items)))))
 
 
-(define (multiple-dwelling4-condition items)
+(define (multiple-dwelling5-condition items)
   (let ((baker (car items))
         (cooper (cadr items))
         (fletcher (caddr items))
@@ -267,11 +310,11 @@ end
 
 ;(permutations (list 1 2 3))
 
-(define (multiple-dwelling4)
-  (filter multiple-dwelling4-condition
+(define (multiple-dwelling5)
+  (filter multiple-dwelling5-condition
           (permutations (list 1 2 3 4 5))))
 
-(multiple-dwelling4)
+(multiple-dwelling5)
 
 (driver-loop)
 (and true true)
