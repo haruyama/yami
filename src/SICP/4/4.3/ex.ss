@@ -329,14 +329,13 @@ end
 ;ex4.42
 (driver-loop)
 
-(define (xor a b)
-  (if a (not b) b))
-
 ;(define (require-ex4-42 cond1 cond2)
 ;  (require (or (and cond1 (not cond2))
 ;               (and (not cond1) cond2))))
 
 (define (ex4-42)
+  (define (xor a b)
+    (if a (not b) b))
   (let ((betty (amb 1 2 3 4 5))
         (ethel (amb 1 2 3 4 5))
         (joan (amb 1 2 3 4 5))
@@ -348,7 +347,7 @@ end
     (require (xor  (= kitty 2) (= mary 4)))
     (require (xor  (= mary 4) (= betty 1)))
     (require
-      (distinct?     (list betty ethel joan kitty mary)))
+      (distinct? (list betty ethel joan kitty mary)))
     (list betty ethel joan kitty mary)))
 
 (ex4-42)
@@ -427,23 +426,24 @@ end
     (cons (proc (car items))
           (map proc (cdr items)))))
 
+(define make-yacht-daughter cons)
 (define (yacht f) (car f))
 (define (daughter f) (cdr f))
 
 (define (ex4-43)
-  (let ((moore (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+  (let ((moore (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
     (require (eq? (yacht moore) 'lorna))
     (require (eq? (daughter moore) 'mary-ann))
-    (let ((barnacle (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+    (let ((barnacle (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
       (require (eq? (yacht barnacle) 'gabrielle))
       (require (eq? (daughter barnacle) 'melissa))
-      (let ((downing (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+      (let ((downing (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
         (require (eq? (yacht downing) 'melissa))
         (require (not (member (daughter downing) '(melissa mary-ann))))
-        (let ((hall (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+        (let ((hall (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
           (require (eq? (yacht hall) 'rosalind))
           (require (not (member (daughter hall) '(melissa mary-ann rosalind))))
-          (let ((parker (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+          (let ((parker (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
             (require (not (member (yacht parker) '(lorna gabrielle melissa rosalind))))
             (require (not (member (daughter parker) '(melissa mary-ann))))
             (let ((fathers-without-parker
@@ -465,20 +465,20 @@ try-again
 
 
 (define (ex4-43-2)
-  (let ((moore (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+  (let ((moore (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
     (require (eq? (yacht moore) 'lorna))
     ;(require (eq? (daughter moore) 'mary-ann))
     (require (not (eq? (daughter moore) 'lorna)))
-    (let ((barnacle (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+    (let ((barnacle (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
       (require (eq? (yacht barnacle) 'gabrielle))
       (require (eq? (daughter barnacle) 'melissa))
-      (let ((downing (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+      (let ((downing (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
         (require (eq? (yacht downing) 'melissa))
         (require (not (eq? (daughter downing) 'melissa)))
-        (let ((hall (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+        (let ((hall (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
           (require (eq? (yacht hall) 'rosalind))
           (require (not (member (daughter hall) '(melissa rosalind))))
-          (let ((parker (cons (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
+          (let ((parker (make-yacht-daughter (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa) (amb 'gabrielle 'lorna 'rosalind 'mary-ann 'melissa))))
             (require (not (member (yacht parker) '(lorna gabrielle melissa rosalind))))
             (require (not (eq? (daughter parker) 'melissa)))
             (let ((fathers-without-parker
@@ -523,10 +523,10 @@ end
 
 (define (four-queen)
   (let (
-        (row1 (cons 1 (amb 1 2 3 4 )))
-        (row2 (cons 2 (amb 1 2 3 4 )))
-        (row3 (cons 3 (amb 1 2 3 4 )))
-        (row4 (cons 4 (amb 1 2 3 4 )))
+        (row1 (cons 1 (amb 1 2 3 4)))
+        (row2 (cons 2 (amb 1 2 3 4)))
+        (row3 (cons 3 (amb 1 2 3 4)))
+        (row4 (cons 4 (amb 1 2 3 4)))
         )
     (let ((rows (list row1 row2 row3 row4)))
       (require
@@ -537,6 +537,62 @@ end
 
 (four-queen)
 try-again
+try-again
+
+;(define (eight-queen)
+;  (let (
+;        (row1 (cons 1 (amb 1 2 3 4 5 6 7 8)))
+;        (row2 (cons 2 (amb 1 2 3 4 5 6 7 8)))
+;        (row3 (cons 3 (amb 1 2 3 4 5 6 7 8)))
+;        (row4 (cons 4 (amb 1 2 3 4 5 6 7 8)))
+;        (row5 (cons 5 (amb 1 2 3 4 5 6 7 8)))
+;        (row6 (cons 6 (amb 1 2 3 4 5 6 7 8)))
+;        (row7 (cons 7 (amb 1 2 3 4 5 6 7 8)))
+;        (row8 (cons 8 (amb 1 2 3 4 5 6 7 8)))
+;        )
+;    (let ((rows (list row1 row2 row3 row4 row5 row6 row7 row8)))
+;      (require
+;        (distinct? (map cdr rows)))
+;      (require
+;        (eight-queen-sub rows))
+;      rows)))
+
+;(eight-queen)
+;try-again
+
+(define (eight-queen-diag row1 rest-rows)
+  (if (null? rest-rows) true
+    (if
+      (= (abs (- (car row1) (caar rest-rows)))
+         (abs (- (cdr row1) (cdar rest-rows)))) false
+      (eight-queen-diag row1 (cdr rest-rows)))))
+
+(define (eight-queen)
+  (let ((row1 (cons 1 (amb 1 2 3 4 5 6 7 8)))
+        (row2 (cons 2 (amb 1 2 3 4 5 6 7 8))))
+    (require (distinct? (map cdr (list row1 row2))))
+    (require (eight-queen-diag row2 (list row1)))
+    (let ((row3 (cons 3 (amb 1 2 3 4 5 6 7 8))))
+      (require (distinct? (map cdr (list row1 row2 row3))))
+      (require (eight-queen-diag row3 (list row2 row1)))
+      (let ((row4 (cons 4 (amb 1 2 3 4 5 6 7 8))))
+        (require (distinct? (map cdr (list row1 row2 row3 row4))))
+        (require (eight-queen-diag row4 (list row3 row2 row1)))
+        (let ((row5 (cons 5 (amb 1 2 3 4 5 6 7 8))))
+          (require (distinct? (map cdr (list row1 row2 row3 row4 row5))))
+          (require (eight-queen-diag row5 (list row4 row3 row2 row1)))
+          (let ((row6 (cons 6 (amb 1 2 3 4 5 6 7 8))))
+            (require (distinct? (map cdr (list row1 row2 row3 row4 row5 row6))))
+            (require (eight-queen-diag row6 (list row5 row4 row3 row2 row1)))
+            (let ((row7 (cons 7 (amb 1 2 3 4 5 6 7 8))))
+              (require (distinct? (map cdr (list row1 row2 row3 row4 row5 row6 row7))))
+              (require (eight-queen-diag row7 (list row6 row5 row4 row3 row2 row1)))
+              (let ((row8 (cons 8 (amb 1 2 3 4 5 6 7 8))))
+                (require (distinct? (map cdr (list row1 row2 row3 row4 row5 row6 row7 row8))))
+                (require (eight-queen-diag row8 (list row7 row6 row5 row4 row3 row2 row1)))
+                (list row1 row2 row3 row4 row5 row6 row7 row8)))))))))
+
+(eight-queen)
 try-again
 end
 
@@ -551,70 +607,22 @@ end
       false
       (eight-queen-diag first-row (cdr rest-rows)))))
 
-
-(define (eight-queen-sub rows)
-  (if (null? rows) true
-    (let ((first-row (car rows))
-          (rest-rows (cdr rows)))
-      (if
-        (eight-queen-diag first-row rest-rows)
-        (eight-queen-sub rest-rows)
-        false))))
-
-
 (define (n-queens n)
-  (define (generate-positions k l)
-    (if (> k n) l
-      (generate-positions (+ k 1)  (cons (cons k (an-integer-between 1 n)) l))))
-  (let ((rows (generate-positions 1 '())))
-    (require
-      (distinct? (map cdr rows)))
-    (require
-      (eight-queen-sub rows))
-    rows))
+  (define (iter k rows)
+    (if (> k n) rows
+      (let ((new-row (cons k (an-integer-between 1 n))))
+        (require (distinct? (map cdr (cons new-row rows))))
+        (require (eight-queen-diag new-row rows))
+        (iter (+ k 1) (cons new-row rows)))))
+  (iter 1 '()))
+
 (n-queens 4)
 try-again
 try-again
-;(n-queens 6)
+(n-queens 6)
+(n-queens 8)
 end
 
-;; (driver-loop)
-;; (define (eight-queen)
-;;   (let (
-;;         (row1 (cons 1 (amb 1 2 3 4 5 6 7 8)))
-;;         (row2 (cons 2 (amb 1 2 3 4 5 6 7 8)))
-;;         (row3 (cons 3 (amb 1 2 3 4 5 6 7 8)))
-;;         (row4 (cons 4 (amb 1 2 3 4 5 6 7 8)))
-;;         (row5 (cons 5 (amb 1 2 3 4 5 6 7 8)))
-;;         (row6 (cons 6 (amb 1 2 3 4 5 6 7 8)))
-;;         )
-;;     (let ((rows-a (list row1 row2 row3 row4 row5 row6)))
-;;       (require
-;;        (distinct? (map cdr rows-a)))
-;;       (require
-;;        (eight-queen-sub rows-a))
-;;       (let
-;;           (
-;;            (row7 (cons 7 (amb 1 2 3 4 5 6 7 8)))
-;;            )
-;;         (let ((rows-b (list row1 row2 row3 row4 row5 row6 row7)))
-;;           (require
-;;            (distinct? (map cdr rows-b)))
-;;           (require
-;;            (eight-queen-sub rows-b))
-
-;;           (let (
-;;                 (row8 (cons 8 (amb 1 2 3 4 5 6 7 8)))
-;;                 )
-;;             (let ((rows (list row1 row2 row3 row4 row5 row6 row7 row8)))
-;;               (require
-;;                (distinct? (map cdr rows)))
-;;               (require
-;;                (eight-queen-sub rows))
-;;               rows)))))))
-
-
-;; (eight-queen)
 
 (driver-loop)
 (define nouns '(noun student professor cat class))
@@ -638,14 +646,10 @@ end
     (set! *unparsed* (cdr *unparsed*))
     (list (car word-list) found-word)))
 
-end
-
-(driver-loop)
 (define *unparsed* '())
 (define (parse input)
   (set! *unparsed* input)
   (let ((sent (parse-sentence)))
-    ;    (newline) (display "unparsed: " )(display *unparsed*) (newline)
     (require (null? *unparsed*))
     sent))
 (parse '(the cat eats))
@@ -663,8 +667,6 @@ end
         (parse-verb-phrase)))
 (define (parse-verb-phrase)
   (define (maybe-extend verb-phrase)
-    ;    (newline) (display "verb-maybe-extend: ")
-    ;    (display verb-phrase) (newline)
     (amb verb-phrase
          (maybe-extend (list 'verb-phrase
                              verb-phrase
@@ -676,8 +678,6 @@ end
         (parse-word nouns)))
 (define (parse-noun-phrase)
   (define (maybe-extend noun-phrase)
-    ;    (newline) (display "noun-maybe-extend: ")
-    ;    (display noun-phrase) (newline)
     (amb noun-phrase
          (maybe-extend (list 'noun-phrase
                              noun-phrase
@@ -689,13 +689,6 @@ end
 try-again
 try-again
 end
-
-(driver-loop)
-(parse '(the professor lectures to the student with the cat))
-try-again
-try-again
-end
-
 
 (driver-loop)
 (parse '(the professor lectures to the student in the class with the cat))
@@ -711,7 +704,30 @@ end
 ;先に動詞句をパースしちゃうから
 
 ;ex4.47
-;http://www.serendip.ws/archives/2540
+;http://wat-aro.hatenablog.com/entry/2016/01/13/011023
+
+(parse '(the student with the cat sleeps in the class))
+
+(define (parse-verb-phrase)
+  (amb (parse-word verbs)
+       (list 'verb-phrase
+             (parse-verb-phrase) ; ここで無限ループが起きる
+             (parse-prepositional-phrase))))
+
+
+(parse '(the student with the cat sleeps in the class))
+
+
+(driver-loop)
+(define (parse-verb-phrase)
+  (define (maybe-extend verb-phrase)
+    (amb verb-phrase
+         (maybe-extend (list 'verb-phrase
+                             verb-phrase
+                             (parse-prepositional-phrase)))))
+  (maybe-extend (parse-word verbs)))
+
+(parse '(the student with the cat sleeps in the class))
 
 ;; (driver-loop)
 ;; (define (parse-word word-list)
@@ -739,6 +755,33 @@ end
 ;; try-again
 ;; end
 
+;ex4.48
+; http://www.serendip.ws/archives/2545
+(driver-loop)
+(define conjunctions '(conjunction and or then if))
+
+(define (parse-complex-sentence-with-conjuction)
+  (list 'conjunction-sentence
+        (parse-word conjunctions)
+        (parse-complex-sentence)))
+
+(define (parse-complex-sentence)
+  (define (maybe-extend sentence)
+    (amb sentence
+         (maybe-extend (list 'complex-sentence
+                             sentence
+                             (parse-complex-sentence-with-conjuction)))))
+  (maybe-extend (parse-sentence)))
+
+(define (parse input)
+  (set! *unparsed* input)
+  (let ((sent (parse-complex-sentence)))
+    (require (null? *unparsed*))
+    sent))
+(parse '(the cat eats))
+
+(parse '(the cat eats and the cat sleeps))
+end
 
 
 ;ex4.49
@@ -763,7 +806,6 @@ try-again
 try-again
 end
 
-(parse '(the professor lectures to the student in the class with the cat))
 ;ex4.50
 (define (analyze exp)
   (cond ((self-evaluating? exp)
