@@ -701,7 +701,7 @@ end
 
 
 ;ex4.46
-;先に動詞句をパースしちゃうから
+; 先に動詞句をパースしようとしてしまう
 
 ;ex4.47
 ;http://wat-aro.hatenablog.com/entry/2016/01/13/011023
@@ -794,6 +794,7 @@ end
                              verb-phrase
                              (parse-prepositional-phrase)))))
   (maybe-extend (parse-word verbs)))
+
 (define (parse-word word-list)
   (require (not (null? (cdr word-list))))
   (let ((found-word (an-element-of (cdr word-list))))
