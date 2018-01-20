@@ -706,7 +706,7 @@ end
 ;ex4.47
 ;http://wat-aro.hatenablog.com/entry/2016/01/13/011023
 
-(parse '(the student with the cat sleeps in the class))
+(parse '(the professor lectures to the student in the class with the cat))
 
 (define (parse-verb-phrase)
   (amb (parse-word verbs)
@@ -715,6 +715,7 @@ end
              (parse-prepositional-phrase))))
 
 
+(parse '(the professor lectures to the student in the class with the cat))
 (parse '(the student with the cat sleeps in the class))
 
 
