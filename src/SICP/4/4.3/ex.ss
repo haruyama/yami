@@ -758,6 +758,8 @@ end
 
 ;ex4.48
 ; http://www.serendip.ws/archives/2545
+
+
 (driver-loop)
 (define conjunctions '(conjunction and or then if))
 
@@ -861,6 +863,7 @@ end
 
 (driver-loop)
 (ramb 1 2 3 4 5)
+try-again
 try-again
 try-again
 try-again
@@ -1017,10 +1020,32 @@ end
            (require (even? x))
            x)
          'all-odd)
+try-again
 end
 
 ;ex4.53
 (driver-loop)
+(define (square n) (* n n))
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+    ((divides? test-divisor n) test-divisor)
+    (else (find-divisor n (+ test-divisor 1)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (prime-sum-pair list1 list2)
+  (let ((a (an-element-of list1))
+        (b (an-element-of list2)))
+    (require (prime? (+ a b)))
+    (list a b)))
+
 (let ((pairs '()))
   (if-fail (let ((p (prime-sum-pair '(1 3 5 8) '(20 35 110))))
              (permanent-set! pairs (cons p pairs))
