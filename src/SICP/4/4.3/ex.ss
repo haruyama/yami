@@ -1016,7 +1016,7 @@ end
            (require (even? x))
            x)
          'all-odd)
-(if-fail (let ((x (an-element-of '(1 3 8))))
+(if-fail (let ((x (an-element-of '(1 3 5 8))))
            (require (even? x))
            x)
          'all-odd)
