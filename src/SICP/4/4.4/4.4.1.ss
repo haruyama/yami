@@ -1,7 +1,6 @@
 (load "./4.4.ss")
-(define user-initial-environment (make-module #f))
 
-;(load "./4.4_microshaft.ss")
+(load "./4.4_microshaft.ss")
 
 (query-driver-loop)
 (job ?x (computer programmer))
@@ -23,49 +22,49 @@ end
 
 (query-driver-loop)
 (and (job ?person (computer programmer))
-     (address ?person ?where))
+  (address ?person ?where))
 (or (supervisor ?x (Bitdiddle Ben))
-    (supervisor ?x (Hacker Alyssa P)))
+  (supervisor ?x (Hacker Alyssa P)))
 
 (and (supervisor ?x (Bitdiddle Ben))
-     (not (job ?x (computer programmer))))
+  (not (job ?x (computer programmer))))
 
 (and (salary ?persion ?amount)
-     (lisp-value > ?amount 30000))
+  (lisp-value > ?amount 30000))
 end
 
 ;ex4.56
 (query-driver-loop)
 ;a
 (and (supervisor ?x (Bitdiddle Ben))
-     (address ?x ?y))
+  (address ?x ?y))
 ;b
 (and (salary (Bitdiddle Ben) ?ben-amount)
-     (salary ?x ?amount)
-     (lisp-value < ?amount ?ben-amount))
+  (salary ?x ?amount)
+  (lisp-value < ?amount ?ben-amount))
 ;c
 (and (supervisor ?person ?supervisor)
-     (not (job ?supervisor (computer . ?x)))
-     (job ?supervisor ?y))
+  (not (job ?supervisor (computer . ?x)))
+  (job ?supervisor ?y))
 end
 
 (query-driver-loop)
 
 (assert! (rule (lives-near ?person-1 ?person-2)
                (and (address ?person-1 (?town . ?rest-1))
-                    (address ?person-2 (?town . ?rest-2))
-                    (not (same ?person-1 ?person-2)))))
+                 (address ?person-2 (?town . ?rest-2))
+                 (not (same ?person-1 ?person-2)))))
 
 (assert! (rule (same ?x ?x)))
 
 (assert! (rule (wheel ?person)
                (and (supervisor ?middle-manager ?person)
-                    (supervisor ?x ?middle-manager))))
+                 (supervisor ?x ?middle-manager))))
 
 (assert! (rule (outranked-by ?staff-person ?boss)
                (or (supervisor ?staff-person ?boss)
-                   (and (supervisor ?staff-person ?middle-manager)
-                        (outranked-by ?middle-manager ?boss)))))
+                 (and (supervisor ?staff-person ?middle-manager)
+                   (outranked-by ?middle-manager ?boss)))))
 end
 
 (query-driver-loop)
@@ -73,9 +72,9 @@ end
 (lives-near ?x ?y)
 (wheel ?x)
 (and (job ?x (computer programmer))
-     (lives-near ?x (Bitdiddle Ben)))
+  (lives-near ?x (Bitdiddle Ben)))
 (and (job ?x ?type)
-     (lives-near ?x (Bitdiddle Ben)))
+  (lives-near ?x (Bitdiddle Ben)))
 (outranked-by ?person ?boss)
 end
 
@@ -85,17 +84,14 @@ end
                (or
                  (can-do-job ?job-1 ?job-2)
                  (and (can-do-job ?job-1 ?job-m)
-                      (can-replace-job ?job-m ?job-2))
+                   (can-replace-job ?job-m ?job-2))
                  )))
 (assert! (rule (replace ?person-1 ?person-2)
                (and (job ?person-1 ?job-1)
-                    (job ?person-2 ?job-2)
-                    (or (can-replace-job ?job-1 ?job-2)
-                        (same ?job-1 ?job-2))
-                    (not (same ?person-1 ?person-2)))))
-end
-
-(query-driver-loop)
+                 (job ?person-2 ?job-2)
+                 (or (can-replace-job ?job-1 ?job-2)
+                   (same ?job-1 ?job-2))
+                 (not (same ?person-1 ?person-2)))))
 
 (can-replace-job ?j (computer programmer trainee))
 (can-replace-job (computer wizard) ?j)
@@ -103,9 +99,9 @@ end
 (replace ?p (Fect Cy D))
 
 (and (replace ?p1 ?p2)
-     (salary ?p1 ?s1)
-     (salary ?p2 ?s2)
-     (lisp-value < ?s1 ?s2))
+  (salary ?p1 ?s1)
+  (salary ?p2 ?s2)
+  (lisp-value < ?s1 ?s2))
 end
 
 ;ex4.58
@@ -119,7 +115,7 @@ end
                  )))
 (big-shot ?p)
 (and (job ?w ?s)
-     (big-shot ?w))
+  (big-shot ?w))
 end
 
 ;ex4.59
@@ -137,8 +133,8 @@ end
 (assert!
   (rule (meeting-time ?person ?day-and-time)
         (and (job ?person (?div . ?rest-p))
-             (or (meeting whole-company ?day-and-time)
-                 (meeting ?div ?day-and-time)))))
+          (or (meeting whole-company ?day-and-time)
+            (meeting ?div ?day-and-time)))))
 
 (meeting-time (Hacker Alyssa P) ?dt)
 (meeting-time (Scrooge Eben) ?dt)
@@ -164,12 +160,12 @@ end
 (assert! (id 8 (Aull DeWitt)))
 (assert! (rule (lives-near2 ?person-1 ?person-2)
                (and (address ?person-1 (?town . ?rest-1))
-                    (address ?person-2 (?town . ?rest-2))
-                    (id ?id-1 ?person-1)
-                    (id ?id-2 ?person-2)
-                    (lisp-value > ?id-1 ?id-2)
-                    ;(not (same ?person-1 ?person-2)
-                    )))
+                 (address ?person-2 (?town . ?rest-2))
+                 (id ?id-1 ?person-1)
+                 (id ?id-2 ?person-2)
+                 (lisp-value > ?id-1 ?id-2)
+                 ;(not (same ?person-1 ?person-2)
+                 )))
 
 (lives-near2 ?p1 ?p2)
 end
@@ -226,13 +222,13 @@ end
 
 (assert! (rule (grandson-of ?g ?s)
                (and (son-of ?p ?s)
-                    (son-of ?g ?p))))
+                 (son-of ?g ?p))))
 
 (assert! (rule (son-of ?m ?s)
                (or
                  (son ?m ?s)
                  (and (wife ?m ?w)
-                      (son ?w ?s)))))
+                   (son ?w ?s)))))
 
 (grandson-of ?g ?s)
 (son-of ?m ?s)
@@ -256,35 +252,45 @@ end
 (display-stream
   (apply-rules '(lives-near (? x) (? y)) (singleton-stream '())))
 
+
+;ex 4.64
+; outranked-by が無限に呼ばれる
+
 ;ex 4.65
 (query-driver-loop)
 (wheel ?who)
 
 end
+; Warbucks が wheel である人が4人いる
 
 ;ex 4.66
 ; SICP 4.4.3 Ex. 4.66 - nakayama-blog - http://sioramen.sub.jp/blog/2009/12/sicp-443-ex-466.html
+; distinct 機構を入れて解決できる
+
+; ex 4.67
+; http://sioramen.sub.jp/blog/2009/12/sicp-443-ex-467.html
+; 履歴を残し履歴のパターンと同じ質問が繰替えされていたら打ち切る
 
 ;ex4.68
 (query-driver-loop)
 (assert! (rule (reverse () ())))
 (assert! (rule (reverse (?u . ?v) ?y)
                (and (reverse ?v ?w)
-                    (append-to-form ?w (?u) ?y))))
+                 (append-to-form ?w (?u) ?y))))
 
 (reverse (1 2 3) ?x)
 
 (assert! (rule (reverse2 () ())))
 (assert! (rule (reverse2 ?y (?u . ?v))
                (and (reverse2 ?w ?v)
-                    (append-to-form ?w (?u) ?y))))
+                 (append-to-form ?w (?u) ?y))))
 (reverse2 ?x (1 2 3))
 
 ;ex4.69
 
 (assert! (rule ((great . ?rel) ?x ?y)
                (and (son-of ?x ?w)
-                    (?rel ?w ?y))))
+                 (?rel ?w ?y))))
 
 
 (assert! (rule ((son) ?x ?y)
@@ -300,7 +306,7 @@ end
 
 
 (assert! (rule
-           (last-grandson? ?gs) 
+           (last-grandson? ?gs)
            (and
              (last-pair ?gs (?l))
              (same? ?l grandson)
