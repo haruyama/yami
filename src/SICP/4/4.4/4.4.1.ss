@@ -5,6 +5,7 @@
 (query-driver-loop)
 (job ?x (computer programmer))
 (address ?x ?y)
+(address (Bitdiddle Ben) (Slumerville (Ridge Road) 10))
 (supervisor ?x ?x)
 (job ?x (computer ?type))
 (job ?x (computer . ?type))
@@ -106,14 +107,19 @@ end
 
 ;ex4.58
 (query-driver-loop)
+
 (assert! (rule (big-shot ?person)
-               (and
-                 (job ?person (?div-p . ?rest-p))
-                 (supervisor ?person ?supervisor)
-                 (job ?supervisor (?div-s . ?rest-s))
-                 (not (same ?div-p ?div-s))
-                 )))
+               (or
+                 (and
+                   (job ?person (?div-p . ?rest-p))
+                   (not (supervisor ?person ?supervisor)))
+                 (and
+                   (job ?person (?div-p . ?rest-p))
+                   (supervisor ?person ?supervisor)
+                   (job ?supervisor (?div-s . ?rest-s))
+                   (not (same ?div-p ?div-s))))))
 (big-shot ?p)
+
 (and (job ?w ?s)
   (big-shot ?w))
 end
@@ -133,7 +139,8 @@ end
 (assert!
   (rule (meeting-time ?person ?day-and-time)
         (and (job ?person (?div . ?rest-p))
-          (or (meeting whole-company ?day-and-time)
+          (or
+            (meeting whole-company ?day-and-time)
             (meeting ?div ?day-and-time)))))
 
 (meeting-time (Hacker Alyssa P) ?dt)
