@@ -228,7 +228,8 @@ end
 (assert! (son Ada Jubal))
 
 (assert! (rule (grandson-of ?g ?s)
-               (and (son-of ?p ?s)
+               (and 
+                 (son-of ?p ?s)
                  (son-of ?g ?p))))
 
 (assert! (rule (son-of ?m ?s)
@@ -296,12 +297,9 @@ end
 ;ex4.69
 
 (assert! (rule ((great . ?rel) ?x ?y)
-               (and (son-of ?x ?w)
+               (and 
+                 (son-of ?x ?w)
                  (?rel ?w ?y))))
-
-
-(assert! (rule ((son) ?x ?y)
-               (son-of ?x ?y)))
 
 
 (assert! (rule ((grandson) ?x ?y)
@@ -310,14 +308,6 @@ end
 (assert! (rule (is-last-grandson? ?rel)
                (last-pair ?rel (grandson))
                ))
-
-
-(assert! (rule
-           (last-grandson? ?gs)
-           (and
-             (last-pair ?gs (?l))
-             (same? ?l grandson)
-             )))
 
 ((great grandson) ?g ?ggs)
 (?rel Adam Irad)
