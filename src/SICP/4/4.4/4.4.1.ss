@@ -228,7 +228,7 @@ end
 (assert! (son Ada Jubal))
 
 (assert! (rule (grandson-of ?g ?s)
-               (and 
+               (and
                  (son-of ?p ?s)
                  (son-of ?g ?p))))
 
@@ -240,6 +240,8 @@ end
 
 (grandson-of ?g ?s)
 (son-of ?m ?s)
+(grandson-of Cain ?s)
+(grandson-of Methushael ?s)
 end
 
 (display-stream
@@ -297,7 +299,7 @@ end
 ;ex4.69
 
 (assert! (rule ((great . ?rel) ?x ?y)
-               (and 
+               (and
                  (son-of ?x ?w)
                  (?rel ?w ?y))))
 
