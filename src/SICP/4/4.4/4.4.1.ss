@@ -295,8 +295,10 @@ end
 ; 履歴を残し履歴のパターンと同じ質問が繰替えされていたら打ち切る
 
 (define rule-history 'dummy)
+(define rule-loop-count 0)
 (define (query-driver-loop)
   (set! rule-history 'dummy)
+  (set! rule-loop-count 0)
   (prompt-for-input input-prompt)
   (let ((input (read)))
     (if (eq? input 'end) (display "stopped.")
@@ -341,12 +343,16 @@ end
         ;        (begin
         ;          (display rule-history) (newline)
         ;          (display (conclusion rule)) (newline)
-        (if (eq? rule-history (conclusion rule))
-          (error "rule loop detected" rule-history)
-          (begin
-            (set! rule-history (conclusion rule))
-            (qeval (rule-body clean-rule)
-                   (singleton-stream unify-result))))))))
+        (begin
+          (if (eq? rule-history (conclusion rule))
+            (if (> rule-loop-count 1000)
+              (error "rule loop detected" rule-history)
+              (set! rule-loop-count (+ 1 rule-loop-count)))
+            (begin
+              (set! rule-history (conclusion rule))
+              (set! rule-loop-count 0)))
+          (qeval (rule-body clean-rule)
+                 (singleton-stream unify-result)))))))
 
 
 ;ex4.68
