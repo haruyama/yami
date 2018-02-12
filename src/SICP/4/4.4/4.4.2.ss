@@ -8,6 +8,7 @@
 ;https://github.com/suzuken/sicp/blob/master/chapter4/q4.71.scm
 ;Louisの定義
 
+;ex4.72
 (define (interleave s1 s2)
   (if (stream-null? s1)
       s2
@@ -74,7 +75,7 @@ end
 ;;        (flatten-stream (stream-cdr stream)))))
 
 
-
+; ex4.73
 (define (flatten-stream stream)
   (if (stream-null? stream)
       the-empty-stream

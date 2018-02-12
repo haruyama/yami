@@ -262,9 +262,22 @@ end
 (display-stream
   (apply-rules '(lives-near (? x) (? y)) (singleton-stream '())))
 
+(query-driver-loop)
+(assert! (married Minnie Mickey))
+(assert! (rule (married ?x ?y)
+               (married ?y ?x)))
+(married Mickey ?who)
 
 ;ex 4.64
 ; outranked-by が無限に呼ばれる
+
+(query-driver-loop)
+(rule (outranked-by ?staff-person ?boss)
+      (or (supervisor ?staff-person ?boss)
+          (and (outranked-by ?middle-manager ?boss)
+               (supervisor ?staff-person ?middle-manager))))
+(outranked-by (Bitdiddle Ben) ?who)
+end
 
 ;ex 4.65
 (query-driver-loop)
@@ -280,6 +293,61 @@ end
 ; ex 4.67
 ; http://sioramen.sub.jp/blog/2009/12/sicp-443-ex-467.html
 ; 履歴を残し履歴のパターンと同じ質問が繰替えされていたら打ち切る
+
+(define rule-history 'dummy)
+(define (query-driver-loop)
+  (set! rule-history 'dummy)
+  (prompt-for-input input-prompt)
+  (let ((input (read)))
+    (if (eq? input 'end) (display "stopped.")
+      (let ((q (query-syntax-process input)))
+        (cond ((assertion-to-be-added? q)
+               (add-rule-or-assertion! (add-assertion-body q))
+               (newline)
+               (display "Assertion added to data base.")
+               (query-driver-loop))
+          (else
+            (newline)
+            (display output-prompt)
+            (display-stream
+              (stream-map
+                (lambda (frame)
+                  (instantiate q
+                               frame
+                               (lambda(v f)
+                                 (contract-quetion-mark v))))
+                (qeval q (singleton-stream '()))))
+            (query-driver-loop)))))))
+
+;(define (apply-a-rule rule query-pattern query-frame)
+;  (let ((clean-rule (rename-variables-in rule)))
+;    (let ((unify-result
+;            (unify-match query-pattern
+;                         (conclusion clean-rule)
+;                         query-frame)))
+;      (if (eq? unify-result 'failed)
+;        the-empty-stream
+;        (qeval (rule-body clean-rule)
+;               (singleton-stream unify-result))))))
+
+(define (apply-a-rule rule query-pattern query-frame)
+  (let ((clean-rule (rename-variables-in rule)))
+    (let ((unify-result
+            (unify-match query-pattern
+                         (conclusion clean-rule)
+                         query-frame)))
+      (if (eq? unify-result 'failed)
+        the-empty-stream
+        ;        (begin
+        ;          (display rule-history) (newline)
+        ;          (display (conclusion rule)) (newline)
+        (if (eq? rule-history (conclusion rule))
+          (error "rule loop detected" rule-history)
+          (begin
+            (set! rule-history (conclusion rule))
+            (qeval (rule-body clean-rule)
+                   (singleton-stream unify-result))))))))
+
 
 ;ex4.68
 (query-driver-loop)
