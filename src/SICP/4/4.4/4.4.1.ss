@@ -268,20 +268,30 @@ end
                (married ?y ?x)))
 (married Mickey ?who)
 
+(query-driver-loop)
+(not (baseball-fan (Bitdiddle Ben)))
+(and (supervisor ?x ?y)
+     (not (job ?x (computer programmer))))
+(and (not (job ?x (computer programmer)))
+     (supervisor ?x ?y))
+end
+
+
 ;ex 4.64
 ; outranked-by が無限に呼ばれる
 
 (query-driver-loop)
-(rule (outranked-by ?staff-person ?boss)
+(assert! (rule (outranked-by ?staff-person ?boss)
       (or (supervisor ?staff-person ?boss)
           (and (outranked-by ?middle-manager ?boss)
-               (supervisor ?staff-person ?middle-manager))))
+               (supervisor ?staff-person ?middle-manager)))))
 (outranked-by (Bitdiddle Ben) ?who)
 end
 
 ;ex 4.65
 (query-driver-loop)
 (wheel ?who)
+(and (wheel ?who) (salary ?who ?amount))
 
 end
 ; Warbucks が wheel である人が4人いる
