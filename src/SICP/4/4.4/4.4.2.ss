@@ -9,6 +9,7 @@
 ;Louisの定義
 
 ;ex4.72
+;http://wat-aro.hatenablog.com/entry/2016/01/21/013942
 (define (interleave s1 s2)
   (if (stream-null? s1)
       s2
@@ -62,26 +63,20 @@ end
 ;ex4.72,4.73
 ;無限のストリームに対応するため.
 
-;; (query-driver-loop)
-;; (or (married Mickery ?x)
-;;     (same Mickery ?x))
-;; end
-
-;; (define (flatten-stream stream)
-;;   (if (stream-null? stream)
-;;       the-empty-stream
-;;       (interleave
-;;        (stream-car stream)
-;;        (flatten-stream (stream-cdr stream)))))
-
-
 ; ex4.73
-(define (flatten-stream stream)
-  (if (stream-null? stream)
-      the-empty-stream
-      (interleave-delayed
-        (stream-car stream)
-        (delay (flatten-stream (stream-cdr stream))))))
+;(define (flatten-stream stream)
+;  (if (stream-null? stream)
+;    the-empty-stream
+;    (interleave
+;      (stream-car stream)
+;      (flatten-stream (stream-cdr stream)))))
+
+;(define (flatten-stream stream)
+;  (if (stream-null? stream)
+;      the-empty-stream
+;      (interleave-delayed
+;        (stream-car stream)
+;        (delay (flatten-stream (stream-cdr stream))))))
 
 
 
@@ -142,191 +137,6 @@ end
 end
 
 (query-driver-loop)
-(and (supervisor ?x ?y)
-     (unique (supervisor ?anyone ?y)))
-
-(and (supervisor ?middle-manager ?person)
-     (supervisor ?x ?middle-manager))
-
-(and (supervisor ?middle-manager ?person)
-     (unique (supervisor ?x ?middle-manager)))
+(and (job ?x ?j)
+     (unique (supervisor ?anyone ?x)))
 end
-
-;;;;
-(use slib)
-(require 'trace)
-
-;;;
-(query-syntax-process '(job ?x (computer programmer)))
-
-(display-stream
-  (qeval (query-syntax-process '(job ?x (computer programmer)))
-         (singleton-stream '())))
-
-;; (display-stream
-;;  (simple-query (query-syntax-process '(job ?x (computer programmer)))
-;;         (singleton-stream '())))
-
-
-;; (define (instantiate exp frame unbound-var-handler)
-;;   (define (copy exp)
-;;     (cond ((var? exp)
-;;            (let ((binding (binding-in-frame exp frame)))
-;;              (if binding
-;;                  (copy (binding-value binding))
-;;                  (unbound-var-handler exp frame))))
-;;           ((pair? exp)
-;;            (cons (copy (car exp)) (copy (cdr exp))))
-;;           (else exp)))
-;;   (newline)
-;;   (display "exp: ")
-;;   (display exp)
-;;   (newline)
-;;   (display "frame: ")
-;;   (display frame)
-;;   (newline)
-;;   (copy exp))
-;(trace query-syntax-process)
-(trace qeval)
-
-(query-driver-loop)
-(job ?x (computer programmer))
-end
-
-(untrace qeval)
-(untrace query-syntax-process)
-
-
-
-
-;; (define (instantiate exp frame unbound-var-handler)
-;;   (define (copy exp)
-;;     (cond ((var? exp)
-;;            (let ((binding (binding-in-frame exp frame)))
-;;              (if binding
-;;                  (copy (binding-value binding))
-;;                  (unbound-var-handler exp frame))))
-;;           ((pair? exp)
-;;            (cons (copy (car exp)) (copy (cdr exp))))
-;;           (else exp)))
-;;   (copy exp))
-
-;(trace conjoin)
-
-(query-driver-loop)
-(and (job ?person (computer programmer))
-     (address ?person ?where))
-
-end
-
-(untrace conjoin)
-
-;4.4.4.3
-;
-(find-assertions (query-syntax-process '(job ?x (computer programmer)))
-                 (singleton-stream '()))
-
-(display-stream
-  (find-assertions (query-syntax-process '(job ?x (computer programmer)))
-                   (singleton-stream '())))
-
-
-(display-stream
-  (fetch-assertions (query-syntax-process '(job ?x (computer programmer)))
-                    (singleton-stream '())))
-
-(check-an-assertion '(job (Hacker Alyssa P) (computer programmer))
-                    (query-syntax-process '(job ?x (computer programmer)))
-                    (singleton-stream '()))
-
-(check-an-assertion '(job (Bitdiddle Ben) (computer wizard))
-                    (query-syntax-process '(job ?x (computer programmer)))
-                    (singleton-stream '()))
-
-(pattern-match
-  (query-syntax-process '(job ?x (computer programmer)))
-  '(job (Hacker Alyssa P) (computer programmer))
-  (singleton-stream '()))
-
-(pattern-match
-  (query-syntax-process '(job ?x ?y))
-  '(job (Hacker Alyssa P) (computer programmer))
-  (singleton-stream '()))
-
-(binding-in-frame '(? y)
-                  (pattern-match
-                    (query-syntax-process '(job ?x ?y))
-                    '(job (Hacker Alyssa P) (computer programmer))
-                    (singleton-stream '())))
-
-;4.4.4.4
-
-(query-driver-loop)
-(assert! (rule (wheel ?person)
-               (and (supervisor ?middle-manager ?person)
-                    (supervisor ?x ?middle-manager))))
-(wheel ?p)
-end
-
-(fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '()))
-
-(apply-rules (query-syntax-process '(wheel ?p)) (singleton-stream '()))
-
-(apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
-              (query-syntax-process '(wheel ?p)) (singleton-stream '()))
-
-(display-stream
-  (stream-map
-    (lambda (frame)
-      (instantiate
-        (query-syntax-process '(wheel ?p))
-        frame
-        (lambda (v f) (v))))
-    (apply-a-rule (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '())))
-                  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
-
-(rename-variables-in
-  (stream-car (fetch-rules  (query-syntax-process '(wheel ?p)) (singleton-stream '()))))
-
-;(trace unify-match)
-(query-driver-loop)
-(wheel ?p)
-end
-;(untrace unify-match)
-
-(unify-match 1 '(? x)
-             (singleton-stream '()))
-
-(unify-match '(? x) 1
-             (singleton-stream '()))
-
-(unify-match '(? x) '(? x)
-             (singleton-stream '()))
-
-;(query-syntax-process '(?x ?x))
-;(?x ?x) (?y ?y)
-(unify-match '((? x) (? x)) '((? y) (? y))
-             (singleton-stream '()))
-
-(unify-match '((? y) (? x)) '((? x) (? y))
-             (singleton-stream '()))
-
-
-(unify-match '(? x) 1
-             (extend '(? x) 2
-                     (singleton-stream '())))
-
-(unify-match '(? x) 2
-             (extend '(? x) 2
-                     (singleton-stream '())))
-
-(unify-match '((? x) (? y)) '((? y) 1)
-             (extend '(? x) 2
-                     (singleton-stream '())))
-
-(depends-on? '((? x) (? x)) '(? x)
-             (singleton-stream '()))
-(depends-on? '(? x) '(? x)
-             (singleton-stream '()))
-(depends-on? '(? x) '(? y)
-             (singleton-stream '()))
