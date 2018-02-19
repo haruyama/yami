@@ -97,6 +97,11 @@
   (newline)
   (display s))
 
+(define (list->stream l)
+  (if (pair? l)
+      (cons-stream (car l)
+                   (list->stream (cdr l)))
+      the-empty-stream))
 
 ;4.4.4.1
 (define (prompt-for-input string)

@@ -31,6 +31,10 @@ end
 
 (untrace conjoin)
 
+(display-stream
+  (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
+           (singleton-stream '())))
+
 ;4.4.4.3
 ;
 (find-assertions (query-syntax-process '(job ?x (computer programmer)))
@@ -120,9 +124,12 @@ end
 (unify-match '((? y) (? x)) '((? x) (? y))
              (singleton-stream '()))
 
-
 (unify-match '(? x) 1
              (extend '(? x) 2
+                     (singleton-stream '())))
+
+(unify-match '(? x) 1
+             (extend '(? y) 2
                      (singleton-stream '())))
 
 (unify-match '(? x) 2
@@ -132,6 +139,7 @@ end
 (unify-match '((? x) (? y)) '((? y) 1)
              (extend '(? x) 2
                      (singleton-stream '())))
+
 
 (depends-on? '((? x) (? x)) '(? x)
              (singleton-stream '()))

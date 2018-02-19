@@ -1,5 +1,5 @@
 (load "./4.4.ss")
-;(load "./4.4_microshaft.ss")
+(load "./4.4_microshaft.ss")
 ;ex4.70
 ;問題文中の定義では無限ストリームになる
 
@@ -140,3 +140,92 @@ end
 (and (job ?x ?j)
      (unique (supervisor ?anyone ?x)))
 end
+
+;ex4.76
+(define (conjoin conjuncts frame-stream)
+  (if (empty-conjunction? conjuncts)
+    frame-stream
+    (conjoin (rest-conjuncts conjuncts)
+             (qeval (first-conjunct conjuncts)
+                    frame-stream))))
+
+;(query-driver-loop)
+;(and (job ?x (computer programmer)) (address ?x ?w))
+;end
+(conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
+         (singleton-stream '()))
+(display-stream
+  (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
+           (singleton-stream '())))
+
+(define (conjoin conjuncts frame-stream)
+  (if (empty-conjunction? conjuncts)
+    frame-stream
+    (unify-frame-streams
+      (map
+        (lambda (conjunct)
+          (qeval conjunct frame-stream))
+        conjuncts))))
+
+(define (unify-frame-streams frame-streams)
+  (if (null? (cdr frame-streams))
+    (car frame-streams)
+    (let ((s1 (car frame-streams))
+          (s2 (cadr frame-streams)))
+      (unify-frame-streams
+        (cons
+          (unify-two-frame-streams s1 s2)
+          (cddr frame-streams))))))
+
+(define (unify-two-frame-streams s1 s2)
+  (cond
+    ((stream-null? s1) the-empty-stream)
+    ((stream-null? s2) the-empty-stream)
+    (else
+      (let ((f1 (stream-car s1)))
+        (stream-append
+          (unify-frame-frame-stream f1 s2)
+          (unify-two-frame-streams (stream-cdr s1) s2))))))
+
+(define (unify-frame-frame-stream f s)
+  (if (stream-null? s) the-empty-stream
+    (let ((unify-result (unify-frames f (stream-car s))))
+      (if (eq? unify-result 'failed)
+        (unify-frame-frame-stream f (stream-cdr s))
+        (cons-stream unify-result (unify-frame-frame-stream f (stream-cdr s)))))))
+
+(display-stream
+  (unify-frame-frame-stream '(((? x) Hacker Alyssa P))
+                            (list->stream '((((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))))))
+
+(define (unify-frames f1 f2)
+  (if (null? f1) f2
+    (let ((vv1 (car f1)))
+      (let ((vv2 (assoc (car vv1) f2)))
+        (if (eq? vv2 #f)
+          (unify-frames (cdr f1) (cons vv1 f2))
+          (if (equal? (cdr vv1) (cdr vv2))
+            (unify-frames (cdr f1) f2)
+            'failed
+            ))))))
+
+
+(display-stream
+  (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
+           (singleton-stream '())))
+
+;(assoc '(? x)  '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
+;(assoc '(? y)  '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
+
+;(unify-frames '(((? x) Hacker Alyssa P))
+;             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
+;             )
+
+;(unify-frames '(((? y) Hacker Alyssa P))
+;             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
+;             )
+
+
+;(unify-frames '(((? x) Hacker Anonymous))
+;             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
+
