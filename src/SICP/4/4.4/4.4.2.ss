@@ -183,9 +183,9 @@ end
     ((stream-null? s2) the-empty-stream)
     (else
       (let ((f1 (stream-car s1)))
-        (stream-append
+        (stream-append-delayed
           (unify-frame-frame-stream f1 s2)
-          (unify-two-frame-streams (stream-cdr s1) s2))))))
+          (delay (unify-two-frame-streams (stream-cdr s1) s2)))))))
 
 (define (unify-frame-frame-stream f s)
   (if (stream-null? s) the-empty-stream
