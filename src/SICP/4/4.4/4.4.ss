@@ -129,7 +129,7 @@
                   (instantiate q
                                frame
                                (lambda(v f)
-                                 (contract-quetion-mark v))))
+                                 (contract-question-mark v))))
                 (qeval q (singleton-stream '()))))
             (query-driver-loop)))))))
 
@@ -205,8 +205,8 @@
 
 (put 'lisp-value 'qeval lisp-value)
 
-;(define user-initial-environment (interaction-environment))
-(define user-initial-environment (make-module #f))
+(define user-initial-environment (interaction-environment))
+;(define user-initial-environment (make-module #f))
 
 (define (execute exp)
   (apply (eval (predicate exp) user-initial-environment)
@@ -524,7 +524,7 @@
 (define (make-new-variable var rule-application-id)
   (cons '? (cons rule-application-id (cdr var))))
 
-(define (contract-quetion-mark variable)
+(define (contract-question-mark variable)
   (string->symbol
     (string-append "?"
                    (if (number? (cadr variable))
