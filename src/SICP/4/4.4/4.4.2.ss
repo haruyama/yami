@@ -198,17 +198,19 @@ end
   (unify-frame-frame-stream '(((? x) Hacker Alyssa P))
                             (list->stream '((((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))))))
 
-;TODO: もっとちゃんとする
 (define (unify-frames f1 f2)
-  (if (null? f1) f2
-    (let ((vv1 (car f1)))
-      (let ((vv2 (assoc (car vv1) f2)))
-        (if (eq? vv2 #f)
-          (unify-frames (cdr f1) (cons vv1 f2))
-          (if (equal? (cdr vv1) (cdr vv2))
-            (unify-frames (cdr f1) f2)
-            'failed
-            ))))))
+  (define (iter f acc)
+    (cond
+      ((eq? acc 'failed) 'failed)
+      ((null? f) acc)
+      (else
+        (let ((vv1 (car f)))
+          (let ((vv2 (assoc (car vv1) (cdr f))))
+            (if (or (eq? vv2 #f) (equal? vv1 vv2))
+              (iter (cdr f) (cons vv1 acc))
+              (iter (cdr f) (unify-match (cdr vv1) (cdr vv2) acc)))
+            )))))
+  (iter (append f1 f2) '()))
 
 
 (display-stream
@@ -218,15 +220,18 @@ end
 ;(assoc '(? x)  '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
 ;(assoc '(? y)  '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
 
-;(unify-frames '(((? x) Hacker Alyssa P))
-;             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
-;             )
+(unify-frames '(((? x) Hacker Alyssa P))
+             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
+             )
 
-;(unify-frames '(((? y) Hacker Alyssa P))
-;             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
-;             )
+(unify-frames '(((? x) ? y))
+             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
+             )
 
+(unify-frames '(((? x) Hacker Alyssa P))
+             '(((? w) Cambridge (Mass Ave) 78) ((? x) ? z))
+             )
 
-;(unify-frames '(((? x) Hacker Anonymous))
-;             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
+(unify-frames '(((? x) Hacker Anonymous))
+             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
 
