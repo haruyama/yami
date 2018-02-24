@@ -124,6 +124,11 @@ end
 (unify-match '((? y) (? x)) '((? x) (? y))
              (singleton-stream '()))
 
+(unify-match '(((? x) Hacker Alyssa P))
+             '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P))
+             (singleton-stream '()))
+
+
 (unify-match '(? x) 1
              (extend '(? x) 2
                      (singleton-stream '())))
