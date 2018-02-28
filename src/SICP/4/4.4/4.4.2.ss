@@ -253,6 +253,7 @@ end
   (iter conjuncts '() '()))
 
 
+;TODO: map -> stream-map
 (define (conjoin conjuncts frame-stream)
   (if (empty-conjunction? conjuncts)
     frame-stream
