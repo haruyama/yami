@@ -163,24 +163,23 @@ end
   (if (empty-conjunction? conjuncts)
     frame-stream
     (unify-frame-streams
-      (map
+      (stream-map
         (lambda (conjunct)
           (qeval conjunct frame-stream))
-        conjuncts))))
+        (list->stream conjuncts)))))
 
 (put 'and 'qeval conjoin)
 
 (define (unify-frame-streams frame-streams)
   (cond 
-    ;((null? frame-streams) frame-streams)
-    ((null? (cdr frame-streams)) (car frame-streams))
+    ((stream-null? (stream-cdr frame-streams)) (stream-car frame-streams))
     (else
-      (let ((s1 (car frame-streams))
-            (s2 (cadr frame-streams)))
+      (let ((s1 (stream-car frame-streams))
+            (s2 (stream-car (stream-cdr frame-streams))))
         (unify-frame-streams
-          (cons
+          (cons-stream
             (unify-two-frame-streams s1 s2)
-            (cddr frame-streams)))))))
+            (stream-cdr (stream-cdr frame-streams))))))))
 
 (define (unify-two-frame-streams s1 s2)
   (cond
@@ -212,7 +211,9 @@ end
         (let ((vv1 (car f)))
           (let ((vv2 (assoc (car vv1) (cdr f))))
             (if (or (eq? vv2 #f) (equal? vv1 vv2))
-              (iter (cdr f) (cons vv1 acc))
+              (if (eq? #f (assoc (car vv1) acc))
+                (iter (cdr f) (cons vv1 acc))
+                (iter (cdr f) acc))
               (iter (cdr f) (unify-match (cdr vv1) (cdr vv2) acc)))
             )))))
   (iter (append f1 f2) '()))
@@ -259,15 +260,17 @@ end
     frame-stream
     (let ((scs (separate-conjuncts conjuncts)))
       (let ((front-frame-stream
-              (unify-frame-streams
-                (map
-                  (lambda (conjunct) (qeval conjunct frame-stream))
-                  (car scs)))))
+              (if (not (null? (car scs)))
+                (unify-frame-streams
+                  (stream-map
+                    (lambda (conjunct) (qeval conjunct frame-stream))
+                    (list->stream (car scs))))
+                frame-stream)))
         (if (not (null? (cdr scs)))
           (unify-frame-streams
-            (map
+            (stream-map
               (lambda (conjunct) (qeval conjunct front-frame-stream))
-              (cdr scs)))
+              (list->stream (cdr scs))))
           front-frame-stream)
         )
       )))
