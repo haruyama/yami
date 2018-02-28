@@ -158,6 +158,7 @@ end
   (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
            (singleton-stream '())))
 
+; not と lisp-value があるとだめ
 (define (conjoin conjuncts frame-stream)
   (if (empty-conjunction? conjuncts)
     frame-stream
@@ -167,15 +168,19 @@ end
           (qeval conjunct frame-stream))
         conjuncts))))
 
+(put 'and 'qeval conjoin)
+
 (define (unify-frame-streams frame-streams)
-  (if (null? (cdr frame-streams))
-    (car frame-streams)
-    (let ((s1 (car frame-streams))
-          (s2 (cadr frame-streams)))
-      (unify-frame-streams
-        (cons
-          (unify-two-frame-streams s1 s2)
-          (cddr frame-streams))))))
+  (cond 
+    ;((null? frame-streams) frame-streams)
+    ((null? (cdr frame-streams)) (car frame-streams))
+    (else
+      (let ((s1 (car frame-streams))
+            (s2 (cadr frame-streams)))
+        (unify-frame-streams
+          (cons
+            (unify-two-frame-streams s1 s2)
+            (cddr frame-streams)))))))
 
 (define (unify-two-frame-streams s1 s2)
   (cond
@@ -235,3 +240,49 @@ end
 (unify-frames '(((? x) Hacker Anonymous))
              '(((? w) Cambridge (Mass Ave) 78) ((? x) Hacker Alyssa P)))
 
+
+;ex4.77
+(define (separate-conjuncts conjuncts)
+  (define (iter cs front back)
+    (if (null? cs) (cons front back)
+        (let ((first (first-conjunct cs))
+              (rest (rest-conjuncts cs)))
+          (if (or (eq? 'not (type first)) (eq? 'lisp-value (type first)))
+            (iter rest front (append back (list first)))
+            (iter rest (append front (list first)) back)))))
+  (iter conjuncts '() '()))
+
+
+(define (conjoin conjuncts frame-stream)
+  (if (empty-conjunction? conjuncts)
+    frame-stream
+    (let ((scs (separate-conjuncts conjuncts)))
+      (let ((front-frame-stream
+              (unify-frame-streams
+                (map
+                  (lambda (conjunct) (qeval conjunct frame-stream))
+                  (car scs)))))
+        (if (not (null? (cdr scs)))
+          (unify-frame-streams
+            (map
+              (lambda (conjunct) (qeval conjunct front-frame-stream))
+              (cdr scs)))
+          front-frame-stream)
+        )
+      )))
+
+(put 'and 'qeval conjoin)
+
+
+(display-stream
+  (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
+           (singleton-stream '())))
+
+
+(display-stream
+  (conjoin '((salary (? person) (? amount)) (lisp-value > (? amount) 30000))
+           (singleton-stream '())))
+
+(display-stream
+  (conjoin '((lisp-value > (? amount) 30000) (salary (? person) (? amount)))
+           (singleton-stream '())))
