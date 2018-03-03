@@ -4,64 +4,42 @@
 ;問題文中の定義では無限ストリームになる
 
 ;ex4.71
-;無限ループの場合に結果を表示できなくなる場合がある
 ;https://github.com/suzuken/sicp/blob/master/chapter4/q4.71.scm
 ;Louisの定義
-
-;ex4.72
-;http://wat-aro.hatenablog.com/entry/2016/01/21/013942
-(define (interleave s1 s2)
-  (if (stream-null? s1)
-      s2
-      (cons-stream (stream-car s1)
-                   (interleave s2 (stream-cdr s1)))))
-
-(define (simple-query query-pattern frame-stream)
-  (stream-flatmap
-    (lambda (frame)
-      (stream-append
-        (find-assertions query-pattern frame)
-        (apply-rules query-pattern frame)))
-    frame-stream))
-
-(define (disjoin disjuncts frame-stream)
-  (if (empty-disjunction? disjuncts)
-      the-empty-stream
-      (interleave
-        (qeval (first-disjunct disjuncts) frame-stream)
-        (disjoin (rest-disjuncts disjuncts)
-                 frame-stream))))
-
 (query-driver-loop)
-(assert! (married Minnie Mickery))
+(assert! (married Minnie Mickey))
 (assert! (rule (married ?x ?y)
                (married ?y ?x)))
-
-(married Mickery ?x)
-end
-
+(married Mickey ?who)
 
 (define (simple-query query-pattern frame-stream)
   (stream-flatmap
     (lambda (frame)
-      (stream-append-delayed
-        (find-assertions query-pattern frame)
-        (delay (apply-rules query-pattern frame))))
+      (stream-append (find-assertions query-pattern frame)
+                     (apply-rules query-pattern frame)))
     frame-stream))
 
 (define (disjoin disjuncts frame-stream)
   (if (empty-disjunction? disjuncts)
-      the-empty-stream
-      (interleave-delayed
-        (qeval (first-disjunct disjuncts) frame-stream)
-        (delay (disjoin (rest-disjuncts disjuncts)
-                        frame-stream)))))
-;; (query-driver-loop)
-;; (married Mickery ?x)
-;; end
+    the-empty-stream
+    (interleave
+      (qeval (first-disjunct disjuncts) frame-stream)
+      (disjoin (rest-disjuncts disjuncts) frame-stream))))
+
+
+(query-driver-loop)
+(married Mickey ?who)
+
+(load "./4.4.ss")
+(load "./4.4_microshaft.ss")
+
+
+;ex4.72
+;無限ストリームに対応するため.
+;http://wat-aro.hatenablog.com/entry/2016/01/21/013942
 
 ;ex4.72,4.73
-;無限のストリームに対応するため.
+;無限ストリームに対応するため.
 
 ; ex4.73
 ;(define (flatten-stream stream)
@@ -158,7 +136,7 @@ end
   (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
            (singleton-stream '())))
 
-; not と lisp-value があるとだめ
+; not と lisp-value があるとだめ. ex4.77 で扱う
 (define (conjoin conjuncts frame-stream)
   (if (empty-conjunction? conjuncts)
     frame-stream
@@ -254,7 +232,6 @@ end
   (iter conjuncts '() '()))
 
 
-;TODO: map -> stream-map
 (define (conjoin conjuncts frame-stream)
   (if (empty-conjunction? conjuncts)
     frame-stream

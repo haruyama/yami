@@ -432,6 +432,14 @@
       (interleave-delayed (force delayed-s2)
                           (delay (stream-cdr s1))))))
 
+(define (interleave s1 s2)
+  (if (stream-null? s1)
+    s2
+    (cons-stream
+      (stream-car s1)
+      (interleave s2
+                  (stream-cdr s1)))))
+
 (define (stream-flatmap proc s)
   (flatten-stream (stream-map proc s)))
 
