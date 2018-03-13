@@ -288,3 +288,7 @@ end
 (display-stream
   (conjoin '((lisp-value > (? amount) 30000) (salary (? person) (? amount)))
            (singleton-stream '())))
+
+;ex 4.79
+; http://sioramen.sub.jp/blog/2010/01/sicp-4445-ex-479.html
+; http://community.schemewiki.org/?sicp-ex-4.79
