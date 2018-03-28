@@ -4,7 +4,6 @@
 ;問題文中の定義では無限ストリームになる
 
 ;ex4.71
-;https://github.com/suzuken/sicp/blob/master/chapter4/q4.71.scm
 ;Louisの定義
 ;(query-driver-loop)
 ;(assert! (married Minnie Mickey))
@@ -38,16 +37,42 @@
 ;無限ストリームに対応するため.
 ;http://wat-aro.hatenablog.com/entry/2016/01/21/013942
 
+(query-driver-loop)
+(assert!
+  (rule (loop ?x)
+        (or
+          (loop1 ?x)
+          (loop2 ?x))))
+(assert!
+  (rule (loop1 ?x)
+        (loop1 ?x)))
+
+(assert!
+  (rule (loop2 ?x)
+        (loop2 ?x)))
+
+(assert!  (loop1 1))
+(assert!  (loop2 2))
+(loop ?x)
+
 ;ex4.72,4.73
 ;無限ストリームに対応するため.
 
 ; ex4.73
-;(define (flatten-stream stream)
-;  (if (stream-null? stream)
-;    the-empty-stream
-;    (interleave
-;      (stream-car stream)
-;      (flatten-stream (stream-cdr stream)))))
+(define (flatten-stream stream)
+  (if (stream-null? stream)
+    the-empty-stream
+    (interleave
+      (stream-car stream)
+      (flatten-stream (stream-cdr stream)))))
+
+(query-driver-loop)
+(assert! (married Minnie Mickey))
+(assert! (rule (married ?x ?y)
+               (married ?y ?x)))
+(married Mickey ?who)
+(assert! (a b c))
+(and (married Mickey ?w) (a b c))
 
 ;(define (flatten-stream stream)
 ;  (if (stream-null? stream)
@@ -55,6 +80,8 @@
 ;      (interleave-delayed
 ;        (stream-car stream)
 ;        (delay (flatten-stream (stream-cdr stream))))))
+(load "./4.4.ss")
+(load "./4.4_microshaft.ss")
 
 
 
