@@ -6,11 +6,11 @@
 ;ex4.71
 ;https://github.com/suzuken/sicp/blob/master/chapter4/q4.71.scm
 ;Louisの定義
-(query-driver-loop)
-(assert! (married Minnie Mickey))
-(assert! (rule (married ?x ?y)
+;(query-driver-loop)
+;(assert! (married Minnie Mickey))
+;(assert! (rule (married ?x ?y)
                (married ?y ?x)))
-(married Mickey ?who)
+;(married Mickey ?who)
 
 (define (simple-query query-pattern frame-stream)
   (stream-flatmap
@@ -253,6 +253,27 @@ end
   (iter conjuncts '() '()))
 
 
+;(define (conjoin conjuncts frame-stream)
+;  (if (empty-conjunction? conjuncts)
+;    frame-stream
+;    (let ((scs (separate-conjuncts conjuncts)))
+;      (let ((front-frame-stream
+;              (if (not (null? (car scs)))
+;                (unify-frame-streams
+;                  (stream-map
+;                    (lambda (conjunct) (qeval conjunct frame-stream))
+;                    (list->stream (car scs))))
+;                frame-stream)))
+;        (if (not (null? (cdr scs)))
+;          (unify-frame-streams
+;            (stream-map
+;              (lambda (conjunct) (qeval conjunct front-frame-stream))
+;              (list->stream (cdr scs))))
+;          front-frame-stream)
+;        )
+;      )))
+
+; フィルターする部分は並列に扱ってあとでマージするのはよくなさそう
 (define (conjoin conjuncts frame-stream)
   (if (empty-conjunction? conjuncts)
     frame-stream
@@ -265,16 +286,18 @@ end
                     (list->stream (car scs))))
                 frame-stream)))
         (if (not (null? (cdr scs)))
-          (unify-frame-streams
-            (stream-map
-              (lambda (conjunct) (qeval conjunct front-frame-stream))
-              (list->stream (cdr scs))))
+          (original-conjoin (cdr scs) front-frame-stream)
           front-frame-stream)
-        )
-      )))
+        ))))
+
+(define (original-conjoin conjuncts frame-stream)
+  (if (empty-conjunction? conjuncts)
+    frame-stream
+    (original-conjoin (rest-conjuncts conjuncts)
+             (qeval (first-conjunct conjuncts)
+                    frame-stream))))
 
 (put 'and 'qeval conjoin)
-
 
 (display-stream
   (conjoin '((job (? x) (computer programmer)) (address (? x) (? w)))
