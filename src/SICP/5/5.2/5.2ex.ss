@@ -2,16 +2,56 @@
 
 ;ex 5.8
 
-;(define ex5.8-text '(start
-;                      (goto (label here))
-;                      here
-;                      (assign a (const 3))
-;                      (goto (label there))
-;                      here
-;                      (assign a (const 4))
-;                      (goto (label there))
-;                      there))
-;(make-machine '(a) '() ex5.8-text)
+(define (extract-labels text receive)
+  (if (null? text)
+    (receive '() '())
+    (extract-labels (cdr text)
+                    (lambda (insts labels)
+                      (let ((next-inst (car text)))
+                        (if (symbol? next-inst)
+                          (receive insts
+                                   (cons (make-label-entry next-inst
+                                                           insts)
+                                         labels))
+                          (receive (cons (make-instruction next-inst)
+                                         insts)
+                                   labels)))))))
+
+(define ex5.8-text '(start
+                      (goto (label here))
+                      here
+                      (assign a (const 3))
+                      (goto (label there))
+                      here
+                      (assign a (const 4))
+                      (goto (label there))
+                      there))
+
+(define ex5.8-machine1 (make-machine '(a) '() ex5.8-text))
+
+(start ex5.8-machine1)
+(get-register-contents ex5.8-machine1 'a)
+
+
+(define (extract-labels text receive)
+  (if (null? text)
+    (receive '() '())
+    (extract-labels (cdr text)
+                    (lambda (insts labels)
+                      (let ((next-inst (car text)))
+                        (if (symbol? next-inst)
+                          (if (assoc next-inst labels)
+                            ;ex5.8
+                            (error "Multiple labels -- ASSEMBLE" next-inst)
+                            (receive insts
+                                     (cons (make-label-entry next-inst
+                                                             insts)
+                                           labels)))
+                          (receive (cons (make-instruction next-inst)
+                                         insts)
+                                   labels)))))))
+
+(make-machine '(a) '() ex5.8-text)
 
 
 (define gcd-machine
@@ -35,6 +75,18 @@
 (start gcd-machine)
 
 (get-register-contents gcd-machine 'a)
+
+;ex5.9
+(define (make-operation-exp exp machine labels ops)
+  (let ((op (lookup-prim (operation-exp-op exp) ops))
+        (aprocs
+          (map (lambda (e)
+                 (if (or (register-exp? e) (constant-exp? e))
+                   (make-primitive-exp e machine labels)
+                   (error "You can only operate a register or a constant" e)))
+               (operation-exp-operands exp))))
+    (lambda ()
+      (apply op (map (lambda (p) (p)) aprocs)))))
 
 ;ex5.10
 
