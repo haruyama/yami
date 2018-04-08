@@ -163,12 +163,10 @@
          (test (op =) (reg n) (const 0))
          (branch (label base-case))
          (save continue)
-         (save n)
          (assign n (op -) (reg n) (const 1))
          (assign continue (label after-expt))
          (goto (label expt-loop))
          after-expt
-         (restore n)
          (restore continue)
          (assign val (op *) (reg b) (reg val))
          (goto (reg continue))
@@ -243,7 +241,7 @@
 
 (define sqrt2-machine
   (make-machine
-    '(g x t1 t2 t3)
+    '(g x t)
       (list
         (list '* *)
         (list '- -)
@@ -256,25 +254,24 @@
         (assign g (const 1.0))
         test-good-enough?
         ;; good-enough? の展開
-        (assign t1 (op *) (reg g) (reg g))
-        (assign t2 (op -) (reg t1) (reg x))
-        (test (op >=) (reg t2) (const 0)) ; abs
+        (assign t (op *) (reg g) (reg g))
+        (assign t (op -) (reg t) (reg x))
+        (test (op >=) (reg t) (const 0)) ; abs
         (branch (label skip-abs))
-        (assign t2 (op *) (reg t2) (const -1)) ; 負数は正数に変換
+        (assign t (op *) (reg t) (const -1)) ; 負数は正数に変換
         skip-abs
-        (test (op <) (reg t2) (const 0.001))
+        (test (op <) (reg t) (const 0.001))
         ;; good-enouh? 完了
         (branch (label newton-done))
         ;; improveの展開
-        (assign t1 (op /) (reg x) (reg g))
-        (assign t2 (op +) (reg g) (reg t1))
-        (assign t3 (op /) (reg t2) (const 2)) ; average
+        (assign t (op /) (reg x) (reg g))
+        (assign t (op +) (reg g) (reg t))
+        (assign t (op /) (reg t) (const 2)) ; average
         ;; improve 完了
-        (assign g (reg t3))
+        (assign g (reg t))
         (goto (label test-good-enough?))
         newton-done)))
 
 (set-register-contents! sqrt2-machine 'x 3)
 (start sqrt2-machine)
 (get-register-contents sqrt2-machine 'g)
-
