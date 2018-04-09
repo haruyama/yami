@@ -90,6 +90,50 @@
 
 ;ex5.10
 ;http://community.schemewiki.org/?sicp-ex-5.10
+(define (make-execution-procedure inst labels machine
+                                  pc flag stack ops)
+  (cond ((eq? (car inst) 'assign)
+         (make-assign inst machine labels ops pc))
+    ((eq? (car inst) 'test)
+     (make-test inst machine labels ops flag pc))
+    ((eq? (car inst) 'branch)
+     (make-branch inst machine labels flag pc))
+    ((eq? (car inst) 'goto)
+     (make-goto inst machine labels pc))
+    ((eq? (car inst) 'save)
+     (make-save inst machine stack pc))
+    ((eq? (car inst) 'restore)
+     (make-restore inst machine stack pc))
+    ((eq? (car inst) 'perform)
+     (make-perform inst machine labels ops pc))
+    ((eq? (car inst) 'swap)
+     (make-swap inst machine pc))
+    (else (error "Unknown instruction type -- ASSEMBLE"
+                 inst))))
+
+(define (make-swap inst machine pc)
+  (let ((first (get-register machine (cadr inst)))
+        (second (get-register machine (caddr inst))))
+    (lambda ()
+      (let ((first-contents (get-contents first)))
+        (set-contents! first (get-contents second))
+        (set-contents! second first-contents)
+        (advance-pc pc)))))
+
+(define swap-machine
+  (make-machine
+    '(a b )
+    '()
+    '(
+      (swap a b)
+      )
+    ))
+
+(set-register-contents! swap-machine 'a 1)
+(set-register-contents! swap-machine 'b 2)
+(start swap-machine)
+(get-register-contents swap-machine 'a)
+(get-register-contents swap-machine 'b)
 
 ;ex5.11
 ;a
