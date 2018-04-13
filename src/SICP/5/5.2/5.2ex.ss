@@ -446,8 +446,31 @@
 
 
 ;ex 5.12
-
 ;http://www.serendip.ws/archives/3125
+(use slib)
 
+(require 'pretty-print)
+
+(define (make-operation-store)
+  (let ((store '((assign) (peform) (test) (branch) (goto) (save) (restore))))
+    (define (add-op op)
+      (let ((inst (car op)))
+        (let ((record (assoc inst store)))
+          (if record
+            (if (not (member op record))
+              (set-cdr! record (cons op (cdr record))))
+            (set-cdr! store (cons (list inst op) (cdr store)))))))
+    (define (dispatch m)
+      (cond ((eq? m 'add) add-op)
+        ((eq? m 'get) store)
+        (else (error "Unknown message -- OPERATION-STORE " m))))
+    dispatch))
+
+(define store (make-operation-store))
+((store 'add) '(restore n))
+(pretty-print (store 'get))
+((store 'add) '(save n))
+((store 'add) '(restore n))
+(pretty-print (store 'get))
 ;ex 5.13
 ;http://www.serendip.ws/archives/3268
