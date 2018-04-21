@@ -396,7 +396,6 @@
                             (error "Multiply defined label: " next-inst)
                             (let ((insts
                                     (cons (list (list 'label next-inst)) insts))) ;; ex5.17
-                              ;(list (list (list 'label next-inst)) insts))) ;; ex5.17
                               (receive insts
                                        (cons (make-label-entry next-inst
                                                                insts)
@@ -404,27 +403,6 @@
                           (receive (cons (make-instruction next-inst)
                                          insts)
                                    labels)))))))
-
-(define (make-execution-procedure inst labels machine
-                                  pc flag stack ops)
-  (cond ((eq? (car inst) 'assign)
-         (make-assign inst machine labels ops pc))
-    ((eq? (car inst) 'test)
-     (make-test inst machine labels ops flag pc))
-    ((eq? (car inst) 'branch)
-     (make-branch inst machine labels flag pc))
-    ((eq? (car inst) 'goto)
-     (make-goto inst machine labels pc))
-    ((eq? (car inst) 'save)
-     (make-save inst machine stack pc))
-    ((eq? (car inst) 'restore)
-     (make-restore inst machine stack pc))
-    ((eq? (car inst) 'perform)
-     (make-perform inst machine labels ops pc))
-    ((eq? (car inst) 'label)
-     (lambda () (advance-pc pc)))
-    (else (error "Unknown instruction type -- ASSEMBLE"
-                 inst))))
 
 
 (define (make-new-machine)
@@ -747,6 +725,22 @@
 (get-register-contents gcd-machine 'a)
 
 (cancel-breakpoint gcd-machine 'test-b 4)
+(proceed-machine gcd-machine)
 (cancel-all-breakpoint gcd-machine)
+(proceed-machine gcd-machine)
+(get-register-contents gcd-machine 'a)
+
+(set-breakpoint gcd-machine 'test-b 4)
+(set-breakpoint gcd-machine 'test-b 6)
+(set-register-contents! gcd-machine 'a 206)
+(set-register-contents! gcd-machine 'b 40)
+(start gcd-machine)
+(get-register-contents gcd-machine 'a)
+(get-register-contents gcd-machine 'b)
+(set-register-contents! gcd-machine 'b 30)
+(proceed-machine gcd-machine)
+(get-register-contents gcd-machine 'a)
+(get-register-contents gcd-machine 'b)
+(cancel-all-breakpoint)
 (proceed-machine gcd-machine)
 (get-register-contents gcd-machine 'a)
