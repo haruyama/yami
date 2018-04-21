@@ -452,7 +452,7 @@
 (require 'pretty-print)
 
 (define (make-operation-store)
-  (let ((store '((assign) (peform) (test) (branch) (goto) (save) (restore))))
+  (let ((store '((assign) (perform) (test) (branch) (goto) (save) (restore))))
     (define (add-op op)
       (let ((inst (car op)))
         (let ((record (assoc inst store)))
