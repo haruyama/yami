@@ -28,9 +28,6 @@
 ;T = (32 * n) - 16
 ;D = (5 * n) + 3
 
-;;ex5.28
-;;http://www.serendip.ws/archives/3520
-
 ;;ex5.29
 ;;http://www.serendip.ws/archives/3525
 (start eceval)
