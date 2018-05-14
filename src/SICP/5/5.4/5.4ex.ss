@@ -7,9 +7,7 @@
             (append (cdr x) y))))
 
 (append '(a b c) '(d e f))
-#q
 
-(start eceval)
 (if (eq? 0 0)
   0
   1)
