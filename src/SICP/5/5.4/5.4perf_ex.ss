@@ -20,9 +20,13 @@
 ;; #q
 ;;ex5.26
 ;;http://www.serendip.ws/archives/3510
+;T = (35 * n) + 29
+;D = 10
 
 ;;ex5.27
 ;;http://www.serendip.ws/archives/3515
+;T = (32 * n) - 16
+;D = (5 * n) + 3
 
 ;;ex5.28
 ;;http://www.serendip.ws/archives/3520
@@ -39,6 +43,8 @@
 (fib 5)
 (fib 6)
 #q
+; D = (5 * n) + 3
+; T = 56 * Fib(n + 1) - 40
 
 ;;ex5.30
 ;;http://www.serendip.ws/archives/3572
