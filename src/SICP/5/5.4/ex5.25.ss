@@ -384,7 +384,7 @@
     (assign exp (op read))
     (assign env (op get-global-environment))
     (assign continue (label print-result))
-    (goto (label eval-dispatch))
+    (goto (label actual-value))
     print-result
     (perform
       (op announce-output) (const ";;; EC-Eval-Lazy value:"))
@@ -437,7 +437,7 @@
     (save unev)
     (save env)
     (assign continue (label ev-cond-predicate-done))
-    (goto (label eval-dispatch))
+    (goto (label actual-value))
 
     ev-cond-predicate-done
     (restore env)
