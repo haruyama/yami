@@ -28,6 +28,39 @@
   'val
   'next)
 
+;ex5.31
+;a
+(print-after-compiler
+  (compile
+    '(f 'x 'y)
+    'val
+    'next))
+; なにも退避する必要がない
+
+;b
+(print-after-compiler
+  (compile
+    '((f) 'x 'y)
+    'val
+    'next))
+; なにも退避する必要がない
+
+;c
+(print-after-compiler
+  (compile
+    '(f (g 'x) y)
+    'val
+    'next))
+; proc, argl を退避している. env は不要
+
+;d
+(print-after-compiler
+  (compile
+    '(f (g 'x) 'y)
+    'val
+    'next))
+; proc, argl を退避している. env は不要
+
 ;ex5.33
 (compile
   '(define (factorial-alt n)
