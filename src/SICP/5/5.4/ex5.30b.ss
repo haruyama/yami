@@ -403,6 +403,7 @@
     (goto (label signal-error))
 
     not-safe-argl-for-proc
+    (restore continue)
     (assign val (const not-safe-argl-for-proc))
     (goto (label signal-error))
 
