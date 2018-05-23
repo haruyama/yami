@@ -1,4 +1,5 @@
 (load "./5.4perf.ss")
+; set-variable-value! もやったほうがよい
 (start eceval)
 (+ x 0)
 

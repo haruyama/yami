@@ -291,11 +291,15 @@
   (if (= n 1)
     1
     (* (factorial (- n 1)) n)))
+(factorial 1)
+(factorial 2)
+(factorial 3)
+(factorial 4)
 (factorial 5)
 (factorial 6)
 
-; T = 34 * n  - 16
-; D = 8 * n + 3
+; T = 34 * n - 16
+; D = 8  * n + 3
 
 (define (factorial-iter n)
   (define (iter product counter)
@@ -304,9 +308,12 @@
       (iter (* counter product)
             (+ counter 1))))
   (iter 1 1))
+(factorial-iter 1)
+(factorial-iter 2)
+(factorial-iter 3)
+(factorial-iter 4)
 (factorial-iter 5)
 (factorial-iter 6)
 
-
-; T = 37 * n  +33
-; D = 3 * n + 14
+; T = 37 * n + 33
+; D = 3 *  n + 14

@@ -4,6 +4,10 @@
   (if (= n 1)
     1
     (* (factorial (- n 1)) n)))
+(factorial 1)
+(factorial 2)
+(factorial 3)
+(factorial 4)
 (factorial 5)
 (factorial 6)
 
@@ -14,6 +18,10 @@
       (iter (* counter product)
             (+ counter 1))))
   (iter 1 1))
+(factorial-iter 1)
+(factorial-iter 2)
+(factorial-iter 3)
+(factorial-iter 4)
 (factorial-iter 5)
 (factorial-iter 6)
 
@@ -35,6 +43,7 @@
   (if (< n 2)
     n
     (+ (fib (- n 1)) (fib (- n 2)))))
+(fib 2)
 (fib 3)
 (fib 4)
 (fib 5)
@@ -42,6 +51,9 @@
 #q
 ; D = (5 * n) + 3
 ; T = 56 * Fib(n + 1) - 40
+S(n) = S(n-1) + S(n-2) + 40
+a * Fib(n+1) + b = a * Fib(n) + b + a * Fib(n-1) + b + k
+b = -k
 
 ;;ex5.30
 ;;http://www.serendip.ws/archives/3572
