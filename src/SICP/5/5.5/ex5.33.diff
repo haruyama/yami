@@ -1,0 +1,31 @@
+--- ex5.33a.output	2018-06-01 21:17:50.546692381 +0900
++++ ex5.33b.output	2018-06-01 21:17:55.174701499 +0900
+@@ -33,9 +33,7 @@
+   (assign proc (op lookup-variable-value) (const *) (reg env))
+   (save continue)
+   (save proc)
+-  (assign val (op lookup-variable-value) (const n) (reg env))
+-  (assign argl (op list) (reg val))
+-  (save argl)
++  (save env)
+   (assign proc (op lookup-variable-value) (const factorial) (reg env))
+   (save proc)
+   (assign proc (op lookup-variable-value) (const -) (reg env))
+@@ -63,7 +61,9 @@
+ primitive-branch12
+   (assign val (op apply-primitive-procedure) (reg proc) (reg argl))
+ after-call14
+-  (restore argl)
++  (assign argl (op list) (reg val))
++  (restore env)
++  (assign val (op lookup-variable-value) (const n) (reg env))
+   (assign argl (op cons) (reg val) (reg argl))
+   (restore proc)
+   (restore continue)
+@@ -78,5 +78,5 @@
+ after-call17
+ after-if5
+ after-lambda2
+-  (perform (op define-variable!) (const factorial) (reg val) (reg env))
++  (perform (op define-variable!) (const factorial-alt) (reg val) (reg env))
+   (assign val (const ok))
