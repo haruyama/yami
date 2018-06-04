@@ -145,3 +145,64 @@
 (print-after-compiler
   (compile '(+ b (+ 1 2)) 'val 'next)
   )
+
+;c
+(print-after-compiler
+  (compile
+    '(define (factorial n)
+       (if (= n 1)
+         1
+         (* (factorial (- n 1)) n)))
+    'val
+    'next))
+
+;d
+
+(define (multi->2 exp)
+  (if (> 4 (length exp))
+    exp
+    (let ((proc (car exp))
+          (operands (cdr exp)))
+      (cons proc (cons (first-operand operands) (list (multi->2 (cons proc (rest-operands operands)))))))))
+
+(multi->2 '(+ 1 2))
+(multi->2 '(+ 1 2 3))
+(multi->2 '(+ 1 2 3 4))
+
+(define (open-multi-code? exp)
+  (memq (car exp) '(* +)))
+
+(define (open-code? exp)
+  (memq (car exp) '(= -)))
+
+(define (compile exp target linkage)
+  (cond ((self-evaluating? exp)
+         (compile-self-evaluating exp target linkage))
+    ((quoted? exp) (compile-quoted exp target linkage))
+    ((variable? exp)
+     (compile-variable exp target linkage))
+    ((assignment? exp)
+     (compile-assignment exp target linkage))
+    ((definition? exp)
+     (compile-definition exp target linkage))
+    ((if? exp) (compile-if exp target linkage))
+    ((lambda? exp) (compile-lambda exp target linkage))
+    ((begin? exp)
+     (compile-sequence (begin-actions exp)
+                       target linkage))
+    ((cond? exp) (compile (cond->if exp) target linkage))
+    ((open-multi-code? exp)
+     (compile-open-multi-code exp target linkage))
+    ((open-code? exp)
+     (compile-open-code exp target linkage))
+    ((application? exp)
+     (compile-application exp target linkage))
+    (else
+      (error "Unknown expression type -- COMPILE" exp))))
+
+(define (compile-open-multi-code exp target linkage)
+  (compile-open-code (multi->2 exp) target linkage))
+
+(print-after-compiler
+  (compile '(+ b 1 2) 'val 'next)
+  )
