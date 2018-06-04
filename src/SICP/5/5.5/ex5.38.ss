@@ -66,12 +66,82 @@
 (compile-arguments '(a b 1))
 
 ; ここからは2引数前提としてみる
-(define (spread-arguments arg-list)
-  (let ((cal (compile-arguments arg-list)))
-    (preserving '(arg1)
-                (car cal)
-                (cadr cal))))
+; いろいろやってみたが spread-arguments の中で preserving しようとするとうまくいかない
+; compile-arguments のままにして b で preserving するほうがよさそう
 
-(spread-arguments '(b 1))
+;(define (spread-arguments arg-list)
+;  (if (= 2 (length arg-list))
+;    (let ((cal (compile-arguments arg-list)))
+;      (append-instruction-sequences
+;        (car cal)
+;        (preserving
+;          '(arg1 arg2) ; arg2 は不要かも
+;          (cadr cal)
+;          (make-instruction-sequence
+;            '(arg1 arg2) '() '()))))
+;    (error "ERROR: spread-arguments: length of arg-list is not 2: " (length arg-list))))
+
+;(spread-arguments '(b 1))
+;(spread-arguments '(a b))
+;(spread-arguments '((+ 1 2) b)) ; まだ オープンコードで扱っていない
+;(spread-arguments '(b (+ 1 2))) ; まだ オープンコードで扱っていない
+
+(define (spread-arguments arg-list)
+  (if (= 2 (length arg-list))
+    (compile-arguments arg-list)
+    (error "ERROR: spread-arguments: length of arg-list is not 2: " (length arg-list))))
+
 (spread-arguments '(a b))
-(spread-arguments '((+ 1 2) b)) ; まだ オープンコードで扱っていない
+(spread-arguments '((+ 1 2) 3)) ; この時点では + を オープンコードで扱っていない
+(spread-arguments '(a b 1))
+
+;b
+(define (open-code? exp)
+  (memq (car exp) '(= * - +)))
+
+(define (compile exp target linkage)
+  (cond ((self-evaluating? exp)
+         (compile-self-evaluating exp target linkage))
+    ((quoted? exp) (compile-quoted exp target linkage))
+    ((variable? exp)
+     (compile-variable exp target linkage))
+    ((assignment? exp)
+     (compile-assignment exp target linkage))
+    ((definition? exp)
+     (compile-definition exp target linkage))
+    ((if? exp) (compile-if exp target linkage))
+    ((lambda? exp) (compile-lambda exp target linkage))
+    ((begin? exp)
+     (compile-sequence (begin-actions exp)
+                       target linkage))
+    ((cond? exp) (compile (cond->if exp) target linkage))
+    ((open-code? exp)
+     (compile-open-code exp target linkage))
+    ((application? exp)
+     (compile-application exp target linkage))
+    (else
+      (error "Unknown expression type -- COMPILE" exp))))
+
+(define (compile-open-code exp target linkage)
+  (if (= (length exp) 3)
+    (let ((proc (operator exp))
+          (sas (spread-arguments (operands exp))))
+      (end-with-linkage linkage
+                        (append-instruction-sequences
+                          (car sas)
+                          (preserving
+                            '(arg1) ; おそらく arg2 はいらない
+                            (cadr sas)
+                            (make-instruction-sequence
+                              '(arg1 arg2)
+                              (list target)
+                              `((assign ,target (op ,proc) (reg arg1) (reg arg2))))))))
+    (compile-application exp target linkage))) ; 3 項でなければ application として扱う
+
+(print-after-compiler
+  (compile '(+ (+ 1 2) a) 'val 'next)
+  )
+
+(print-after-compiler
+  (compile '(+ b (+ 1 2)) 'val 'next)
+  )
