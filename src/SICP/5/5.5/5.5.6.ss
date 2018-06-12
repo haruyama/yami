@@ -12,13 +12,13 @@
   (list frame-number displacement-number))
 
 (define (lexical-address-lookup lexical-address env)
-  (let ((frame-number (lexical-address-frame-number lexical-address))
-        (displacement-number (lexical-address-displacement-number lexical-address)))
-    (let ((frame (list-ref env frame-number)))
-      (let ((value (list-ref (frame-values frame) displacement-number)))
-        (if (eq? value '*unassigned*)
-            (error "Unassigned variable")
-            value)))))
+  (let ((frame-num (lexical-address-frame-number lexical-address))
+        (displacement-num (lexical-address-displacement-number lexical-address)))
+       (let ((frame (list-ref env frame-num)))
+             (let ((value (list-ref (frame-values frame) displacement-num)))
+                  (if (eq? value '*unassigned*)
+                      (error "Unassigned variable")
+                      value)))))
 
 (define (lexical-address-set! lexical-address val env)
   (let ((frame-number (lexical-address-frame-number lexical-address))
@@ -32,6 +32,18 @@
               (else
                 (iter (cdr variables) (cdr values) (- count 1)))))
       (iter (frame-variables frame) (frame-values frame) displacement-number))))
+
+(define env (extend-environment '(x y) '(x y) the-global-environment))
+(define env (extend-environment '(a b c d e) '(a b c d e) env))
+(lexical-address-lookup '(1 0) env)
+(lexical-address-lookup '(1 1) env)
+(lexical-address-lookup '(0 2) env)
+(define env (extend-environment '(x y) '(x y) env))
+(lexical-address-lookup '(2 0) env)
+(lexical-address-lookup '(0 0) env)
+(lexical-address-lookup '(1 2) env)
+(lexical-address-set! '(2 0) 'z env)
+(display env)
 
 ;ex5.40
 (define (compile-lambda-body exp proc-entry ct-env)
@@ -343,3 +355,86 @@
 
 ;ex5.44
 ;http://www.serendip.ws/archives/3862
+(define all-regs '(env proc val argl continue arg1 arg2))
+(define (compile-arguments arg-list ct-env)
+  (define (iter al first)
+    (cond 
+      ((null? al) '())
+      ((true? first) (cons (compile (car al) 'arg1 'next ct-env) (iter (cdr al) false)))
+      (else
+        (cons (compile (car al) 'arg2 'next ct-env) (iter (cdr al) false)))))
+  (iter arg-list true))
+(define (spread-arguments arg-list ct-env)
+  (if (= 2 (length arg-list))
+    (compile-arguments arg-list ct-env)
+    (error "ERROR: spread-arguments: length of arg-list is not 2: " (length arg-list))))
+
+(define (open-code? exp)
+  (memq (car exp) '(* + = -)))
+
+(define (compile-open-code exp target linkage ct-env)
+  (if (= (length exp) 3)
+    (let ((proc (operator exp))
+          (sas (spread-arguments (operands exp) ct-env)))
+      (end-with-linkage linkage
+                        (append-instruction-sequences
+                          (car sas)
+                          (preserving
+                            '(arg1) ; おそらく arg2 はいらない
+                            (cadr sas)
+                            (make-instruction-sequence
+                              '(arg1 arg2)
+                              (list target)
+                              `((assign ,target (op ,proc) (reg arg1) (reg arg2))))))))
+    (compile-application exp target linkage ct-env))) ; 3 項でなければ application として扱う
+
+(define (not-overwrite? operator ct-env)
+  (let ((addr (find-variable operator ct-env)))
+       (eq? addr 'not-found)))
+
+(define (open-code-operator? exp ct-env)
+  (and (memq (car exp) '(+ - * / =))
+       (not-overwrite? (operator exp) ct-env)))
+
+(define (compile exp target linkage ct-env) ; ex5.40
+  (cond ((self-evaluating? exp)
+         (compile-self-evaluating exp target linkage))
+    ((quoted? exp) (compile-quoted exp target linkage))
+    ((variable? exp)
+     (compile-variable exp target linkage ct-env))
+    ((assignment? exp)
+     (compile-assingment exp target linkage ct-env)) ; ex5.40
+    ((definition? exp)
+     (compile-definition exp target linkage ct-env)) ; ex5.40
+    ((if? exp) (compile-if exp target linkage ct-env)) ; ex5.40
+    ((lambda? exp) (compile-lambda exp target linkage ct-env)) ; ex5.40
+    ((let? exp)
+     (compile (let->combination exp) target linkage ct-env))
+    ((begin? exp)
+     (compile-sequence (begin-action exp)
+                       target
+                       linkage
+                       ct-env)) ; ex5.40
+    ((cond? exp) (compile (cond->if exp) target linkage ct-env)) ; ex5.40
+    ((open-code-operator? exp ct-env) ;ex5.44
+     (compile-open-code exp target linkage ct-env))
+    ((application? exp)
+     (compile-application exp target linkage ct-env)) ; ex5.40
+    (else
+      (error "Unknown expression type -- COMPILE" exp))))
+
+(parse-compiled-code
+  (compile
+    '(lambda (+ * a b x y)
+             (+ (* a x) (* b y)))
+    'val
+    'next
+    '()))
+
+(parse-compiled-code
+  (compile
+    '(+ (* a x) (* b y))
+    'val
+    'next
+    '()))
+
