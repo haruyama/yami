@@ -1,7 +1,7 @@
 (load "./5.5.ss")
 (load "../5.4/5.4.ss")
 
-:(define all-regs '(env proc val argl continue arg1 arg2))
+(define all-regs '(env proc val argl continue arg1 arg2))
 
 ; 0 引数の場合
 ; =, - の場合 error
@@ -207,4 +207,8 @@
 
 (print-after-compiler
   (compile '(+ b 1 2) 'val 'next)
+  )
+
+(print-after-compiler
+  (compile '(+ b 1 2 a) 'val 'next)
   )
