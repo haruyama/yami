@@ -43,3 +43,24 @@
        (+ x (g (+ x 2))))
     'val
     'next))
+(print-after-compiler
+  (compile
+    '(define (f x)
+       (+ x (g (+ x 2))))
+    'val
+    'next))
+(print-after-compiler
+  (compile
+    '(define (f x)
+       (+ x (g (+ x 2))))
+    'val
+    'next))
+(print-after-compiler
+  (compile
+    '(+ 1)
+    'val
+    'next))
+ (compile
+    '1
+    'val
+    'next)

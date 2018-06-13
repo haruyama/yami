@@ -38,7 +38,7 @@
 (lexical-address-lookup '(1 0) env)
 (lexical-address-lookup '(1 1) env)
 (lexical-address-lookup '(0 2) env)
-(define env (extend-environment '(x y) '(x y) env))
+(define env (extend-environment '(y z) '(y z) env))
 (lexical-address-lookup '(2 0) env)
 (lexical-address-lookup '(0 0) env)
 (lexical-address-lookup '(1 2) env)
