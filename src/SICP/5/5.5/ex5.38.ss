@@ -212,3 +212,15 @@
 (print-after-compiler
   (compile '(+ b 1 2 a) 'val 'next)
   )
+
+(define (multi->2 exp)
+  (define (iter proc acc rest)
+    (if (null? rest) acc
+      (iter proc (list proc acc (car rest)) (cdr rest))))
+  (if (> 4 (length exp))
+    exp
+    (iter (car exp) (list (car exp) (cadr exp) (caddr exp)) (cdddr exp))))
+
+(multi->2 '(+ 1 2))
+(multi->2 '(+ 1 2 3))
+(multi->2 '(+ 1 2 3 4))
