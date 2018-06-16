@@ -548,6 +548,10 @@
 
 (define (rest-exps seq) (cdr seq))
 
+(define (make-begin seq)
+    (cons 'begin seq))
+
+
 (define (sequence->exp seq)
   (cond ((null? seq) seq)
     ((last-exp? seq) (first-exp seq))
