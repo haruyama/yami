@@ -35,6 +35,11 @@ end
 (factorial 5)
 quit
 
+(define (start-eceval)
+  (set! the-global-environment (setup-environment))
+  (set-register-contents! eceval 'flag false)
+  (start eceval))
+
 (start-eceval)
 (define (factorial n)
   (if (= n 1)
@@ -43,11 +48,6 @@ quit
 (factorial 4)
 (factorial 5)
 q
-
-(define (start-eceval)
-  (set! the-global-environment (setup-environment))
-  (set-register-contents! eceval 'flag false)
-  (start eceval))
 
 (define (fact n)
   (define fact-machine
@@ -81,6 +81,7 @@ q
   (display ((fact-machine 'stack) 'print-statistics))
   (newline))
 
+(fact 4)
 (fact 5)
 
 
@@ -156,6 +157,7 @@ q
 (f 1)
 quit
 
+(define all-regs '(env proc val argl continue compapp))
 
 (define (compile-procedure-call target linkage)
   (let ((primitive-branch (make-label 'primitive-branch))
