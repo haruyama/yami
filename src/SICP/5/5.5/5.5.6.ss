@@ -377,10 +377,10 @@
     (let ((proc (operator exp))
           (sas (spread-arguments (operands exp) ct-env)))
       (end-with-linkage linkage
-                        (append-instruction-sequences
+                        (preserving '(env)
                           (car sas)
                           (preserving
-                            '(arg1) ; おそらく arg2 はいらない
+                            '(arg1 env)
                             (cadr sas)
                             (make-instruction-sequence
                               '(arg1 arg2)
